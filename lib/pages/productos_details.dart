@@ -2,7 +2,6 @@
 
 import 'package:ausangate_op/utils/scroll_web.dart';
 import 'package:flutter/material.dart';
-import 'package:insta_image_viewer/insta_image_viewer.dart';
 import 'package:ausangate_op/models/model_v_inventario_general_producto.dart';
 import 'package:ausangate_op/utils/custom_text.dart';
 import 'package:ausangate_op/utils/format_fecha.dart';
@@ -37,9 +36,7 @@ class DetailsProductos extends StatelessWidget {
                     Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        InstaImageViewer(
-                            backgroundColor: Colors.transparent,
-                            child: ImageDetailsInventario(e: e)),
+                         ImageDetailsInventario(e: e),
                         const SizedBox(
                           width: 10,
                         ),

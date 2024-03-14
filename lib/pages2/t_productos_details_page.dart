@@ -2,13 +2,11 @@
 
 import 'package:ausangate_op/models/model_t_productos_app.dart';
 import 'package:ausangate_op/pages2/t_productos_entradas_page.dart';
-import 'package:ausangate_op/pages2/t_productos_salidas_details.dart';
 import 'package:ausangate_op/pages2/t_productos_salidas_page.dart';
 import 'package:ausangate_op/provider/provider_t_categoria_almacen.dart';
 import 'package:ausangate_op/provider/provider_t_proveedorapp.dart';
 import 'package:ausangate_op/provider/provider_t_ubicacion_almacen.dart';
 import 'package:ausangate_op/provider/provider_v_inventario_general_productos.dart';
-import 'package:ausangate_op/utils/custom_text.dart';
 import 'package:ausangate_op/widgets/custom_app_bar_entra_salid.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -18,10 +16,10 @@ class DetailsPageProducto extends StatefulWidget {
   const DetailsPageProducto({
     super.key,
     required this.e,
-    required this.stockList,
+    // required this.stockList,
   });
   final TProductosAppModel e;
-  final List<dynamic> stockList;
+  // final List<dynamic> stockList;
 
   @override
   State<DetailsPageProducto> createState() => _DetailsPageProductoState();
@@ -72,7 +70,7 @@ class _DetailsPageProductoState extends State<DetailsPageProducto> {
           return data.categoria;
         }
       }
-      return widget.e.idCategoria;
+      return '-';
     }
 
     String obtenerUbicacion(String idUbicacion) {
@@ -111,74 +109,48 @@ class _DetailsPageProductoState extends State<DetailsPageProducto> {
     }
 
     return DefaultTabController(
-      length: 3,
+      length: 2,
       child: Scaffold(
         appBar: AppBar(
-            toolbarHeight: showAppBar? 90 : null,
-            title:showAppBar? Column(
-              children: [
-                H2Text(
-                  text: widget.e.nombreProducto,
-                  fontWeight: FontWeight.w800,
-                ),
-                H2Text(
-                  text: obtenerCategiria(widget.e.idCategoria),
-                  fontWeight: FontWeight.w200,
-                  fontSize: 11,
-                ),
-              ],
-            ):const SizedBox(),
-            bottom: PreferredSize(
-              preferredSize:  Size(double.infinity,showAppBar? 150 : 0),
-              child: Column(
-                children: [
-                 showAppBar? CustomAppBarPRoductos(
-                    producto: widget.e,
-                    categoria: obtenerCategiria(widget.e.idCategoria),
-                    ubicacion: obtenerUbicacion(widget.e.idUbicacion),
-                    precio:
-                        widget.e.precioUnidadSalidaGrupo.toStringAsFixed(2),
-                    undMedida: widget.e.unidMedidaSalida,
-                    stockList: obtenerStock(widget.e.id)//widget.stockList,
-                  ):const SizedBox(),
-                  const TabBar(tabs: [
-                    Tab(text: 'Producto'),
-                    Tab(text: 'Entradas'),
-                    Tab(text: 'Salidas'),
-                  ]),
-                ],
-              ),
-            )),
+            leadingWidth: 30,
+            title:const TabBar(tabs: [
+                Tab(text: 'Entradas'),
+                Tab(text: 'Salidas'),
+              ])
+            ),
         body: GestureDetector(
           onDoubleTap: () {
             setState(() {
                showAppBar = true;
             });
           },
-          child: TabBarView(
+          child: Column(
             children: [
-              DetallesPage(
-                e: widget.e,
-                categoria: obtenerCategiria(widget.e.idCategoria),
-                ubicacion: obtenerUbicacion(widget.e.idUbicacion),
-                proveedor: obtenerProveedor(widget.e.idProveedor),
-                 scrollController: _scrollController,showAppBar: showAppBar,
-              ),
-               ProductosEntradas(
-                producto: widget.e,
-                categoria: obtenerCategiria(widget.e.idCategoria),
-                ubicacion: obtenerUbicacion(widget.e.idUbicacion),
-                proveedor: obtenerProveedor(widget.e.idProveedor),
-                stockList:  obtenerStock(widget.e.id),//widget.stockList,
-                scrollController: _scrollController,showAppBar: showAppBar,
-              ),
-              ProductosSalidas(
-                producto: widget.e,
-                categoria: obtenerCategiria(widget.e.idCategoria),
-                ubicacion: obtenerUbicacion(widget.e.idUbicacion),
-                proveedor: obtenerProveedor(widget.e.idProveedor),
-                stockList:  obtenerStock(widget.e.id),//widget.stockList,
-                scrollController: _scrollController,showAppBar: showAppBar,
+              showAppBar? CustomAppBarPRoductos(
+                    e: widget.e,
+                  ):const SizedBox(),
+              Expanded(
+                child: TabBarView(
+                  children: [
+                    
+                     ProductosEntradas(
+                      producto: widget.e,
+                      categoria: obtenerCategiria(widget.e.idCategoria),
+                      ubicacion: obtenerUbicacion(widget.e.idUbicacion),
+                      proveedor: obtenerProveedor(widget.e.idProveedor),
+                      stockList:  obtenerStock(widget.e.id),//widget.stockList,
+                      scrollController: _scrollController,showAppBar: showAppBar,
+                    ),
+                    ProductosSalidas(
+                      producto: widget.e,
+                      categoria: obtenerCategiria(widget.e.idCategoria),
+                      ubicacion: obtenerUbicacion(widget.e.idUbicacion),
+                      proveedor: obtenerProveedor(widget.e.idProveedor),
+                      stockList:  obtenerStock(widget.e.id),//widget.stockList,
+                      scrollController: _scrollController,showAppBar: showAppBar,
+                    ),
+                  ],
+                ),
               ),
             ],
           ),

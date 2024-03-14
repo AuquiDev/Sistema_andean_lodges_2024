@@ -3,6 +3,7 @@ import 'dart:ui';
 
 import 'package:ausangate_op/login_page.dart';
 import 'package:flutter/material.dart';
+import 'package:simple_ripple_animation/simple_ripple_animation.dart';
 
 class SplahScreen extends StatefulWidget {
   const SplahScreen({super.key});
@@ -87,10 +88,16 @@ class _SplahScreenState extends State<SplahScreen>
                         alignment: Alignment.bottomCenter,
                         child:
                             //value < 0.5 ?
-                            Image.asset(
-                          'assets/img/andeanlodges.png',
-                          width: MediaQuery.of(context).size.width * .2,
-                          color: const Color(0xFFC7A16E).withOpacity(.2),
+                          RippleAnimation(
+                            duration: const Duration(milliseconds: 5000),
+                            minRadius: 120,
+                          delay:  const Duration(seconds: 3),
+                          color: const Color(0xFFA27953),
+                          child: Image.asset(
+                            'assets/img/andeanlodges.png',
+                            width: MediaQuery.of(context).size.width * .2,
+                            // color: const Color(0xFFC7A16E).withOpacity(.4),
+                          ),
                         ));
                   }),
             ),
@@ -98,7 +105,8 @@ class _SplahScreenState extends State<SplahScreen>
           AnimatedOpacity(
             opacity: _showHomePage ? 1.0 : 0.0,
             duration: const Duration(seconds: 5),
-            child: const LoginPage(),
+            child: const RippleAnimation(
+                color: Color(0xFFA27953), child: LoginPage()),
           )
         ],
       ),

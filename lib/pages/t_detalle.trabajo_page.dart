@@ -2,6 +2,7 @@
 
 import 'package:ausangate_op/models/model_t_detalle_trabajos.dart';
 import 'package:ausangate_op/models/model_t_salidas.dart';
+import 'package:ausangate_op/pages/t_detalle.trabajo_details_page.dart';
 import 'package:ausangate_op/pages2/t_detalle.trabajo_editing_page.dart';
 import 'package:ausangate_op/provider/provider_t_det.itinerario.dart';
 import 'package:ausangate_op/provider/provider_t_det.restricciones.dart';
@@ -19,8 +20,6 @@ import 'package:provider/provider.dart';
 class GrupoDetalleTrabajoPage extends StatefulWidget {
   const GrupoDetalleTrabajoPage({super.key});
 
-
-
   @override
   State<GrupoDetalleTrabajoPage> createState() =>
       _GrupoDetalleTrabajoPageState();
@@ -32,14 +31,14 @@ class _GrupoDetalleTrabajoPageState extends State<GrupoDetalleTrabajoPage> {
     final listaGrupos = Provider.of<TDetalleTrabajoProvider>(context)
         .listaDetallTrabajo
       ..sort((a, b) => a.fechaFin.compareTo(b.fechaFin));
-    return GruposLIstPages(
-        listaGrupos: listaGrupos);
+    return GruposLIstPages(listaGrupos: listaGrupos);
   }
 }
 
 class GruposLIstPages extends StatefulWidget {
   const GruposLIstPages({
-    super.key, required this.listaGrupos,
+    super.key,
+    required this.listaGrupos,
   });
 
   final List<TDetalleTrabajoModel> listaGrupos;
@@ -49,7 +48,7 @@ class GruposLIstPages extends StatefulWidget {
 }
 
 class _GruposLIstPagesState extends State<GruposLIstPages> {
-   final ScrollController _scrollController = ScrollController();
+  final ScrollController _scrollController = ScrollController();
   bool showAppBar = true;
   void _onScroll() {
     //devulve el valor del scrollDirection.
@@ -65,7 +64,7 @@ class _GruposLIstPagesState extends State<GruposLIstPages> {
       }
     });
   }
-  
+
   late TextEditingController _searchControllerGastos;
   late List<TDetalleTrabajoModel> filterLista;
 
@@ -91,7 +90,7 @@ class _GruposLIstPagesState extends State<GruposLIstPages> {
   void dispose() {
     _searchControllerGastos.dispose();
 
-      _scrollController.removeListener(_onScroll);
+    _scrollController.removeListener(_onScroll);
     _scrollController.dispose();
     super.dispose();
   }
@@ -106,38 +105,29 @@ class _GruposLIstPagesState extends State<GruposLIstPages> {
         child: Scaffold(
           appBar: showAppBar
               ? AppBar(
-                  // toolbarHeight: 40,
-                  leading: const Icon(
-                    Icons.circle,
-                    color: Colors.transparent,
-                  ),
-                  leadingWidth: 0,
-                  elevation: 0,
                   centerTitle: false,
                   surfaceTintColor: Colors.white,
-                  title: const H2Text(
-                    text: 'Gestión de Grupos',
-                    fontSize: 16,
-                    fontWeight: FontWeight.w900,
+                  title: const FittedBox(
+                    child: H2Text(
+                      text: 'Operaciones de Grupos y Logística',
+                      fontSize: 16,
+                      fontWeight: FontWeight.w900,
+                    ),
                   ),
                   actions: [
                     Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: ElevatedButton.icon(
-                        style: const ButtonStyle(
-                            padding: MaterialStatePropertyAll(
-                                EdgeInsets.symmetric(horizontal: 10)),
-                            backgroundColor:
-                                MaterialStatePropertyAll(Colors.deepOrange)),
+                        style: _buttonStyle(),
                         icon: const Icon(
-                          Icons.add,
+                          Icons.add_circle_sharp,
                           size: 15,
                           color: Colors.white,
                         ),
                         label: const H2Text(
                           text: 'Nuevo',
                           fontWeight: FontWeight.w400,
-                          fontSize: 15,
+                          fontSize: 12,
                           color: Colors.white,
                         ),
                         onPressed: () {
@@ -153,56 +143,53 @@ class _GruposLIstPagesState extends State<GruposLIstPages> {
                 )
               : null,
           body: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              SafeArea(
-                bottom: false,
-                child: Container(
-                  width: 350,
-                  constraints: const BoxConstraints(maxWidth: 350),
-                  margin:
-                      const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
-                  height: 50,
-                  decoration: BoxDecoration(boxShadow: const [
-                    BoxShadow(
-                      offset: Offset(0, 1),
-                      blurRadius: 6,
-                      spreadRadius: 3,
-                      color: Colors.black12,
-                    ),
-                  ], borderRadius: BorderRadius.circular(10)),
-                  child: TextField(
-                    controller: _searchControllerGastos,
-                    onTap: () {
-                      _filterProductos(_searchControllerGastos.text);
-                    },
-                    onChanged: (value) {
-                      _filterProductos(value);
-                    },
-                    decoration: InputDecoration(
-                      prefixIcon: InkWell(
-                          onTap: () {
-                            _searchControllerGastos.clear();
-                          },
-                          child: const Icon(Icons.search)),
-                      filled: true,
-                      fillColor: const Color(0xFFFFFFFF),
-                      hintText: "Buscar grupo",
-                      hintStyle: const TextStyle(
-                          color: Colors.black26, fontWeight: FontWeight.w500),
-                      enabled: true,
-                      border: _outlineButton(),
-                      focusedBorder: _outlineButton(),
-                      enabledBorder: _outlineButton(),
-                      errorBorder: _outlineButton(),
+              Center(
+                child: SafeArea(
+                  bottom: false,
+                  child: Card(
+                    surfaceTintColor: Colors.transparent,
+                    elevation: 10,
+                    child: Container(
+                      width: 350,
+                      constraints: const BoxConstraints(maxWidth: 350),
+                      height: 50,
+                      child: TextField(
+                        controller: _searchControllerGastos,
+                        onTap: () {
+                          _filterProductos(_searchControllerGastos.text);
+                        },
+                        onChanged: (value) {
+                          _filterProductos(value);
+                        },
+                        decoration: InputDecoration(
+                          prefixIcon: InkWell(
+                              onTap: () {
+                                _searchControllerGastos.clear();
+                              },
+                              child: const Icon(Icons.search)),
+                          filled: true,
+                          fillColor: const Color(0xFFFFFFFF),
+                          hintText: "Buscar grupo",
+                          enabled: true,
+                          border: _outlineButton(),
+                          focusedBorder: _outlineButton(),
+                          enabledBorder: _outlineButton(),
+                          errorBorder: _outlineButton(),
+                        ),
+                      ),
                     ),
                   ),
                 ),
               ),
-              showAppBar
-                  ? AlertGruposEnRuta(widget: widget)
-                  : const SizedBox(),
-                  
-              FechaFilterListGrupos(widget: widget, filterLista: filterLista ,scrollController: _scrollController, showAppBar: showAppBar,)
+              showAppBar ? AlertGruposEnRuta(widget: widget) : const SizedBox(),
+              FechaFilterListGrupos(
+                widget: widget,
+                filterLista: filterLista,
+                scrollController: _scrollController,
+                showAppBar: showAppBar,
+              )
             ],
           ),
         ),
@@ -216,123 +203,120 @@ class _GruposLIstPagesState extends State<GruposLIstPages> {
       borderRadius: BorderRadius.circular(10.0),
     );
   }
+
+  ButtonStyle _buttonStyle() {
+    return const ButtonStyle(
+      maximumSize: MaterialStatePropertyAll(Size(150, 80)),
+      padding: MaterialStatePropertyAll(EdgeInsets.only(left: 10, right: 10)),
+      elevation: MaterialStatePropertyAll(10),
+      visualDensity: VisualDensity.compact,
+      backgroundColor: MaterialStatePropertyAll(Colors.red),
+      overlayColor: MaterialStatePropertyAll(Colors.white),
+    );
+  }
 }
 
 class AlertGruposEnRuta extends StatelessWidget {
   const AlertGruposEnRuta({
     super.key,
     required this.widget,
-
   });
 
   final GruposLIstPages widget;
 
   @override
   Widget build(BuildContext context) {
-    return ScrollWeb(
-      child: SingleChildScrollView(
-        padding: const EdgeInsets.symmetric(horizontal: 30),
-        scrollDirection: Axis.horizontal,
-        physics: const AlwaysScrollableScrollPhysics(),
-        child: Row(
-          children: [
-            const Card(
-              surfaceTintColor: Colors.red,
-              color: Colors.red,
-              elevation: 10,
-              child: SizedBox(
-                width: 170,
-                        height: 90,
-                child: Center(
-                  child: H2Text(
-                    text: 'Grupo\nen Ruta',
-                    maxLines: 2,
-                    fontSize: 13,
-                    color: Colors.white,
-                    fontWeight: FontWeight.w500,
-                    textAlign: TextAlign.center,
-                  ),
-                ),
-              ),
-            ),
-            const Icon(
-              Icons.arrow_forward,
-              color: Colors.black87,
-            ),
-            ...List.generate(widget.listaGrupos.length, (index) {
-              DateTime hoy = DateTime.now();
-              DateTime inicio = widget.listaGrupos[index].fechaInicio;
-              DateTime fin = widget.listaGrupos[index].fechaFin;
-              final e = widget.listaGrupos[index];
-              // Extraer solo la fecha (ignorando la hora exacta)
-              DateTime hoySinHora = DateTime(hoy.year, hoy.month, hoy.day);
-              DateTime inicioSinHora = DateTime(inicio.year, inicio.month, inicio.day);
-              DateTime finSinHora = DateTime(fin.year, fin.month, fin.day);
-              //Para que la condicional funcione no se debe considerar la hora.
-              if ((hoySinHora.isAfter(inicioSinHora) || hoySinHora.isAtSameMomentAs(inicioSinHora)) &&  (hoySinHora.isBefore(finSinHora) || hoySinHora.isAtSameMomentAs(finSinHora))) {
-                return InkWell(
-                  onTap: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => GruposEditingPage(
-                                  e: e,
-                                )));
-                  },
-                  child: Stack(
-                    children: [
-                      const Positioned(
-                        left: 2,
-                        top: 10,
-                        child: Icon(
-                          Icons.notification_add,
-                          color: Color(0xFFC0170B),
-                        ),
-                      ),
-                      Container(
-                        margin: const EdgeInsets.all(1),
-                        decoration: BoxDecoration(
-                            color: e.fechaFin.day == DateTime.now().day
-                                ? Colors.red.withOpacity(.2)
-                                : Colors.white,
-                            border: Border.all(
-                                style: BorderStyle.solid, color: Colors.black26)),
-                        width: 170,
-                        height: 120,
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            H2Text(
-                              text: e.fechaFin.day == DateTime.now().day
-                                  ? 'Retorna Hoy!'
-                                  : 'hoy es ${formatFecha(DateTime.now())}',
-                              fontWeight: FontWeight.w400,
-                              fontSize: 10,
-                            ),
-                            H2Text(
-                              text: e.codigoGrupo,
-                              fontSize: 28,
-                              fontWeight: FontWeight.w900,
-                              color: e.fechaFin.day == DateTime.now().day
-                                  ? Colors.red
-                                  : Colors.black,
-                            ),
-                            const Divider(),
-                            FechasIntOutGrupos(e: e),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                );
-              } else {
-                return const SizedBox();
-              }
-            }),
-          ],
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const H2Text(
+          text: 'Grupos en Ruta',
+          fontSize: 13,
+          color: Colors.black,
         ),
-      ),
+        ScrollWeb(
+          child: SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            physics: const AlwaysScrollableScrollPhysics(),
+            child: Row(
+              children: [
+                ...List.generate(widget.listaGrupos.length, (index) {
+                  DateTime hoy = DateTime.now();
+                  DateTime inicio = widget.listaGrupos[index].fechaInicio;
+                  DateTime fin = widget.listaGrupos[index].fechaFin;
+                  final e = widget.listaGrupos[index];
+                  // Extraer solo la fecha (ignorando la hora exacta)
+                  DateTime hoySinHora = DateTime(hoy.year, hoy.month, hoy.day);
+                  DateTime inicioSinHora =
+                      DateTime(inicio.year, inicio.month, inicio.day);
+                  DateTime finSinHora = DateTime(fin.year, fin.month, fin.day);
+                  //Para que la condicional funcione no se debe considerar la hora.
+                  if ((hoySinHora.isAfter(inicioSinHora) ||
+                          hoySinHora.isAtSameMomentAs(inicioSinHora)) &&
+                      (hoySinHora.isBefore(finSinHora) ||
+                          hoySinHora.isAtSameMomentAs(finSinHora))) {
+                    return InkWell(
+                      onTap: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => GruposEditingPage(
+                                      e: e,
+                                    )));
+                      },
+                      child: Stack(
+                        children: [
+                          const Positioned(
+                            left: 2,
+                            top: 10,
+                            child: Icon(
+                              Icons.notification_add,
+                              color: Colors.red,
+                            ),
+                          ),
+                          Container(
+                            padding: const EdgeInsets.all(2),
+                            decoration: BoxDecoration(
+                                color: e.fechaFin.day == DateTime.now().day
+                                    ? Colors.red.withOpacity(.2)
+                                    : const Color(0xFFDAEFA5),
+                                ),
+                            width: 200,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                H2Text(
+                                  text: e.fechaFin.day == DateTime.now().day
+                                      ? 'Retorna Hoy!'
+                                      : 'hoy es ${formatFecha(DateTime.now())}',
+                                  fontWeight: FontWeight.w400,
+                                  fontSize: 10,
+                                ),
+                                H2Text(
+                                  text: e.codigoGrupo,
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.w900,
+                                  color: e.fechaFin.day == DateTime.now().day
+                                      ? Colors.red
+                                      : Colors.black,
+                                ),
+                                FechasIntOutGrupos(e: e),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    );
+                  } else {
+                    return const SizedBox();
+                  }
+                }),
+              ],
+            ),
+          ),
+        ),
+      ],
     );
   }
 }
@@ -342,11 +326,11 @@ class FechaFilterListGrupos extends StatelessWidget {
     super.key,
     required this.widget,
     required this.filterLista,
-     required ScrollController scrollController,
+    required ScrollController scrollController,
     required this.showAppBar,
-  }): _scrollController = scrollController;
+  }) : _scrollController = scrollController;
 
-   final ScrollController _scrollController;
+  final ScrollController _scrollController;
   final bool showAppBar;
   final GruposLIstPages widget;
   final List<TDetalleTrabajoModel> filterLista;
@@ -369,14 +353,13 @@ class FechaFilterListGrupos extends StatelessWidget {
         child: ListView.builder(
           controller: _scrollController,
           physics: const AlwaysScrollableScrollPhysics(),
-          itemCount: sortedKey.length, 
+          itemCount: sortedKey.length,
           itemBuilder: (context, index) {
             final fechaKey = sortedKey.reversed.toList()[index]; //index
-            final gastosPorFecha = fechaFilter[fechaKey]; //subLista
+            final gastosPorFecha = fechaFilter[fechaKey]!..sort((a, b) => a.fechaInicio.compareTo(b.fechaInicio)); //subLista
             DateTime fechaDateTime = DateTime.parse(fechaKey + '-01');
             return Column(
               children: [
-                const Divider(),
                 Padding(
                   padding:
                       const EdgeInsets.symmetric(vertical: 8.0, horizontal: 5),
@@ -388,15 +371,18 @@ class FechaFilterListGrupos extends StatelessWidget {
                         fontWeight: FontWeight.w600,
                         fontSize: 14,
                       ),
-                      const SizedBox(width: 10,),
+                      const SizedBox(
+                        width: 10,
+                      ),
                       Text(
-                        '${gastosPorFecha!.length} regs.',
+                        '(${gastosPorFecha!.length} regs.)',
                         style:
-                            const TextStyle(fontSize: 13, color: Colors.blue),
+                            const TextStyle(fontSize: 13, color: Colors.black),
                       ),
                     ],
                   ),
                 ),
+                const Divider(),
                 if (gastosPorFecha.isNotEmpty)
                   LayoutBuilder(builder:
                       (BuildContext context, BoxConstraints constraints) {
@@ -413,7 +399,7 @@ class FechaFilterListGrupos extends StatelessWidget {
                           crossAxisCount: crossAxisCount),
                       itemCount: gastosPorFecha.length,
                       itemBuilder: (BuildContext context, index) {
-                        final e = gastosPorFecha[index];
+                        final e = gastosPorFecha.reversed.toList()[index];
                         return CardCustomDetalleTrabajo(e: e);
                       },
                     );
@@ -465,13 +451,13 @@ class CardCustomDetalleTrabajo extends StatelessWidget {
       return '***';
     }
 
-    String obtenerCantdPaxGuia(String text) {
+    List<String> obtenerCantdPaxGuia(String text) {
       for (var data in listCandPaxguia) {
         if (data.id == e.idCantidadPaxguia /*text*/) {
-          return '${data.pax} y ${data.guia}';
+          return [data.pax, data.guia];
         }
       }
-      return '***';
+      return [0.toString(),0.toString()];
     }
 
     String obtenerRestriccion(String text) {
@@ -498,108 +484,108 @@ class CardCustomDetalleTrabajo extends StatelessWidget {
       final height = constraints.maxHeight;
       return Stack(
         children: [
-          Positioned(
-            left: width * .42,
-            bottom: height * .15,
-            child: H2Text(
-              text: '${obtenerCodigoGrupo(e.id!).length} regs.',
-              fontSize: 9,
-              fontWeight: FontWeight.w400,
-              color: Colors.blue,
+          Container(
+            width: width,
+            height: height,
+            margin: const EdgeInsets.symmetric(horizontal: 5),
+            child: const Card(
+              surfaceTintColor: Colors.black,
+              color: Colors.black,
+              elevation: 10,
             ),
           ),
           SizedBox(
             width: width,
             height: height * .72,
-            child: FittedBox(
+            child: Card(
+              surfaceTintColor: Colors.transparent,
+              elevation: 10,
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.start,
                 children: [
-                  const H2Text(
-                    text: 'Codígo de grupo',
-                    fontSize: 12,
-                    fontWeight: FontWeight.w300,
+                  FittedBox(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        H2Text(
+                          text: e.codigoGrupo,
+                          fontSize: 25,
+                          fontWeight: FontWeight.w900,
+                        ),
+                        H2Text(
+                          text: obtenerNameItinerario(e.idItinerariodiasnoches),
+                          fontSize: 12,
+                          fontWeight: FontWeight.w800,
+                        ),
+                        H2Text(
+                          text:   obtenerCantdPaxGuia(e.idCantidadPaxguia)[0] + ' Pax  |  ' +  obtenerCantdPaxGuia(e.idCantidadPaxguia)[1] + ' Guia',
+                          fontSize: 12,
+                          fontWeight: FontWeight.w900,
+                        ),
+                      ],
+                    ),
                   ),
-                  H2Text(
-                    text: e.codigoGrupo,
-                    fontSize: 35,
-                    fontWeight: FontWeight.w900,
-                  ),
-                  H2Text(
-                    text: obtenerNameItinerario(e.idItinerariodiasnoches),
-                    fontSize: 16,
-                    fontWeight: FontWeight.w800,
-                  ),
-                  H2Text(
-                    text: obtenerCantdPaxGuia(e.idCantidadPaxguia),
-                    fontSize: 14,
-                    fontWeight: FontWeight.w900,
-                  ),
-                  H2Text(
-                    text: obtenerRestriccion(e.idRestriccionAlimentos),
-                    fontSize: 12,
-                    fontWeight: FontWeight.w300,
-                  ),
-                  H2Text(
-                    text: obteneTipoGasto(e.idTipogasto),
-                    fontSize: 12,
-                    fontWeight: FontWeight.w300,
-                  ),
+                  FechasIntOutGrupos(e: e)
                 ],
               ),
             ),
           ),
-          InkWell(
-            onTap: () {
-              _detailsGrupoPage(context, e,
-                  diasnoches: obtenerNameItinerario(e.idItinerariodiasnoches),
-                  paxguia: obtenerCantdPaxGuia(e.idCantidadPaxguia),
-                  restricion: obtenerRestriccion(e.idRestriccionAlimentos),
-                  tipogasto: obteneTipoGasto(e.idTipogasto),
-                  resgitros: obtenerCodigoGrupo(e.id!).length.toString());
-            },
-            child: Container(
-              width: width,
-              height: height,
-              decoration: BoxDecoration(
-                  border: Border.all(
-                      style: BorderStyle.solid, color: Colors.black26)),
-              padding: const EdgeInsets.all(6),
-              child: FechasIntOutGrupos(e: e),
-            ),
-          ),
-          IconButton(
-              onPressed: () {
-                if (obtenerCodigoGrupo(e.id!).isEmpty) {
-                  _mostrarConfrimacionDelete(context);
-                } else {
-                  showSialogEdicion(context,
-                      'Esta acción conlleva riesgos. Antes de eliminar un Grupo de trabajo, asegúrate de que no haya registros asignados a esta ubicación.\n\n(${obtenerCodigoGrupo(e.id!).length} registros encontrados)');
-                }
-              },
-              icon: Icon(
-                Icons.delete,
-                size: 15,
-                color: Colors.red.withOpacity(.8),
-              )),
+
           Positioned(
-            right: 2,
-            top: 0,
-            child: IconButton(
-                onPressed: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => GruposEditingPage(
-                                e: e,
-                              )));
-                },
-                icon: const Icon(
-                  Icons.edit,
-                  size: 18,
-                  color: Colors.black26,
-                )),
+            right: 7,
+            left: 7,
+            bottom: 10,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                IconButton.outlined(
+                    onPressed: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => GruposEditingPage(
+                                    e: e,
+                                  )));
+                    },
+                    icon: const Icon(
+                      Icons.edit,
+                      color: Colors.green,
+                    )),
+                IconButton.outlined(
+                    onPressed: () {
+                      Navigator.push(context,
+                          MaterialPageRoute(builder: (context) {
+                        return DetailsPagGrupos(
+                            e: e,
+                            diasnoches:
+                                obtenerNameItinerario(e.idItinerariodiasnoches),
+                            paxguia: obtenerCantdPaxGuia(e.idCantidadPaxguia),
+                            restricion:
+                                obtenerRestriccion(e.idRestriccionAlimentos),
+                            tipogasto: obteneTipoGasto(e.idTipogasto),
+                            resgitros:
+                                obtenerCodigoGrupo(e.id!).length.toString());
+                      }));
+                    },
+                    icon: const Icon(
+                      Icons.visibility_rounded,
+                      color: Colors.white,
+                    )),
+                IconButton.outlined(
+                    onPressed: () {
+                      if (obtenerCodigoGrupo(e.id!).isEmpty) {
+                        _mostrarConfrimacionDelete(context);
+                      } else {
+                        showSialogEdicion(context,
+                            'Esta acción conlleva riesgos. Antes de eliminar un Grupo de trabajo, asegúrate de que no haya registros asignados a esta ubicación.\n\n(${obtenerCodigoGrupo(e.id!).length} registros encontrados)');
+                      }
+                    },
+                    icon: const Icon(
+                      Icons.delete,
+                      color: Colors.red,
+                    )),
+              ],
+            ),
           )
         ],
       );
@@ -666,41 +652,6 @@ class CardCustomDetalleTrabajo extends StatelessWidget {
       },
     );
   }
-
-  void _detailsGrupoPage(BuildContext context, TDetalleTrabajoModel e,
-      {String? diasnoches,
-      String? paxguia,
-      String? restricion,
-      String? tipogasto,
-      String? resgitros}) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text('Grupo con el código ${e.codigoGrupo}'),
-          // ignore: prefer_interpolation_to_compose_strings, prefer_adjacent_string_concatenation
-          content: Text('Programado para iniciar el día' +
-              ' ${formatFecha(e.fechaInicio)}' +
-              ' y con fecha de finalización el día (${formatFecha(e.fechaInicio)}).\n\n' +
-              'Este programa, que abarca $diasnoches (días/noches), está diseñado para acomodar a $paxguia.\n\n' +
-              'El grupo presenta restricciones alimenticias, específicamente, $restricion.\n\n' +
-              'Tomar en consideración:\n' +
-              e.descripcion +
-              '\n\nTipo de Gasto: $tipogasto' +
-              '\n\nRegistros asociados a este grupo : $resgitros registros encontrados' +
-              '\n\nRevisar Historial de "Salidas de Productos".'),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              child: const Text("Ok"),
-            ),
-          ],
-        );
-      },
-    );
-  }
 }
 
 class FechasIntOutGrupos extends StatelessWidget {
@@ -760,3 +711,4 @@ class FechasIntOutGrupos extends StatelessWidget {
     );
   }
 }
+

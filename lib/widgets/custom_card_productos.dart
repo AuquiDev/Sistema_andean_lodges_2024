@@ -1,5 +1,4 @@
 import 'package:ausangate_op/models/model_v_inventario_general_producto.dart';
-import 'package:ausangate_op/pages/tabla_source.dart';
 import 'package:ausangate_op/pages/productos_details.dart';
 import 'package:ausangate_op/utils/format_fecha.dart';
 import 'package:ausangate_op/utils/formatear_numero.dart';
@@ -32,39 +31,41 @@ class CustomCardProducto extends StatelessWidget {
             children: [
               Stack(
                 children: [
-                  Container(
-                    margin: const EdgeInsets.all(1),
-                    width: constraints.maxWidth * .98,
-                    height: constraints.maxHeight * 0.6,
-                    child: Image.network(
-                      // ignore: unnecessary_null_comparison, unnecessary_type_check
-                      (e.imagen != null && e.imagen is String &&
-                              e.imagen.isNotEmpty)
-                          ? 'https://planet-broken.pockethost.io/api/files/${e.collectionId}/${e.id}/${e.imagen}'
-                          : 'https://via.placeholder.com/300',
-                      loadingBuilder: (BuildContext context, Widget child,
-                          ImageChunkEvent? loadingProgress) {
-                        if (loadingProgress == null) {
-                          return child;
-                        } else {
-                          return Center(
-                            child: CircularProgressIndicator(
-                              value: loadingProgress.expectedTotalBytes != null
-                                  ? loadingProgress.cumulativeBytesLoaded /
-                                      (loadingProgress.expectedTotalBytes ?? 1)
-                                  : null,
-                            ),
-                          );
-                        }
-                      },
-                      errorBuilder: (BuildContext context, Object error,
-                          StackTrace? stackTrace) {
-                        return Image.asset(
-                          'assets/img/andeanlodges.png',
-                          height: 150,
-                        ); // Widget a mostrar si hay un error al cargar la imagen
-                      },
-                      fit: BoxFit.cover,
+                  Card(
+                    child: Container(
+                      margin: const EdgeInsets.all(1),
+                      width: constraints.maxWidth * .98,
+                      height: constraints.maxHeight * 0.55,
+                      child: Image.network(
+                        // ignore: unnecessary_null_comparison, unnecessary_type_check
+                        (e.imagen != null && e.imagen is String &&
+                                e.imagen.isNotEmpty)
+                            ? 'https://planet-broken.pockethost.io/api/files/${e.collectionId}/${e.id}/${e.imagen}'
+                            : 'https://via.placeholder.com/300',
+                        loadingBuilder: (BuildContext context, Widget child,
+                            ImageChunkEvent? loadingProgress) {
+                          if (loadingProgress == null) {
+                            return child;
+                          } else {
+                            return Center(
+                              child: CircularProgressIndicator(
+                                value: loadingProgress.expectedTotalBytes != null
+                                    ? loadingProgress.cumulativeBytesLoaded /
+                                        (loadingProgress.expectedTotalBytes ?? 1)
+                                    : null,
+                              ),
+                            );
+                          }
+                        },
+                        errorBuilder: (BuildContext context, Object error,
+                            StackTrace? stackTrace) {
+                          return Image.asset(
+                            'assets/img/andeanlodges.png',
+                            height: 150,
+                          ); // Widget a mostrar si hay un error al cargar la imagen
+                        },
+                        fit: BoxFit.cover,
+                      ),
                     ),
                   ),
                   Positioned(
@@ -166,4 +167,58 @@ class CustomCardProducto extends StatelessWidget {
       },
     );
   }
+}
+
+
+Color getColorBasedOnStockAndExpiration(ViewInventarioGeneralProductosModel e) {
+  // Si el stock está agotado o la fecha de vencimiento ha pasado
+  if (e.stock == 0 ||
+      (e.fechaVencimiento != null &&
+          e.fechaVencimiento!.isBefore(DateTime.now()))) {
+    return Colors.red.withOpacity(
+        0.3); // Color más pronunciado para stock agotado o producto vencido
+  }
+
+  // Si el stock es menor a 10 o la fecha de vencimiento está próxima
+  else if (e.stock < 10 ||
+      (e.fechaVencimiento != null &&
+          e.fechaVencimiento!.difference(DateTime.now()).inDays <= 7)) {
+    return Colors.orange.withOpacity(
+        0.2); // Color más pronunciado para stock bajo o producto próximo a vencer/agotar
+  }
+
+  // En cualquier otro caso
+  return Colors.white; // Color predeterminado
+}
+
+Color getColorStock(ViewInventarioGeneralProductosModel e) {
+  double stockTotal = e.stock;
+
+  if (stockTotal <= 0) {
+    return Colors.red.withOpacity(0.9); // Agotado
+  } else if (stockTotal > 0 && stockTotal <= 5) {
+    return const Color(0xFF904F08); // Pocas existencias (1-5) Und.
+  } else if (stockTotal > 5 && stockTotal <= 10) {
+    return const Color(0xFF104E94); // Existencias bajas (6-10) Und.
+  } else {
+    return Colors.black; // Existencias adecuadas
+  }
+}
+
+Color getColorfechav(ViewInventarioGeneralProductosModel e) {
+ if (e.fechaVencimiento != null) {
+    DateTime now = DateTime.now();
+    DateTime startOfMonthNextMonth = DateTime(now.year, now.month + 2, 1);
+    DateTime startOfMonthThisMonth = DateTime(now.year, now.month, 1);
+
+    if (e.fechaVencimiento!.isBefore(now)) {
+      return Colors.red.withOpacity(0.9); // Vencido
+    } else if (e.fechaVencimiento!.isAtSameMomentAs(startOfMonthThisMonth)) {
+      return Colors.blue; // Por vencer este mes
+    } else if (e.fechaVencimiento!.isAtSameMomentAs(startOfMonthNextMonth)) {
+      return const Color.fromARGB(255, 9, 66, 112); // Por vencer el próximo mes
+    }
+  }
+
+  return Colors.black; // No vencido
 }

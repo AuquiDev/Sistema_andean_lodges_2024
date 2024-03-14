@@ -1,6 +1,5 @@
 import 'package:ausangate_op/pages/menu_principal.dart';
 import 'package:ausangate_op/provider/current_page.dart';
-import 'package:ausangate_op/utils/scroll_web.dart';
 import 'package:ausangate_op/utils/shared_global.dart';
 import 'package:ausangate_op/utils/text_custom.dart';
 import 'package:flutter/material.dart';
@@ -51,15 +50,12 @@ class TextAppBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ScrollWeb(
-      child: const SingleChildScrollView(
-        scrollDirection: Axis.horizontal,
-        child: H2Text(
-            text: 'Logística de Operaciones y Almacén',
-            fontSize: 20,
-            color: Colors.black,
-            fontWeight: FontWeight.w900),
-      ),
+    return const FittedBox(
+      child: H2Text(
+          text: 'Logística de Operaciones y Almacén',
+          fontSize: 20,
+          color: Colors.black,
+          fontWeight: FontWeight.w900),
     );
   }
 }

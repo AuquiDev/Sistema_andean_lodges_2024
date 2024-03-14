@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 
 class UsuarioProvider extends ChangeNotifier {
   TEmpleadoModel? _usuarioEncontrado;
+
   // Crear una instancia de SharedPrefencesGlobal
  SharedPrefencesGlobal sharedPrefs = SharedPrefencesGlobal();
 

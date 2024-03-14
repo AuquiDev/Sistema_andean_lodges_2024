@@ -10,7 +10,6 @@ import 'package:ausangate_op/provider/provider_t_proveedorapp.dart';
 import 'package:ausangate_op/utils/custom_text.dart';
 import 'package:ausangate_op/utils/format_fecha.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
 class ProductosEntradas extends StatefulWidget {
@@ -39,17 +38,6 @@ class ProductosEntradas extends StatefulWidget {
 }
 
 class _ProductosEntradasState extends State<ProductosEntradas> {
-  //FUNCION PARA BLOQUEAR el giro de pantalla y mantenerla en Vertical.
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-
-    // Bloquear la rotación de la pantalla
-    SystemChrome.setPreferredOrientations([
-      DeviceOrientation.portraitUp, // Solo retrato
-    ]);
-  }
-
   @override
   Widget build(BuildContext context) {
     List<TEntradasModel> obtenerEntradas(String idProducto) {
@@ -123,9 +111,9 @@ class _ProductosEntradasState extends State<ProductosEntradas> {
                 MaterialPageRoute(
                     builder: (context) => EntradasForm(
                           producto: widget.producto,
-                          listaEmpleados: listaEmpleados,
-                          stockList: widget.stockList,
-                          listaProveedor: listaProveedor,
+                          // listaEmpleados: listaEmpleados,
+                          // stockList: widget.stockList,
+                          // listaProveedor: listaProveedor,
                         )));
           },
           child: const H2Text(
@@ -199,11 +187,7 @@ class CardCustomEntradasApp extends StatelessWidget {
                               builder: (context) => EntradasForm(
                                   e: e,
                                   producto: producto,
-                                  listaEmpleados: listaEmpleados,
-                                  stockList: stockList,
-                                  empleado: obtenerEmpleado(e.idEmpleado),
-                                  listaProveedor: listaProveedor,
-                                  trabajo: obtenerProveedor(e.idProveedor))));
+                                  )));
                     } else {
                       showSialogButon(context,
                           'Solo el creador de este registro tiene permisos para editarlo.');

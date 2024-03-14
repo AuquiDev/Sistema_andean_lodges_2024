@@ -41,9 +41,25 @@ dependencies:
   calendar_date_picker2: ^0.5.3
   # pull_to_refresh: ^2.0.0 #Refeshcar pantalla animacion 
   url_launcher: ^6.2.4
-  insta_image_viewer: ^1.0.2 #Pre visualizar las imagenes
+  gallery_image_viewer: ^1.2.0 #Pre visualizar las imagenes
   pdf: ^3.10.7
   universal_html: ^2.2.4 #Esta dependencia Unicamente su usa para web
+  image_picker: ^1.0.7
+  video_player: ^2.8.2
+  camera: ^0.10.5+9
+  qr_bar_code_scanner_dialog: ^0.0.5
+  syncfusion_flutter_charts: ^24.2.4+3  #Graficos DASHBORAD  
+
+  fade_out_particle: ^1.2.1 #Animacion Qr LEctor 
+  simple_ripple_animation: ^0.0.9 #Animacion Qr Insta Qr Scanner
+  quickalert: ^1.0.2 #ALerta SHow Dialog 
+  delayed_display: ^2.0.0 #EFECTO opacity al iniciar la pantalla
+  draggable_home: ^1.0.5 #Efecto Expandible de el appber
+  vibration: ^1.8.4 #vibrar al snacear un codgio qr
+  audioplayers: ^5.2.1 #reproducir tonpo al scanear QR
+  
+  
+
 
 
 
@@ -77,20 +93,20 @@ flutter:
    - family: Poppins
      fonts:
         - asset: assets/fonts/Poppins-Black.ttf
-        - asset: assets/fonts/Poppins-BlackItalic.ttf
+        # - asset: assets/fonts/Poppins-BlackItalic.ttf
         - asset: assets/fonts/Poppins-Bold.ttf
-        - asset: assets/fonts/Poppins-BoldItalic.ttf
+        # - asset: assets/fonts/Poppins-BoldItalic.ttf
         - asset: assets/fonts/Poppins-ExtraBold.ttf
-        - asset: assets/fonts/Poppins-ExtraBoldItalic.ttf
+        # - asset: assets/fonts/Poppins-ExtraBoldItalic.ttf
         - asset: assets/fonts/Poppins-ExtraLight.ttf
-        - asset: assets/fonts/Poppins-ExtraLightItalic.ttf
+        # - asset: assets/fonts/Poppins-ExtraLightItalic.ttf
         - asset: assets/fonts/Poppins-Italic.ttf
         - asset: assets/fonts/Poppins-Light.ttf
-        - asset: assets/fonts/Poppins-LightItalic.ttf
+        # - asset: assets/fonts/Poppins-LightItalic.ttf
         - asset: assets/fonts/Poppins-Medium.ttf
-        - asset: assets/fonts/Poppins-MediumItalic.ttf
+        # - asset: assets/fonts/Poppins-MediumItalic.ttf
         - asset: assets/fonts/Poppins-Regular.ttf
         - asset: assets/fonts/Poppins-SemiBold.ttf
-        - asset: assets/fonts/Poppins-SemiBoldItalic.ttf
+        # - asset: assets/fonts/Poppins-SemiBoldItalic.ttf
         - asset: assets/fonts/Poppins-Thin.ttf
-        - asset: assets/fonts/Poppins-ThinItalic.ttf
+        # - asset: assets/fonts/Poppins-ThinItalic.ttf

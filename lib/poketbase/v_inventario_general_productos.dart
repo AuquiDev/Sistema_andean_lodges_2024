@@ -13,7 +13,8 @@ class ViewInventarioGeneralProductos {
   
     final pb =  PocketBase('https://planet-broken.pockethost.io');
 
-    final records = await pb.collection('v_inventario_general_producto').getFullList();
+    final records = await pb.collection(
+      'v_inventario_general_producto').getFullList();
     // print('DATA GENERAL=> : $records');
     return records;
   }

@@ -14,6 +14,7 @@ import 'package:ausangate_op/provider/provider_t_ubicacion_almacen.dart';
 import 'package:ausangate_op/utils/custom_colores.dart';
 import 'package:ausangate_op/utils/formatear_numero.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:ausangate_op/utils/custom_text.dart';
@@ -22,19 +23,12 @@ import 'package:ausangate_op/utils/format_fecha.dart';
 
 class MovimientosPageSalida extends StatelessWidget {
   const MovimientosPageSalida(
-      {super.key,
-      required this.showAppBar,
-      required ScrollController scrollController})
-      : _scrollController = scrollController;
-  final ScrollController _scrollController;
-  final bool showAppBar;
+      {super.key,});
 
   @override
   Widget build(BuildContext context) {
     final listaSalidas = Provider.of<TSalidasAppProvider>(context).listSalidas;
     return MovimientosPageData(
-        showAppBar: showAppBar,
-        scrollController: _scrollController,
         listaSalidas: listaSalidas);
   }
 }
@@ -42,12 +36,7 @@ class MovimientosPageSalida extends StatelessWidget {
 class MovimientosPageData extends StatefulWidget {
   const MovimientosPageData(
       {super.key,
-      required this.showAppBar,
-      required ScrollController scrollController,
-      required this.listaSalidas})
-      : _scrollController = scrollController;
-  final ScrollController _scrollController;
-  final bool showAppBar;
+      required this.listaSalidas});
   final List<TSalidasAppModel> listaSalidas;
 
   @override
@@ -55,6 +44,24 @@ class MovimientosPageData extends StatefulWidget {
 }
 
 class _MovimientosPageDataState extends State<MovimientosPageData> {
+  final ScrollController _scrollController = ScrollController();
+  bool showAppBar = true;
+  
+  void _onScroll() {
+    //devulve el valor del scrollDirection.
+    setState(() {
+      if (_scrollController.position.userScrollDirection ==
+          ScrollDirection.forward) {
+        //Scroll Abajo
+        showAppBar = true;
+      } else if (_scrollController.position.userScrollDirection ==
+          ScrollDirection.reverse) {
+        //Scroll Arriba
+        showAppBar = false;
+      }
+    });
+  }
+  
   //FILTRAR UBICACION logica del Buscador en botones
   late List<TSalidasAppModel> filterTidEmpleado;
 
@@ -84,12 +91,15 @@ class _MovimientosPageDataState extends State<MovimientosPageData> {
     _searchTextEditingController = TextEditingController();
     filterTProductos = filterTidEmpleado;
     super.initState();
+     _scrollController.addListener(_onScroll);
   }
 
   @override
   void dispose() {
     _searchTextEditingController.dispose();
     super.dispose();
+    _scrollController.removeListener(_onScroll);
+    _scrollController.dispose();
   }
 
   //TEXTO nombre de ubicacion segun el boton se asigna el valor al titulo de ubicacion
@@ -109,7 +119,7 @@ class _MovimientosPageDataState extends State<MovimientosPageData> {
           FocusScope.of(context).unfocus();
         },
         child: Scaffold(
-            appBar: widget.showAppBar
+            appBar: showAppBar
                 ? AppBar(
                    leading: const Icon(Icons.circle, color: Colors.transparent,),
                   leadingWidth: 0,
@@ -256,7 +266,7 @@ class _MovimientosPageDataState extends State<MovimientosPageData> {
                   ],
                 ),
                 ListMovimientosAPP(
-                    scrollController: widget._scrollController,
+                    scrollController: _scrollController,
                     listaTproductos: filterTProductos),
               ],
             )),

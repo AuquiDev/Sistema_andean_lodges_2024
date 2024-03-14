@@ -14,7 +14,7 @@ class TProductosAppModel {
     String idCategoria;
     String idUbicacion;
     String idProveedor;
-    String? imagen;
+   List<String>? imagen;
     String nombreProducto;
     String marcaProducto;
     String unidMedida;
@@ -62,7 +62,8 @@ class TProductosAppModel {
         idCategoria: json["id_categoria"],
         idUbicacion: json["id_ubicacion"],
         idProveedor: json["id_proveedor"],
-        imagen: json["imagen"],
+        // imagen: json["imagen"],
+        imagen: List<String>.from(json["imagen"] ?? []), // manejo de nulos
         nombreProducto: json["nombre_producto"],
         marcaProducto: json["marca_producto"],
         unidMedida: json["unid_medida"],

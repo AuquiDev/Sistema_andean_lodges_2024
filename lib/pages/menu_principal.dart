@@ -2,6 +2,7 @@ import 'package:ausangate_op/initalpage.dart';
 import 'package:ausangate_op/login_page.dart';
 import 'package:ausangate_op/provider/current_page.dart';
 import 'package:ausangate_op/provider/provider_datacahe.dart';
+import 'package:ausangate_op/provider/provider_t_productoapp.dart';
 import 'package:ausangate_op/routes_pages/routes_pages.dart';
 import 'package:ausangate_op/utils/shared_global.dart';
 import 'package:ausangate_op/utils/text_custom.dart';
@@ -17,19 +18,21 @@ class MenuPrincipal extends StatelessWidget {
   Widget build(BuildContext context) {
     final currentImage = Provider.of<UsuarioProvider>(context).usuarioEncontrado;
     return Drawer(
-        child: Column(
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        ImageLoginUser(
-                  user: currentImage,
-                  size: 150,
-                ),
-        const ButtonInicio(),
-        const Expanded(child: ListaOpcionesphone()),
-
-        const CloseSesion()
-      ],
-    ));
+        child: SafeArea(
+          child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+          ImageLoginUser(
+                    user: currentImage,
+                    size: 150,
+                  ),
+          const ButtonInicio(),
+          const Expanded(child: ListaOpcionesphone()),
+          
+          const CloseSesion()
+                ],
+              ),
+        ));
   }
 }
 
@@ -51,7 +54,6 @@ class ButtonInicio extends StatelessWidget {
       onTap: () {
         final layoutmodel = Provider.of<LayoutModel>(context, listen: false);
         layoutmodel.currentPage = const ModuleRoute();
-        layoutmodel.currentImage = 'images/logo.png';
       },
     );
   }
@@ -65,6 +67,7 @@ class ListaOpcionesphone extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final dataProvider = Provider.of<TProductosAppProvider>(context);
     return ListView.separated(
         itemCount: routes.length,
         separatorBuilder: (context, index) => const Divider(height: 0,thickness: 0,),
@@ -79,10 +82,16 @@ class ListaOpcionesphone extends StatelessWidget {
               fontWeight: FontWeight.w500, fontSize: 12,
             ),
             onTap: () {
-              final layoutmodel =
-                  Provider.of<LayoutModel>(context, listen: false);
+               dataProvider.asignarStockDesdeVistas();
+               final screensize = MediaQuery.of(context).size;
+            if (screensize.width > 900) {
+               final layoutmodel = Provider.of<LayoutModel>(context, listen: false);
               layoutmodel.currentPage = listaRoutes.path;
-            
+            } else {
+              final layoutmodel = Provider.of<LayoutModel>(context, listen: false);
+              layoutmodel.currentPage = listaRoutes.path;
+              Navigator.pop(context);
+            }
               // Navigator.push(context,
               //     MaterialPageRoute(builder: ((context) => listaRoutes.path)));
             },
@@ -104,6 +113,7 @@ class CloseSesion extends StatelessWidget {
        surfaceTintColor: Colors.white,
       elevation: 10,
       child: ListTile(
+         visualDensity: VisualDensity.compact,
         onTap: () async {
           SharedPrefencesGlobal sharedPrefs = SharedPrefencesGlobal();
           // Luego, llama al método setLoggedIn en esa instancia
@@ -111,13 +121,18 @@ class CloseSesion extends StatelessWidget {
           await SharedPrefencesGlobal().deleteImage();
           await SharedPrefencesGlobal().deleteNombre();
         },
-        leading:   ImageLoginUser(
+        title: Row(
+          children: [
+             ImageLoginUser(
                   user: currentImage,
                   size: 30,
                 ),
-        title: const H2Text(
-          text: 'Cerrar Sesión',
-          fontSize: 11,
+              const SizedBox(width: 10,),
+            const H2Text(
+              text: 'Cerrar Sesión',
+              fontSize: 11,
+            ),
+          ],
         ),
         trailing: const Icon(Icons.logout,color: Colors.red,),
       ),

@@ -2,25 +2,30 @@
 import 'package:ausangate_op/provider/current_page.dart';
 import 'package:ausangate_op/provider/provider_datacahe.dart';
 import 'package:ausangate_op/provider/provider_empleados.rol_sueldo.dart';
+import 'package:ausangate_op/provider/provider_t_asistencia.dart';
 import 'package:ausangate_op/provider/provider_t_categoria_almacen.dart';
 import 'package:ausangate_op/provider/provider_t_det.itinerario.dart';
 import 'package:ausangate_op/provider/provider_t_det.restricciones.dart';
 import 'package:ausangate_op/provider/provider_t_det.tipo_gasto.dart';
 import 'package:ausangate_op/provider/provider_t_detalle_trabajo.dart';
 import 'package:ausangate_op/provider/provider_t_detcand_paxguia.dart';
-import 'package:ausangate_op/provider/provider_t_empelado.dart';
 import 'package:ausangate_op/pages/splash_screen.dart';
+import 'package:ausangate_op/provider/provider_t_empleado.dart';
 import 'package:ausangate_op/provider/provider_t_entradas.dart';
 import 'package:ausangate_op/provider/provider_t_productoapp.dart';
 import 'package:ausangate_op/provider/provider_t_proveedorapp.dart';
+import 'package:ausangate_op/provider/provider_t_report_pasajero.dart';
+import 'package:ausangate_op/provider/provider_t_reporte_incidencias.dart';
 import 'package:ausangate_op/provider/provider_t_salidas.dart';
 import 'package:ausangate_op/provider/provider_t_ubicacion_almacen.dart';
 import 'package:ausangate_op/provider/provider_v_gatos_grupo_salidas.dart';
 import 'package:ausangate_op/provider/provider_v_historial_salidas_productos.dart';
 import 'package:ausangate_op/provider/provider_v_inventario_general_productos.dart';
+import 'package:ausangate_op/prueba_files/provider_prueba_files.dart';
 import 'package:ausangate_op/utils/shared_global.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+
 
 
 void main() async {
@@ -80,6 +85,14 @@ class AppState extends StatelessWidget {
         ChangeNotifierProvider(create: (context)=> TTipoGastoProvider(), lazy: false,),
         // TABLA RESTRICCIONES GRUPO  DE TRABAJO
         ChangeNotifierProvider(create: (context)=> TRestriccionesProvider(), lazy: false,),
+          // TABLA ASISTENCIA
+        ChangeNotifierProvider(create: (context)=> TAsistenciaProvider(), lazy: false,),
+         //TABLA reporte PAX 
+        ChangeNotifierProvider(create: (context)=>TReportPasajeroProvider(), lazy: false,),
+         //REPORTE INCIDENCIAS 
+        ChangeNotifierProvider(create: (context)=>TReporteIncidenciasProvider(), lazy: false,),
+        //PRUEBA FILES 
+        ChangeNotifierProvider(create: (context)=>TPruebaFileProvider(), lazy: false,),
         
       ],
       child: const MyApp(),

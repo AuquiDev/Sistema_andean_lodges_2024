@@ -4,6 +4,7 @@ import 'package:ausangate_op/pages2/gastos_page_details.dart';
 import 'package:ausangate_op/utils/custom_colores.dart';
 import 'package:ausangate_op/utils/formatear_numero.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:provider/provider.dart';
 import 'package:ausangate_op/models/model_v_gastos_grupo_salidas.dart';
 import 'package:ausangate_op/provider/provider_v_gatos_grupo_salidas.dart';
@@ -12,12 +13,8 @@ import 'package:ausangate_op/utils/format_fecha.dart';
 
 class GastosGruposPage extends StatelessWidget {
   const GastosGruposPage(
-      {super.key,
-      required ScrollController scrollController,
-      required this.showAppBar})
-      : _scrollController = scrollController;
-  final ScrollController _scrollController;
-  final bool showAppBar;
+      {super.key,});
+
 
   @override
   Widget build(BuildContext context) {
@@ -27,8 +24,6 @@ class GastosGruposPage extends StatelessWidget {
       ..sort((a, b) => a.fechaFin.compareTo(b.fechaFin));
 
     return GastosGruposPageSf(
-      scrollController: _scrollController,
-      showAppBar: showAppBar,
       listaGatos: listaGatos,
     );
   }
@@ -37,12 +32,7 @@ class GastosGruposPage extends StatelessWidget {
 class GastosGruposPageSf extends StatefulWidget {
   const GastosGruposPageSf(
       {super.key,
-      required ScrollController scrollController,
-      required this.showAppBar,
-      required this.listaGatos})
-      : _scrollController = scrollController;
-  final ScrollController _scrollController;
-  final bool showAppBar;
+      required this.listaGatos});
   final List<ViewGastosGrupoSalidasModel> listaGatos;
 
   @override
@@ -50,6 +40,27 @@ class GastosGruposPageSf extends StatefulWidget {
 }
 
 class _GastosGruposPageSfState extends State<GastosGruposPageSf> {
+   final ScrollController _scrollController = ScrollController();
+  bool showAppBar = true;
+
+   
+
+  void _onScroll() {
+    //devulve el valor del scrollDirection.
+    setState(() {
+      if (_scrollController.position.userScrollDirection ==
+          ScrollDirection.forward) {
+        //Scroll Abajo
+        showAppBar = true;
+      } else if (_scrollController.position.userScrollDirection ==
+          ScrollDirection.reverse) {
+        //Scroll Arriba
+        showAppBar = false;
+      }
+    });
+  }
+
+  //GASTOS POR GRUP O
   bool isVisibleSerch = true;
   bool isClear = false;
 
@@ -71,19 +82,24 @@ class _GastosGruposPageSfState extends State<GastosGruposPageSf> {
     _searchControllerGastos = TextEditingController();
     filterListGastosSalidas = widget.listaGatos;
     super.initState();
+     _scrollController.addListener(_onScroll);
+
   }
 
   @override
   void dispose() {
     _searchControllerGastos.dispose();
     super.dispose();
+
+        _scrollController.removeListener(_onScroll);
+    _scrollController.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return Expanded(
         child: Scaffold(
-            appBar: widget.showAppBar
+            appBar: showAppBar
                 ? AppBar(
                     leading: const Icon(
                       Icons.circle,
@@ -153,12 +169,12 @@ class _GastosGruposPageSfState extends State<GastosGruposPageSf> {
                   ),
                 ),
                 //GRUPOS EN RUTA
-                widget.showAppBar
+                showAppBar
                     ? AlertaGruposGastos(widget: widget)
                     : _notaAlertas(),
                 GastosGrupoLista(
                     filterListGastosSalidas: filterListGastosSalidas,
-                    widget: widget)
+                    showAppBar: showAppBar, scrollController: _scrollController,)
               ],
             )));
   }
@@ -292,11 +308,16 @@ class GastosGrupoLista extends StatelessWidget {
   const GastosGrupoLista({
     super.key,
     required this.filterListGastosSalidas,
-    required this.widget,
-  });
+    // required this.widget,
+     required this.showAppBar,
+      required ScrollController scrollController
+  }) : _scrollController = scrollController;
+  final ScrollController _scrollController;
+  final bool showAppBar;
 
   final List<ViewGastosGrupoSalidasModel> filterListGastosSalidas;
-  final GastosGruposPageSf widget;
+  // final GastosGruposPageSf widget;
+
 
   @override
   Widget build(BuildContext context) {
@@ -318,7 +339,7 @@ class GastosGrupoLista extends StatelessWidget {
       child: OrientationBuilder(
           builder: (BuildContext context, Orientation orientation) {
         return ListView.builder(
-          controller: widget._scrollController,
+          controller: _scrollController,
           itemCount: sortedKey.length, //fechaFilter.length,
           itemBuilder: (context, index) {
             // final fechaKey =

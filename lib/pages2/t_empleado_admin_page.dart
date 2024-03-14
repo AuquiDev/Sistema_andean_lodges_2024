@@ -10,17 +10,12 @@ import 'package:ausangate_op/utils/custom_text.dart';
 import 'package:ausangate_op/utils/routes_page_admin.dart';
 import 'package:ausangate_op/utils/shared_global.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+import 'package:flutter/rendering.dart';
 import 'package:provider/provider.dart';
 
 class AdministracionPage extends StatefulWidget {
   const AdministracionPage(
-      {super.key,
-      required this.showAppBar,
-      required ScrollController scrollController})
-      : _scrollController = scrollController;
-  final ScrollController _scrollController;
-  final bool showAppBar;
+      {super.key,});
 
   @override
   State<AdministracionPage> createState() => _AdministracionPageState();
@@ -28,27 +23,34 @@ class AdministracionPage extends StatefulWidget {
 
 class _AdministracionPageState extends State<AdministracionPage> {
  
+   final ScrollController _scrollController = ScrollController();
+  bool showAppBar = true;
+  
+  void _onScroll() {
+    //devulve el valor del scrollDirection.
+    setState(() {
+      if (_scrollController.position.userScrollDirection ==
+          ScrollDirection.forward) {
+        //Scroll Abajo
+        showAppBar = true;
+      } else if (_scrollController.position.userScrollDirection ==
+          ScrollDirection.reverse) {
+        //Scroll Arriba
+        showAppBar = false;
+      }
+    });
+  }
 
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-
-    // Bloquear la rotación de la pantalla
-    SystemChrome.setPreferredOrientations([
-      DeviceOrientation.portraitUp, // Solo retrato
-    ]);
+ @override
+  void initState() {
+    _scrollController.addListener(_onScroll);
+    super.initState();
   }
 
   @override
   void dispose() {
-    // Restaurar las preferencias de orientación cuando la página se destruye
-    SystemChrome.setPreferredOrientations([
-      DeviceOrientation.portraitUp,
-      DeviceOrientation.portraitDown,
-      DeviceOrientation.landscapeLeft,
-      DeviceOrientation.landscapeRight,
-    ]);
+    _scrollController.removeListener(_onScroll);
+    _scrollController.dispose();
     super.dispose();
   }
 
@@ -98,7 +100,7 @@ class _AdministracionPageState extends State<AdministracionPage> {
     String tipoCalculoSueldo = obtenerRolesSueldo(user.idRolesSueldoEmpleados)[3];
     return Expanded(
       child: Scaffold(
-        appBar: widget.showAppBar
+        appBar: showAppBar
             ? AppBar(
                leading: const Icon(Icons.circle, color: Colors.transparent,),
                 leadingWidth: 0,
@@ -150,7 +152,7 @@ class _AdministracionPageState extends State<AdministracionPage> {
                     : const SizedBox(),
               )
             : null,
-        body: ContentBodyAdmin(scrollController: widget._scrollController),
+        body: ContentBodyAdmin(scrollController: _scrollController),
         endDrawer: const DrawerAdminApp(),
       ),
     );

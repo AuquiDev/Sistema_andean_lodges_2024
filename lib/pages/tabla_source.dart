@@ -1,61 +1,58 @@
-// ignore_for_file: avoid_print
+// ignore_for_file: avoid_print, unnecessary_null_comparison
 
-import 'package:ausangate_op/models/model_v_inventario_general_producto.dart';
-import 'package:ausangate_op/provider/provider_v_inventario_general_productos.dart';
+import 'package:ausangate_op/models/model_t_productos_app.dart';
+import 'package:ausangate_op/provider/provider_t_productoapp.dart';
 import 'package:ausangate_op/utils/custom_text.dart';
 import 'package:ausangate_op/utils/format_fecha.dart';
+import 'package:ausangate_op/widgets/custom_app_bar_entra_salid.dart';
+import 'package:ausangate_op/widgets/list_image_path_view.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class SourceDatatable extends DataTableSource {
   SourceDatatable(
       {required this.filterListacompra,
-      required this.listaCompraProvider,
       required this.context,
       required this.indexcopy,
-      required this.updateParentState,
-      required this.psetState});
+      });
 
-  final ViewInventarioGeneralProductosProvider listaCompraProvider;
-  final List<ViewInventarioGeneralProductosModel> filterListacompra;
+  final List<TProductosAppModel> filterListacompra;
   final BuildContext context;
   int indexcopy;
-  final VoidCallback? updateParentState;
-  final VoidCallback? psetState;
 
   @override
   DataRow getRow(int index) {
     final e = filterListacompra[index];
-    final int dataIndex = listaCompraProvider.listInventario.indexOf(e);
-
     return DataRow(
       color: MaterialStatePropertyAll(getColorBasedOnStockAndExpiration(e)),
-      selected: convertirADatoBooleano(e.estadoStock),
+      selected: e.estado,
       onSelectChanged: (isSelected) {
-        bool estado = e.stock != 0;
-        convertirADatoBooleano(estado);
-        estado = isSelected!;
 
-        indexcopy = dataIndex;
 
-        updateParentState?.call();
-        updateParentState?.call();
-        print('ID DEL ELEMENTO:  ${e.id}');
+        //SELECTED PRODUCTO SET 
+        final dataprovider =
+        Provider.of<TProductosAppProvider>(context, listen:  false);
+        dataprovider.seleccionarProducto(e);
+
+        showProductDetailsDialog(e);
       },
       cells: <DataCell>[
         // IMAGE
         DataCell(
-          IconButton(onPressed: () {
-
-          }, icon: const Icon(Icons.image)),
+          ImageView(e: e),
         ),
         //OPRODUCTO
         DataCell(
-          H2Text(
-            text: e.producto,
-            textAlign: TextAlign.center,
-            fontSize: 11.0,
-            fontWeight: FontWeight.w400,
-            maxLines: 5,
+          Container(
+            constraints: const BoxConstraints(maxWidth: 250),
+            child: H2Text(
+              text:
+                  '${e.nombreProducto} - ${e.marcaProducto} - ${e.unidMedida}',
+              textAlign: TextAlign.start,
+              fontSize: 11.0,
+              fontWeight: FontWeight.w400,
+              // maxLines: 5,
+            ),
           ),
         ),
         //STOCK
@@ -63,7 +60,7 @@ class SourceDatatable extends DataTableSource {
           H1Text(
             text: e.stock.toString(),
             textAlign: TextAlign.center,
-            fontSize: 12.0,
+            fontSize: 11.0,
             fontWeight: FontWeight.w400,
             maxLines: 5,
             color: getColorStock(e),
@@ -72,59 +69,29 @@ class SourceDatatable extends DataTableSource {
         //FECHA VENCIMIENTO
         DataCell(
           H2Text(
-            text: formatFecha(e.fechaVencimiento!),
+            text: formatFecha(e.fechaVencimiento),
             textAlign: TextAlign.center,
-            fontSize: 12.0,
-            fontWeight: FontWeight.w400,
+            fontSize: 11,
             maxLines: 5,
             color: getColorfechav(e),
           ),
         ),
-
-        //UBICACION
-        DataCell(H2Text(
-          text: e.nombreUbicacion,
-          textAlign: TextAlign.center,
-          fontSize: 12.0,
-          fontWeight: FontWeight.w400,
-          maxLines: 5,
-        )),
-
-        //CATEGORY
-        DataCell(H2Text(
-          text: e.categoria,
-          textAlign: TextAlign.center,
-          fontSize: 12.0,
-          fontWeight: FontWeight.w400,
-          maxLines: 5,
-        )),
-
-        //IMAGEN
-        DataCell(H2Text(
-          text: e.nombreEmpresaProveedor,
-          textAlign: TextAlign.center,
-          fontSize: 12.0,
-          fontWeight: FontWeight.w400,
-          maxLines: 5,
-        )),
-
-        DataCell(
-          H2Text(
-            text: e.tipoProducto,
-            textAlign: TextAlign.center,
-            fontSize: 12.0,
-            fontWeight: FontWeight.w400,
-            maxLines: 5,
-          ),
-        ),
-
-        DataCell(
-          H2Text(
-            text: '${e.estadoFecha}\n${e.estadoStock}',
-            // textAlign: TextAlign.center,
-            fontSize: 12.0,
-            fontWeight: FontWeight.w400,
-            maxLines: 5,
+        const DataCell(
+          Row(
+            children: [
+              IconButton.outlined(
+                  onPressed: null,
+                  icon: Icon(
+                    Icons.edit,
+                    color: Colors.green,
+                  )),
+              IconButton.outlined(
+                  onPressed: null,
+                  icon: Icon(
+                    Icons.delete,
+                    color: Colors.red,
+                  )),
+            ],
           ),
         ),
       ],
@@ -140,43 +107,44 @@ class SourceDatatable extends DataTableSource {
   @override
   int get selectedRowCount => 0;
 
-  bool convertirADatoBooleano(dynamic valor) {
-    if (valor is bool) {
-      return valor;
-    } else if (valor is String) {
-      if (valor.toLowerCase() == 'true') {
-        return true;
-      } else if (valor.toLowerCase() == 'false') {
-        return false;
-      }
-    }
-    return false;
-  }
+
+  void showProductDetailsDialog(TProductosAppModel selectedProduct) {
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        content: CustomAppBarPRoductos(
+          e: selectedProduct,
+        ),
+      );
+    },
+  );
+}
 }
 
-Color getColorBasedOnStockAndExpiration(ViewInventarioGeneralProductosModel e) {
+Color getColorBasedOnStockAndExpiration(TProductosAppModel e) {
   // Si el stock está agotado o la fecha de vencimiento ha pasado
   if (e.stock == 0 ||
       (e.fechaVencimiento != null &&
-          e.fechaVencimiento!.isBefore(DateTime.now()))) {
+          e.fechaVencimiento.isBefore(DateTime.now()))) {
     return Colors.red.withOpacity(
-        0.3); // Color más pronunciado para stock agotado o producto vencido
+        0.05); // Color más pronunciado para stock agotado o producto vencido
   }
 
   // Si el stock es menor a 10 o la fecha de vencimiento está próxima
-  else if (e.stock < 10 ||
+  else if (e.stock! < 10 ||
       (e.fechaVencimiento != null &&
-          e.fechaVencimiento!.difference(DateTime.now()).inDays <= 7)) {
-    return Colors.orange.withOpacity(
-        0.2); // Color más pronunciado para stock bajo o producto próximo a vencer/agotar
+          e.fechaVencimiento.difference(DateTime.now()).inDays <= 7)) {
+    return Colors.blue.withOpacity(
+        0.1); // Color más pronunciado para stock bajo o producto próximo a vencer/agotar
   }
 
   // En cualquier otro caso
   return Colors.white; // Color predeterminado
 }
 
-Color getColorStock(ViewInventarioGeneralProductosModel e) {
-  double stockTotal = e.stock;
+Color getColorStock(TProductosAppModel e) {
+  double stockTotal = e.stock!;
 
   if (stockTotal <= 0) {
     return Colors.red.withOpacity(0.9); // Agotado
@@ -189,18 +157,18 @@ Color getColorStock(ViewInventarioGeneralProductosModel e) {
   }
 }
 
-Color getColorfechav(ViewInventarioGeneralProductosModel e) {
- if (e.fechaVencimiento != null) {
+Color getColorfechav(TProductosAppModel e) {
+  if (e.fechaVencimiento != null) {
     DateTime now = DateTime.now();
     DateTime startOfMonthNextMonth = DateTime(now.year, now.month + 2, 1);
     DateTime startOfMonthThisMonth = DateTime(now.year, now.month, 1);
 
-    if (e.fechaVencimiento!.isBefore(now)) {
+    if (e.fechaVencimiento.isBefore(now)) {
       return Colors.red.withOpacity(0.9); // Vencido
-    } else if (e.fechaVencimiento!.isAtSameMomentAs(startOfMonthThisMonth)) {
+    } else if (e.fechaVencimiento.isAtSameMomentAs(startOfMonthThisMonth)) {
       return Colors.blue; // Por vencer este mes
-    } else if (e.fechaVencimiento!.isAtSameMomentAs(startOfMonthNextMonth)) {
-      return const Color.fromARGB(255, 9, 66, 112); // Por vencer el próximo mes
+    } else if (e.fechaVencimiento.isAtSameMomentAs(startOfMonthNextMonth)) {
+      return const Color.fromARGB(255, 14, 138, 5); // Por vencer el próximo mes
     }
   }
 

@@ -2,12 +2,13 @@
 
 import 'package:ausangate_op/models/model_t_ubicacion_almacen.dart';
 import 'package:ausangate_op/models/model_v_inventario_general_producto.dart';
-import 'package:ausangate_op/pages/pdf_export_catalogo.producto.dart';
 import 'package:ausangate_op/provider/provider_t_ubicacion_almacen.dart';
 import 'package:ausangate_op/provider/provider_v_inventario_general_productos.dart';
+import 'package:ausangate_op/utils/buton_style.dart';
 import 'package:ausangate_op/utils/scroll_web.dart';
 import 'package:ausangate_op/utils/text_custom.dart';
 import 'package:ausangate_op/widgets/custom_card_productos.dart';
+import 'package:ausangate_op/widgets/responsive_title_appbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:provider/provider.dart';
@@ -17,32 +18,22 @@ class CatalogoProductos extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final listUbicacion = Provider.of<TUbicacionAlmacenProvider>(context)
-        .listUbicacion
-      ..sort((a, b) => a.nombreUbicacion.compareTo(b.nombreUbicacion));
+    final listUbicacion = Provider.of<TUbicacionAlmacenProvider>(context).listUbicacion..sort((a, b) => a.nombreUbicacion.compareTo(b.nombreUbicacion));
 
     //INVENTARIO General
-    final productoslist =
-        Provider.of<ViewInventarioGeneralProductosProvider>(context)
-            .listInventario;
-    final listAlertExist =
-        Provider.of<ViewInventarioALERTAEXISTENCIASproductosProvider>(context)
-            .listAlertaExistencias;
-    final listOrdenCompra =
-        Provider.of<ViewInventarioORDENCOMPRAFVSTOCKproductosProvider>(context)
-            .listOrdenCompra;
+    final productoslist =Provider.of<ViewInventarioGeneralProductosProvider>(context).listInventario;
+    final listAlertExist = Provider.of<ViewInventarioALERTAEXISTENCIASproductosProvider>(context).listAlertaExistencias;
+    final listOrdenCompra = Provider.of<ViewInventarioORDENCOMPRAFVSTOCKproductosProvider>(context).listOrdenCompra;
 
     return InventarioProductosView(
       listUbicacion: listUbicacion,
       productoslist: productoslist,
       listAlertExist: listAlertExist,
       listOrdenCompra: listOrdenCompra,
-      //
-    );
+      );
   }
 }
 
-// ignore: must_be_immutable
 class InventarioProductosView extends StatefulWidget {
   const InventarioProductosView({
     super.key,
@@ -80,13 +71,10 @@ class _InventarioProductosViewState extends State<InventarioProductosView> {
   }
 
   List<ViewInventarioGeneralProductosModel> _selectedList = [];
-  //LISTAUBICACION
+  //FILTER UBICACION 
   List<ViewInventarioGeneralProductosModel> obtenerLisUbicacion(
       String idUbicacion) {
-    _selectedList =
-        widget.productoslist.where((e) => e.idUbicaion == idUbicacion).toList();
-    // print('Filtrado ${ubicacionFiltrada.length}');
-    print('Selected List ${_selectedList.length}');
+    _selectedList = widget.productoslist.where((e) => e.idUbicaion == idUbicacion).toList();
     return _selectedList;
   }
 
@@ -136,7 +124,7 @@ class _InventarioProductosViewState extends State<InventarioProductosView> {
   }
 
   //TITLE SELECT UBICACION
-  String title = 'Lista General';
+  String title = 'General';
 
   @override
   Widget build(BuildContext context) {
@@ -150,62 +138,61 @@ class _InventarioProductosViewState extends State<InventarioProductosView> {
                 elevation: 0,
                 surfaceTintColor: Colors.white,
                 toolbarHeight: 80,
-                title: FittedBox(
-                  child: H2Text(
-                    text:
-                        'Catálogo de Almacén : $title', //Movimientos de Inventario
-                    fontWeight: FontWeight.bold,
-                    fontSize: 18,
-                  ),
-                ),
+                title: ResponsiveTitleAppBar(title: 'Catálogo de Almacén:', subtitle: title,),
                 centerTitle: false,
                 actions: [
                   Container(
                     margin: const EdgeInsets.only(right: 4),
                     child: Row(
                       children: [
-                        ElevatedButton.icon(
-                          style: _buttonStyle(),
+                        OutlinedButton.icon(
+                          style: buttonStyle(),
                           onPressed: () {
                             _selectedList = widget.listAlertExist;
                             title =
-                                '${'Alerta ¡Próximos Vencimientos!'.toUpperCase()}:\nProductos a vencer en los próximos 2 meses.';
+                                'Productos a vencer en los próximos 2 meses.';
                             //Ponemos por un bug, se actulzia al seleccionar Ubicacion, alert, compra
                             _filterProductos(_searchTextEditingController.text);
                           },
                           label: const H2Text(
                             text: ' Alertas ',
                             fontSize: 12,
-                            color: Colors.greenAccent,
+                            color: Colors.black,
                           ),
                           icon: const Icon(
                             Icons.add_alert_rounded,
                             size: 20,
-                            color: Colors.greenAccent,
+                            color: Colors.black,
                           ),
                         ),
                         const SizedBox(
                           width: 5,
                         ),
-                        ElevatedButton.icon(
-                          style: _buttonStyle(),
+                        OutlinedButton.icon(
+                          style: buttonStyle(),
                           onPressed: () {
                             _selectedList = widget.listOrdenCompra;
                             title =
-                                '${'Alerta de Compras'.toUpperCase()}:\nProductos Vencidos o Agotados.';
+                                'Productos Vencidos o Agotados.';
                             _filterProductos(_searchTextEditingController.text);
                           },
                           label: const H2Text(
                             text: 'Compras',
                             fontSize: 12,
-                            color: Colors.greenAccent,
+                            color: Colors.black,
                           ),
                           icon: const Icon(
                             Icons.playlist_add_check_circle_sharp,
                             size: 20,
-                            color: Colors.greenAccent,
+                            color: Colors.black,
                           ),
                         ),
+                         IconButton(onPressed: () async{
+                        final dataProvider = Provider.of<ViewInventarioGeneralProductosProvider>(context, listen: false);
+                        await  dataProvider.actualizarDatosDesdeServidor();
+                          _filterProductos(_searchTextEditingController.text);
+                     
+                      }, icon: const Icon(Icons.refresh))
                       ],
                     ),
                   )
@@ -219,13 +206,12 @@ class _InventarioProductosViewState extends State<InventarioProductosView> {
                           child: SingleChildScrollView(
                             scrollDirection: Axis.horizontal,
                             child: Row(
-                              // mainAxisAlignment: MainAxisAlignment.start,
                               children: [
-                                ElevatedButton.icon(
-                                  style: _buttonStyle2(),
+                                OutlinedButton.icon(
+                                  style: buttonStyle2(),
                                   onPressed: () {
                                     _selectedList = widget.productoslist;
-                                    title = 'Lista General';
+                                    title = 'General';
                                     //Ponemos por un bug, se actulzia al seleccionar Ubicacion, alert, compra
                                     _filterProductos(
                                         _searchTextEditingController.text);
@@ -236,9 +222,9 @@ class _InventarioProductosViewState extends State<InventarioProductosView> {
                                     color: Colors.red,
                                   ),
                                   label: const H2Text(
-                                    text: 'Lista General',
+                                    text: 'General',
                                     fontSize: 12,
-                                    color: Colors.white,
+                                    color: Colors.black87,
                                     maxLines: 2,
                                   ),
                                 ),
@@ -248,15 +234,14 @@ class _InventarioProductosViewState extends State<InventarioProductosView> {
                                   final e = widget.listUbicacion[index];
                                   return Container(
                                     margin: const EdgeInsets.only(left: 5),
-                                    child: ElevatedButton.icon(
-                                      style: _buttonStyle2(),
+                                    child: OutlinedButton.icon(
+                                      style: buttonStyle2(),
                                       onPressed: () {
                                         // _selectedList = widget.productoslist;
                                         obtenerLisUbicacion(e.id!);
                                         title = e.nombreUbicacion;
                                         //Ponemos por un bug, se actulzia al seleccionar Ubicacion, alert, compra
-                                        _filterProductos(
-                                            _searchTextEditingController.text);
+                                        _filterProductos( _searchTextEditingController.text);
                                       },
                                       icon: const Icon(
                                         Icons.location_on,
@@ -266,8 +251,7 @@ class _InventarioProductosViewState extends State<InventarioProductosView> {
                                       label: H2Text(
                                         text: e.nombreUbicacion,
                                         fontSize: 12,
-                                        color: Colors.white,
-                                        maxLines: 2,
+                                        color: Colors.black87,
                                       ),
                                     ),
                                   );
@@ -364,28 +348,7 @@ class _InventarioProductosViewState extends State<InventarioProductosView> {
     );
   }
 
-  ButtonStyle _buttonStyle() {
-    return const ButtonStyle(
-      maximumSize: MaterialStatePropertyAll(Size(150, 80)),
-      padding: MaterialStatePropertyAll(EdgeInsets.only(left: 10, right: 10)),
-      elevation: MaterialStatePropertyAll(10),
-      visualDensity: VisualDensity.compact,
-      backgroundColor: MaterialStatePropertyAll(Colors.red),
-      overlayColor: MaterialStatePropertyAll(Colors.white),
-    );
-  }
 
-  ButtonStyle _buttonStyle2() {
-    return const ButtonStyle(
-      maximumSize: MaterialStatePropertyAll(Size(150, 80)),
-      // minimumSize: MaterialStatePropertyAll(Size(80, 40)),
-      padding: MaterialStatePropertyAll(EdgeInsets.only(left: 10, right: 10)),
-      elevation: MaterialStatePropertyAll(10),
-      visualDensity: VisualDensity.compact,
-      backgroundColor: MaterialStatePropertyAll(Colors.black26),
-      overlayColor: MaterialStatePropertyAll(Colors.white),
-    );
-  }
 
   OutlineInputBorder _outlineButton() {
     return OutlineInputBorder(
@@ -394,6 +357,7 @@ class _InventarioProductosViewState extends State<InventarioProductosView> {
     );
   }
 }
+
 
 //FILTRAR CATEGORIA
 class Inventario extends StatelessWidget {
@@ -428,9 +392,9 @@ class Inventario extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        PdfExportCatalogoProductos(
-          sortedKey: sortedKey, categoriasFilter: categoriasFilter,title: title,
-        ),
+        // PdfExportCatalogoProductos(
+        //   sortedKey: sortedKey, categoriasFilter: categoriasFilter,title: title,
+        // ),
         Expanded(
           child: ScrollWeb(
             child: ListView.builder(
@@ -447,43 +411,37 @@ class Inventario extends StatelessWidget {
 
                   return Column(
                     children: [
+                      const Divider(),
                       Padding(
                         padding: const EdgeInsets.symmetric(
                             vertical: 8.0, horizontal: 5),
                         child: Row(
-                          mainAxisAlignment: MainAxisAlignment.end,
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             H2Text(
                                 text: category,
                                 fontWeight: FontWeight.w700,
-                                fontSize: 15,
-                                color: Colors.red),
-                            const SizedBox(
-                              width: 30,
-                            ),
+                                fontSize: 15,),
                             H2Text(
                                 text: '${productosPorCategoria.length} regs.',
                                 fontSize: 13,
-                                color: Colors.red)
+                                color: Colors.blue)
                           ],
                         ),
                       ),
-                      const Divider(),
+                      
                       // ignore: unnecessary_null_comparison
-                      if (productosPorCategoria !=
-                          null) // Verificamos si esa ctegoria es nula y si no es la generamos.
-                        LayoutBuilder(builder:
-                            (BuildContext context, BoxConstraints constraints) {
+                      if (productosPorCategoria !=  null) // Verificamos si esa ctegoria es nula y si no es la generamos.
+                        LayoutBuilder(
+                          builder: (BuildContext context, BoxConstraints constraints) {
                           // Calcular el número de columnas en función del ancho disponible
-                          int crossAxisCount =
-                              (constraints.maxWidth / 200).floor();
+                          int crossAxisCount = (constraints.maxWidth / 200).floor();
                           // Puedes ajustar el valor 100 según tus necesidades
                           return GridView.builder(
                               shrinkWrap: true,
                               physics: const NeverScrollableScrollPhysics(),
                               itemCount: productosPorCategoria.length,
-                              gridDelegate:
-                                  SliverGridDelegateWithFixedCrossAxisCount(
+                              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                                       crossAxisCount: crossAxisCount),
                               itemBuilder: (BuildContext context, int index) {
                                 final e = productosPorCategoria[index];

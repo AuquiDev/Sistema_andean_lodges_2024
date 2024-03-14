@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 InputDecoration decorationTextField(
     {required String hintText,
     required String labelText,
-    required Widget prefixIcon}) {
+     Widget? prefixIcon}) {
   return InputDecoration(
     labelText: labelText,
     prefixIcon: prefixIcon,

@@ -5,7 +5,6 @@ import 'package:ausangate_op/provider/provider_t_productoapp.dart';
 import 'package:ausangate_op/provider/provider_t_ubicacion_almacen.dart';
 import 'package:ausangate_op/utils/custom_text.dart';
 import 'package:flutter/material.dart';
-import 'package:insta_image_viewer/insta_image_viewer.dart';
 import 'package:provider/provider.dart';
 
 class TPageUbicaciones extends StatelessWidget {
@@ -112,8 +111,7 @@ class ImageUbicaiones extends StatelessWidget {
                     width: .5)),
             width: width,
             height: height,
-            child: InstaImageViewer(
-              child: Image.network(
+            child: Image.network(
                 e.imagen != null && e.imagen is String && e.imagen!.isNotEmpty
                     ? 'https://planet-broken.pockethost.io/api/files/${e.collectionId}/${e.id}/${e.imagen}'
                     : 'https://via.placeholder.com/300',
@@ -140,7 +138,6 @@ class ImageUbicaiones extends StatelessWidget {
                   ); // Widget a mostrar si hay un error al cargar la imagen
                 },
                 fit: BoxFit.cover,
-              ),
             ),
           ),
           Positioned(

@@ -1,17 +1,18 @@
 
+// ignore_for_file: avoid_print, unnecessary_null_comparison
+
+import 'dart:async';
 import 'package:ausangate_op/models/model_t_detalle_trabajos.dart';
 import 'package:ausangate_op/poketbase/t_detalle_trabajo.dart';
-import 'package:ausangate_op/utils/path_key_api.dart';
 import 'package:flutter/material.dart';
 import 'package:pocketbase/pocketbase.dart';
-
 class TDetalleTrabajoProvider with ChangeNotifier {
   List<TDetalleTrabajoModel> listaDetallTrabajo = [];
 
   TDetalleTrabajoProvider() {
     print('Tabla Detalle Trabajo inicilizado.');
     getTDetalleTrabajo();
-    realtime();
+    // realtime();
   }
   //SET y GETTER
   List<TDetalleTrabajoModel> get e => listaDetallTrabajo;
@@ -68,6 +69,8 @@ class TDetalleTrabajoProvider with ChangeNotifier {
         costoAsociados: costoAsociados!
         );
     await TDetalleTrabajo.postDetalleTrabajoApp(data);
+    //agregar localmente; 
+    addTdetalleTrabajo(data);
 
     await Future.delayed(const Duration(seconds: 2));
     isSyncing = false;
@@ -80,7 +83,7 @@ class TDetalleTrabajoProvider with ChangeNotifier {
     isSyncing = true;
     notifyListeners();
     TDetalleTrabajoModel data = TDetalleTrabajoModel(
-        id: '',
+        id: id,
         codigoGrupo: codigoGrupo!,
         idRestriccionAlimentos: idRestriccionAlimentos!,
         idCantidadPaxguia: idCantidadPaxguia!,
@@ -91,7 +94,14 @@ class TDetalleTrabajoProvider with ChangeNotifier {
         descripcion: descripcion!,
         costoAsociados: costoAsociados!
         );
+    print('ACTUALZIAR SERVIOR');
     await TDetalleTrabajo.putDetalleTrabajoApp(id: id, data: data);
+
+    // Actualizar localmente
+   
+    print('ACTUALZIAR LOCALMENTE');
+    updateTdetalleTrabajo(data);
+    print('FIN DE ACTRUALIZACION');
 
     await Future.delayed(const Duration(seconds: 2));
     isSyncing = false;
@@ -100,40 +110,45 @@ class TDetalleTrabajoProvider with ChangeNotifier {
 
   deleteTdetalleTrabajoProvider(String id) async {
     await TDetalleTrabajo.deleteDetalleTrabajoApp(id);
+
+    // Buscar el objeto correspondiente en la lista local y eliminarlo
+     // Eliminar localmente
+    listaDetallTrabajo.removeWhere((detalle) => detalle.id == id);
     notifyListeners();
   }
 
-  Future<void> realtime() async {
-    await pb.collection('detalleTrabajos_empleados').subscribe('*', (e) {
-      print('REALTIME Trabajo ${e.action}');
+  // Future<void> realtime() async {
+    
+  //   await pb.collection('detalleTrabajos_empleados').subscribe('*', (e) {
+  //     print('REALTIME Trabajo ${e.action}');
 
-      switch (e.action) {
-        case 'create':
-          e.record!.data['id'] = e.record!.id;
-          e.record!.data['created'] = DateTime.parse(e.record!.created);
-          e.record!.data['updated'] = DateTime.parse(e.record!.updated);
-          e.record!.data["collectionId"] = e.record!.collectionId;
-          e.record!.data["collectionName"] = e.record!.collectionName;
-          addTdetalleTrabajo(TDetalleTrabajoModel.fromJson(e.record!.data));
-          break;
-        case 'update':
-          e.record!.data['id'] = e.record!.id;
-          e.record!.data['created'] = DateTime.parse(e.record!.created);
-          e.record!.data['updated'] = DateTime.parse(e.record!.updated);
-          e.record!.data["collectionId"] = e.record!.collectionId;
-          e.record!.data["collectionName"] = e.record!.collectionName;
-          updateTdetalleTrabajo(TDetalleTrabajoModel.fromJson(e.record!.data));
-          break;
-        case 'delete':
-          e.record!.data['id'] = e.record!.id;
-          e.record!.data['created'] = DateTime.parse(e.record!.created);
-          e.record!.data['updated'] = DateTime.parse(e.record!.updated);
-          e.record!.data["collectionId"] = e.record!.collectionId;
-          e.record!.data["collectionName"] = e.record!.collectionName;
-          deleteTdetalleTrabajo(TDetalleTrabajoModel.fromJson(e.record!.data));
-          break;
-        default:
-      }
-    });
-  }
+  //     switch (e.action) {
+  //       case 'create':
+  //         e.record!.data['id'] = e.record!.id;
+  //         e.record!.data['created'] = DateTime.parse(e.record!.created);
+  //         e.record!.data['updated'] = DateTime.parse(e.record!.updated);
+  //         e.record!.data["collectionId"] = e.record!.collectionId;
+  //         e.record!.data["collectionName"] = e.record!.collectionName;
+  //         addTdetalleTrabajo(TDetalleTrabajoModel.fromJson(e.record!.data));
+  //         break;
+  //       case 'update':
+  //         e.record!.data['id'] = e.record!.id;
+  //         e.record!.data['created'] = DateTime.parse(e.record!.created);
+  //         e.record!.data['updated'] = DateTime.parse(e.record!.updated);
+  //         e.record!.data["collectionId"] = e.record!.collectionId;
+  //         e.record!.data["collectionName"] = e.record!.collectionName;
+  //         updateTdetalleTrabajo(TDetalleTrabajoModel.fromJson(e.record!.data));
+  //         break;
+  //       case 'delete':
+  //         e.record!.data['id'] = e.record!.id;
+  //         e.record!.data['created'] = DateTime.parse(e.record!.created);
+  //         e.record!.data['updated'] = DateTime.parse(e.record!.updated);
+  //         e.record!.data["collectionId"] = e.record!.collectionId;
+  //         e.record!.data["collectionName"] = e.record!.collectionName;
+  //         deleteTdetalleTrabajo(TDetalleTrabajoModel.fromJson(e.record!.data));
+  //         break;
+  //       default:
+  //     }
+  //   });
+  // }
 }
