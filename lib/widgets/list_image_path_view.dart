@@ -22,7 +22,7 @@ class ImageView extends StatelessWidget {
             context: context,
             builder: (BuildContext context) {
               return AlertDialog(
-                backgroundColor: Colors.black38,
+                backgroundColor: Colors.black26,
                 title:  Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -43,7 +43,7 @@ class ImageView extends StatelessWidget {
                   ],
                 ),
                 content: SizedBox(
-                  width:  MediaQuery.of(context).size.width > 500 ? 500 : double.maxFinite ,
+                  width:  double.maxFinite ,
                   height: MediaQuery.of(context).size.width > 500 ? 500 : 250 , // Altura máxima del ListView
                   child: ScrollWeb(
                     child: ListView(

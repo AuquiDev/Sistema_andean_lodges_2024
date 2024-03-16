@@ -122,12 +122,14 @@ class TProductosAppProvider with ChangeNotifier {
     // RecordModel result = await TProductosApp.postProductosApp(data);
     // print(result.data);
     // addTProductos(TProductosAppModel.fromJson(result.data));
+   
     await Future.delayed(const Duration(seconds: 2));
     isSyncing = false;
     notifyListeners();
     //AGREGAR LISTA TEMPORAL
     addTProductos(data);
     await TProductosApp.postProductosApp(data);
+     await actualizarDatosDesdeServidor();
   }
 
   updateProductosProvider(
@@ -168,17 +170,20 @@ class TProductosAppProvider with ChangeNotifier {
     // RecordModel result = await TProductosApp.postProductosApp(data);
     // print(result.data);
     // addTProductos(TProductosAppModel.fromJson(result.data));
+    // await  actualizarDatosDesdeServidor();
     await Future.delayed(const Duration(seconds: 2));
     isSyncing = false;
     notifyListeners();
     //AGREGAR LISTA TEMPORAL
     updateTProductos(data);
     await TProductosApp.putProductosApp(id: id, data: data);
+     await actualizarDatosDesdeServidor();
   }
 
   deleteTProductosApp(String id) async {
-    // await TProductosApp.deleteProductosApp(id);
+    await TProductosApp.deleteProductosApp(id);
     listProductos.removeWhere((detalle) => detalle.id == id);
+    print('eliminado');
     notifyListeners();
   }
 

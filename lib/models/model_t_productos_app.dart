@@ -87,7 +87,7 @@ class TProductosAppModel {
         "id_categoria": idCategoria,
         "id_ubicacion": idUbicacion,
         "id_proveedor": idProveedor,
-        "imagen": imagen,
+        // "imagen": imagen,
         "nombre_producto": nombreProducto,
         "marca_producto": marcaProducto,
         "unid_medida": unidMedida,

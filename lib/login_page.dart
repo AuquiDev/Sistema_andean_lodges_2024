@@ -75,12 +75,11 @@ class _LoginPageState extends State<LoginPage> {
     }
 
     return Scaffold(
-      backgroundColor: Colors.black87,
+      backgroundColor: Colors.transparent,
       body: Container(
         decoration: const BoxDecoration(
           image: DecorationImage(
             image: AssetImage('assets/img/fondo.jpeg'),
-            
             fit: BoxFit.cover,
           ),
         ),

@@ -123,6 +123,7 @@ class _GastosGruposPageSfState extends State<GastosGruposPageSf> {
                 SafeArea(
                   bottom: false,
                   child: Container(
+                    constraints: const BoxConstraints(maxWidth: 340),
                     margin:
                         const EdgeInsets.symmetric(horizontal: 20, vertical: 6),
                     height: 50,
@@ -156,7 +157,7 @@ class _GastosGruposPageSfState extends State<GastosGruposPageSf> {
                         ),
                         filled: true,
                         fillColor: Colors.white,
-                        hintText: "Buscar grupo",
+                        hintText: "Ingresa el Código de grupo",
                         hintStyle: const TextStyle(
                             color: Colors.black26, fontWeight: FontWeight.w500),
                         enabled: true,

@@ -1,6 +1,7 @@
-// ignore_for_file: avoid_print, unnecessary_null_comparison
+// ignore_for_file: avoid_print, unnecessary_null_comparison, use_build_context_synchronously
 
 import 'package:ausangate_op/models/model_t_productos_app.dart';
+import 'package:ausangate_op/pages2/t_productos_editing_page.dart';
 import 'package:ausangate_op/provider/provider_t_productoapp.dart';
 import 'package:ausangate_op/utils/custom_text.dart';
 import 'package:ausangate_op/utils/format_fecha.dart';
@@ -8,13 +9,14 @@ import 'package:ausangate_op/widgets/custom_app_bar_entra_salid.dart';
 import 'package:ausangate_op/widgets/list_image_path_view.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:quickalert/quickalert.dart';
 
 class SourceDatatable extends DataTableSource {
-  SourceDatatable(
-      {required this.filterListacompra,
-      required this.context,
-      required this.indexcopy,
-      });
+  SourceDatatable({
+    required this.filterListacompra,
+    required this.context,
+    required this.indexcopy,
+  });
 
   final List<TProductosAppModel> filterListacompra;
   final BuildContext context;
@@ -27,11 +29,9 @@ class SourceDatatable extends DataTableSource {
       color: MaterialStatePropertyAll(getColorBasedOnStockAndExpiration(e)),
       selected: e.estado,
       onSelectChanged: (isSelected) {
-
-
-        //SELECTED PRODUCTO SET 
+        //SELECTED PRODUCTO SET
         final dataprovider =
-        Provider.of<TProductosAppProvider>(context, listen:  false);
+            Provider.of<TProductosAppProvider>(context, listen: false);
         dataprovider.seleccionarProducto(e);
 
         showProductDetailsDialog(e);
@@ -76,18 +76,36 @@ class SourceDatatable extends DataTableSource {
             color: getColorfechav(e),
           ),
         ),
-        const DataCell(
+        DataCell(
           Row(
             children: [
               IconButton.outlined(
-                  onPressed: null,
-                  icon: Icon(
+                  onPressed: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => EditPageProductosApp(e: e)));
+                  },
+                  icon: const Icon(
                     Icons.edit,
                     color: Colors.green,
                   )),
               IconButton.outlined(
-                  onPressed: null,
-                  icon: Icon(
+                  onPressed: () {
+                    QuickAlert.show(
+                      context: context,
+                      width: 300,
+                      type: QuickAlertType.warning,
+                      text: '¿Está seguro de que desea eliminar este registro?',
+                      onConfirmBtnTap: () async {
+                        await context
+                            .read<TProductosAppProvider>()
+                            .deleteTProductosApp(e.id);
+                        Navigator.pop(context);
+                      },
+                    );
+                  },
+                  icon: const Icon(
                     Icons.delete,
                     color: Colors.red,
                   )),
@@ -107,19 +125,18 @@ class SourceDatatable extends DataTableSource {
   @override
   int get selectedRowCount => 0;
 
-
   void showProductDetailsDialog(TProductosAppModel selectedProduct) {
-  showDialog(
-    context: context,
-    builder: (BuildContext context) {
-      return AlertDialog(
-        content: CustomAppBarPRoductos(
-          e: selectedProduct,
-        ),
-      );
-    },
-  );
-}
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          content: CustomAppBarPRoductos(
+            e: selectedProduct,
+          ),
+        );
+      },
+    );
+  }
 }
 
 Color getColorBasedOnStockAndExpiration(TProductosAppModel e) {

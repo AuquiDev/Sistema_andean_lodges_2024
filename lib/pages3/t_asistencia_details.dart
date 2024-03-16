@@ -64,11 +64,7 @@ class _DetailsAsistenciaState extends State<DetailsAsistencia> {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      H2Text(
-                        text: 'Grupo:  ${v.codigoGrupo}',
-                        fontSize: 17,
-                        fontWeight: FontWeight.w600,
-                      ),
+                     
                       H2Text(
                         text:
                             '${widget.e.nombrePersonal} | ${widget.e.actividadRol}',
@@ -76,8 +72,13 @@ class _DetailsAsistenciaState extends State<DetailsAsistencia> {
                         fontWeight: FontWeight.w800,
                         maxLines: 2,
                       ),
+                       H2Text(
+                        text: 'Grupo:  ${v.codigoGrupo}',
+                        fontSize: 17,
+                        fontWeight: FontWeight.w600,
+                      ),
                       Container(
-                        constraints: const BoxConstraints(maxWidth: 400),
+                        constraints: const BoxConstraints(maxWidth: 500),
                         child: ListTile(
                           title: Column(
                             children: [
@@ -85,47 +86,57 @@ class _DetailsAsistenciaState extends State<DetailsAsistencia> {
                                 'assets/img/andeanlodges.png',
                                 width: 150,
                               ),
-                              const H2Text(text: 'Detalles de la Asistencia'),
-                              Column(
+                             const H2Text(text: 'Detalles de la Asistencia'),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
-                                  const H2Text(
-                                    text: 'Entrada:',
-                                    fontSize: 10,
+                                  Flexible(
+                                    flex: 1,
+                                    child: OutlinedButton(
+                                      style: const ButtonStyle(
+                                        visualDensity: VisualDensity.compact,
+                                      ),
+                                      onPressed: null,
+                                      child: FittedBox(
+                                        child: H2Text(
+                                          text:
+                                              'HORA ENTRADA\n${formatFechaHoraNow(widget.e.horaEntrada)}',
+                                          fontSize: 12,
+                                          maxLines: 2,
+                                          textAlign: TextAlign.center,
+                                          color: Colors.brown,
+                                        ),
+                                      ),
+                                    ),
                                   ),
-                                  H2Text(
-                                    text: formatFechaHoraNow(
-                                        widget.e.horaEntrada),
-                                    fontSize: 12,
-                                    maxLines: 3,
-                                    textAlign: TextAlign.center,
+                                  const VerticalDivider(),
+                                  Flexible(
+                                    flex: 1,
+                                    child: OutlinedButton(
+                                      style: const ButtonStyle(
+                                        visualDensity: VisualDensity.compact,
+                                      ),
+                                      onPressed: null,
+                                      child: FittedBox(
+                                        child: H2Text(
+                                          text:
+                                              'HORA SALIDA\n${widget.e.horaSalida!.year != 1998 ? formatFechaHoraNow(widget.e.horaSalida!) : "No registrado"}',
+                                          fontSize: 12,
+                                          maxLines: 2,
+                                          textAlign: TextAlign.center,
+                                          color: Colors.brown,
+                                        ),
+                                      ),
+                                    ),
                                   ),
                                 ],
-                              ),
-                              Column(
-                                children: [
-                                  const H2Text(
-                                    text: 'Salida:',
-                                    fontSize: 10,
-                                  ),
-                                  H2Text(
-                                    text: widget.e.horaSalida!.year == 1998
-                                        ? 'no registrado'
-                                        : formatFechaHoraNow(
-                                            widget.e.horaSalida!),
-                                    fontSize: 12,
-                                    maxLines: 3,
-                                    textAlign: TextAlign.center,
-                                  ),
-                                ],
-                              ),
-                              const SizedBox(
-                                height: 20,
                               ),
                               H2Text(
                                 text:
-                                    'Detalles:  ${widget.e.detalles.isNotEmpty ? widget.e.detalles : 'no se ha registrado detalles de asistencia.'}',
+                                    'DETALLES:\n  ${widget.e.detalles.isNotEmpty ? widget.e.detalles : 'no se ha registrado detalles de asistencia.'}',
                                 fontSize: 12,
-                                maxLines: 10,
+                                maxLines: 100,
+                                textAlign: TextAlign.center,
                               ),
                             ],
                           ),
@@ -151,6 +162,7 @@ class _DetailsAsistenciaState extends State<DetailsAsistencia> {
                           fontWeight: FontWeight.w500,
                         ),
                       ),
+                      FormularioAsistencia(e: widget.e)
                     ],
                   ),
                 ),

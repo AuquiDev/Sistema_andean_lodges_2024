@@ -205,20 +205,31 @@ class _ProductosPageDataState extends State<ProductosPageData> {
                               scrollDirection: Axis.horizontal,
                               child: Row(
                                 children: [
-                                  IconButton(
-                                    visualDensity: VisualDensity.compact,
-                                    icon: const Icon(
-                                      Icons.add_circle_sharp,
-                                      size: 20,
-                                      color: Colors.teal,
-                                    ),
-                                    onPressed: () {
-                                      Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                              builder: (context) =>
-                                                  const TPageUbicaciones()));
-                                    },
+                                  Column(
+                                    children: [
+                                      TextButton(
+                                        child: const Column(
+                                          children: [
+                                            Icon(
+                                              Icons.add_circle_sharp,
+                                              size: 20,
+                                              color: Colors.teal,
+                                            ),
+                                            H2Text(
+                                              text: 'Ubicación',
+                                              fontSize: 10,
+                                            )
+                                          ],
+                                        ),
+                                        onPressed: () {
+                                          Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      const TPageUbicaciones()));
+                                        },
+                                      ),
+                                    ],
                                   ),
                                   Padding(
                                     padding: const EdgeInsets.symmetric(
@@ -229,8 +240,7 @@ class _ProductosPageDataState extends State<ProductosPageData> {
                                           _filterTUbicaicones('');
                                           _filterTProductos('');
                                           title = 'Lista General';
-                                          currentCategory =
-                                              'Categoría General';
+                                          currentCategory = 'Categoría General';
                                           //Redibujar la tabla
                                           await redibujarTabla();
                                         },
@@ -279,18 +289,27 @@ class _ProductosPageDataState extends State<ProductosPageData> {
                 )
               : null,
           body: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               ScrollWeb(
                 child: SingleChildScrollView(
                   scrollDirection: Axis.horizontal,
                   child: Row(
+                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
-                      IconButton(
-                        visualDensity: VisualDensity.compact,
-                        icon: const Icon(
-                          Icons.add_circle_sharp,
-                          size: 20,
-                          color: Colors.teal,
+                      TextButton(
+                        child: const Column(
+                          children: [
+                            Icon(
+                              Icons.add_circle_sharp,
+                              size: 20,
+                              color: Colors.deepOrange,
+                            ),
+                            H2Text(
+                              text: 'Categoría',
+                              fontSize: 10,
+                            )
+                          ],
                         ),
                         onPressed: () {
                           Navigator.push(
@@ -304,14 +323,14 @@ class _ProductosPageDataState extends State<ProductosPageData> {
                         width: 6,
                       ),
                       ElevatedButton(
-                          style: buttonStyle(),
+                          style: buttonStyle2(),
                           onPressed: () async {
                             _filterTProductos('');
                             await redibujarTabla();
                             currentCategory = 'Categoría General';
                           },
                           child: const H2Text(
-                            text: 'Categoría',
+                            text: 'General',
                             fontSize: 12,
                           )),
                       ...List.generate(sortedKeyCetegory.length, (index) {
@@ -326,12 +345,12 @@ class _ProductosPageDataState extends State<ProductosPageData> {
                           }
                           return 'null';
                         }
-    
+
                         String category = obtenerCategoria(e);
                         return Padding(
                           padding: const EdgeInsets.all(2),
-                          child: TextButton(
-                              style: buttonStyle(),
+                          child: ElevatedButton(
+                              style: buttonStyle2(),
                               onPressed: () async {
                                 currentCategory = category;
                                 if (e != '') {
@@ -345,7 +364,7 @@ class _ProductosPageDataState extends State<ProductosPageData> {
                                   print(
                                       'PRINT ${subList[0].id} ${subList[0].nombreProducto}');
                                 }
-    
+
                                 await redibujarTabla();
                               },
                               child: Column(

@@ -9,6 +9,7 @@ import 'package:ausangate_op/utils/scroll_web.dart';
 import 'package:ausangate_op/utils/text_custom.dart';
 import 'package:ausangate_op/widgets/custom_card_productos.dart';
 import 'package:ausangate_op/widgets/responsive_title_appbar.dart';
+import 'package:delayed_display/delayed_display.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:provider/provider.dart';
@@ -18,19 +19,27 @@ class CatalogoProductos extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final listUbicacion = Provider.of<TUbicacionAlmacenProvider>(context).listUbicacion..sort((a, b) => a.nombreUbicacion.compareTo(b.nombreUbicacion));
+    final listUbicacion = Provider.of<TUbicacionAlmacenProvider>(context)
+        .listUbicacion
+      ..sort((a, b) => a.nombreUbicacion.compareTo(b.nombreUbicacion));
 
     //INVENTARIO General
-    final productoslist =Provider.of<ViewInventarioGeneralProductosProvider>(context).listInventario;
-    final listAlertExist = Provider.of<ViewInventarioALERTAEXISTENCIASproductosProvider>(context).listAlertaExistencias;
-    final listOrdenCompra = Provider.of<ViewInventarioORDENCOMPRAFVSTOCKproductosProvider>(context).listOrdenCompra;
+    final productoslist =
+        Provider.of<ViewInventarioGeneralProductosProvider>(context)
+            .listInventario;
+    final listAlertExist =
+        Provider.of<ViewInventarioALERTAEXISTENCIASproductosProvider>(context)
+            .listAlertaExistencias;
+    final listOrdenCompra =
+        Provider.of<ViewInventarioORDENCOMPRAFVSTOCKproductosProvider>(context)
+            .listOrdenCompra;
 
     return InventarioProductosView(
       listUbicacion: listUbicacion,
       productoslist: productoslist,
       listAlertExist: listAlertExist,
       listOrdenCompra: listOrdenCompra,
-      );
+    );
   }
 }
 
@@ -71,10 +80,11 @@ class _InventarioProductosViewState extends State<InventarioProductosView> {
   }
 
   List<ViewInventarioGeneralProductosModel> _selectedList = [];
-  //FILTER UBICACION 
+  //FILTER UBICACION
   List<ViewInventarioGeneralProductosModel> obtenerLisUbicacion(
       String idUbicacion) {
-    _selectedList = widget.productoslist.where((e) => e.idUbicaion == idUbicacion).toList();
+    _selectedList =
+        widget.productoslist.where((e) => e.idUbicaion == idUbicacion).toList();
     return _selectedList;
   }
 
@@ -138,15 +148,18 @@ class _InventarioProductosViewState extends State<InventarioProductosView> {
                 elevation: 0,
                 surfaceTintColor: Colors.white,
                 toolbarHeight: 80,
-                title: ResponsiveTitleAppBar(title: 'Catálogo de Almacén:', subtitle: title,),
+                title: ResponsiveTitleAppBar(
+                  title: 'Inventario de Almacén:',
+                  subtitle: '$title [ ${_selectedList.length} regs.]',
+                ),
                 centerTitle: false,
                 actions: [
                   Container(
-                    margin: const EdgeInsets.only(right: 4),
+                    margin: const EdgeInsets.only(right: 0),
                     child: Row(
                       children: [
-                        OutlinedButton.icon(
-                          style: buttonStyle(),
+                        ElevatedButton(
+                          style: buttonStyle2(),
                           onPressed: () {
                             _selectedList = widget.listAlertExist;
                             title =
@@ -154,45 +167,63 @@ class _InventarioProductosViewState extends State<InventarioProductosView> {
                             //Ponemos por un bug, se actulzia al seleccionar Ubicacion, alert, compra
                             _filterProductos(_searchTextEditingController.text);
                           },
-                          label: const H2Text(
-                            text: ' Alertas ',
-                            fontSize: 12,
-                            color: Colors.black,
-                          ),
-                          icon: const Icon(
-                            Icons.add_alert_rounded,
-                            size: 20,
-                            color: Colors.black,
+                          child: const Padding(
+                            padding: EdgeInsets.all(8.0),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Icon(
+                                  Icons.add_alert_rounded,
+                                  size: 20,
+                                  color: Colors.black,
+                                ),
+                                H2Text(
+                                  text: ' Alertas ',
+                                  fontSize: 12,
+                                  color: Colors.black,
+                                ),
+                              ],
+                            ),
                           ),
                         ),
-                        const SizedBox(
-                          width: 5,
-                        ),
-                        OutlinedButton.icon(
-                          style: buttonStyle(),
+                        const VerticalDivider(),
+                        ElevatedButton(
+                          style: buttonStyle2(),
                           onPressed: () {
                             _selectedList = widget.listOrdenCompra;
-                            title =
-                                'Productos Vencidos o Agotados.';
+                            title = 'Productos Vencidos o Agotados.';
                             _filterProductos(_searchTextEditingController.text);
                           },
-                          label: const H2Text(
-                            text: 'Compras',
-                            fontSize: 12,
-                            color: Colors.black,
-                          ),
-                          icon: const Icon(
-                            Icons.playlist_add_check_circle_sharp,
-                            size: 20,
-                            color: Colors.black,
+                          child: const Padding(
+                            padding: EdgeInsets.all(8.0),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Icon(
+                                  Icons.shopping_cart,
+                                  size: 20,
+                                  color: Colors.black,
+                                ),
+                                H2Text(
+                                  text: 'Compras',
+                                  fontSize: 12,
+                                  color: Colors.black,
+                                ),
+                              ],
+                            ),
                           ),
                         ),
-                         IconButton(onPressed: () async{
-                        final dataProvider = Provider.of<ViewInventarioGeneralProductosProvider>(context, listen: false);
-                        await  dataProvider.actualizarDatosDesdeServidor();
-                          _filterProductos(_searchTextEditingController.text);
-                     
-                      }, icon: const Icon(Icons.refresh))
+                        IconButton(
+                            onPressed: () async {
+                              final dataProvider = Provider.of<
+                                      ViewInventarioGeneralProductosProvider>(
+                                  context,
+                                  listen: false);
+                              await dataProvider.actualizarDatosDesdeServidor();
+                              _filterProductos(
+                                  _searchTextEditingController.text);
+                            },
+                            icon: const Icon(Icons.refresh))
                       ],
                     ),
                   )
@@ -207,7 +238,7 @@ class _InventarioProductosViewState extends State<InventarioProductosView> {
                             scrollDirection: Axis.horizontal,
                             child: Row(
                               children: [
-                                OutlinedButton.icon(
+                                ElevatedButton(
                                   style: buttonStyle2(),
                                   onPressed: () {
                                     _selectedList = widget.productoslist;
@@ -216,42 +247,59 @@ class _InventarioProductosViewState extends State<InventarioProductosView> {
                                     _filterProductos(
                                         _searchTextEditingController.text);
                                   },
-                                  icon: const Icon(
-                                    Icons.location_on,
-                                    size: 20,
-                                    color: Colors.red,
-                                  ),
-                                  label: const H2Text(
-                                    text: 'General',
-                                    fontSize: 12,
-                                    color: Colors.black87,
-                                    maxLines: 2,
+                                  child: const Padding(
+                                    padding: EdgeInsets.all(8.0),
+                                    child: Row(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        Icon(
+                                          Icons.location_on,
+                                          size: 20,
+                                          color: Colors.red,
+                                        ),
+                                        H2Text(
+                                          text: 'General',
+                                          fontSize: 12,
+                                          color: Colors.black87,
+                                          fontWeight: FontWeight.bold,
+                                          maxLines: 2,
+                                        ),
+                                      ],
+                                    ),
                                   ),
                                 ),
                                 //UBICACION LISTA
                                 ...List.generate(widget.listUbicacion.length,
                                     (index) {
                                   final e = widget.listUbicacion[index];
-                                  return Container(
-                                    margin: const EdgeInsets.only(left: 5),
-                                    child: OutlinedButton.icon(
-                                      style: buttonStyle2(),
-                                      onPressed: () {
-                                        // _selectedList = widget.productoslist;
-                                        obtenerLisUbicacion(e.id!);
-                                        title = e.nombreUbicacion;
-                                        //Ponemos por un bug, se actulzia al seleccionar Ubicacion, alert, compra
-                                        _filterProductos( _searchTextEditingController.text);
-                                      },
-                                      icon: const Icon(
-                                        Icons.location_on,
-                                        size: 20,
-                                        color: Colors.red,
-                                      ),
-                                      label: H2Text(
-                                        text: e.nombreUbicacion,
-                                        fontSize: 12,
-                                        color: Colors.black87,
+                                  return ElevatedButton(
+                                    style: buttonStyle2(),
+                                    onPressed: () {
+                                      // _selectedList = widget.productoslist;
+                                      obtenerLisUbicacion(e.id!);
+                                      title = e.nombreUbicacion;
+                                      //Ponemos por un bug, se actulzia al seleccionar Ubicacion, alert, compra
+                                      _filterProductos(
+                                          _searchTextEditingController.text);
+                                    },
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Row(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          const Icon(
+                                            Icons.location_on,
+                                            size: 20,
+                                            color: Colors.black,
+                                          ),
+                                          H2Text(
+                                            text: e.nombreUbicacion,
+                                            fontSize: 12,
+                                            fontWeight: FontWeight.bold,
+                                            color: Colors.black87,
+                                            maxLines: 2,
+                                          ),
+                                        ],
                                       ),
                                     ),
                                   );
@@ -265,60 +313,49 @@ class _InventarioProductosViewState extends State<InventarioProductosView> {
               )
             : null,
         body: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            showAppBar ? _selectedUbicacionName() : const SizedBox(),
-            SafeArea(
-              bottom: false,
-              child: Card(
-                surfaceTintColor: Colors.transparent,
-                elevation: 10,
-                child: Container(
-                  constraints: const BoxConstraints(maxWidth: 350),
-                  height: 50,
-                  margin:
-                      const EdgeInsets.symmetric(horizontal: 18, vertical: 2),
-                  child: TextFormField(
-                    decoration: InputDecoration(
-                      prefixIcon: IconButton(
-                        onPressed: () {
-                          setState(() {
-                            _searchTextEditingController.clear();
-                            _filterProductos(_searchTextEditingController.text);
-                          });
-                        },
-                        icon: _searchTextEditingController.text.isEmpty
-                            ? const Icon(Icons.search)
-                            : const Icon(Icons.cleaning_services_rounded,
-                                size: 20),
-                        tooltip: 'Buscar Producto',
-                      ),
-                      filled: true,
-                      fillColor: const Color(0xFFFFFFFF),
-                      hintText: "Buscar producto",
-                      hintStyle: const TextStyle(
-                          color: Colors.black26, fontWeight: FontWeight.w500),
-                      enabled: true,
-                      border: _outlineButton(),
-                      focusedBorder: _outlineButton(),
-                      enabledBorder: _outlineButton(),
-                      errorBorder: _outlineButton(),
-                    ),
-                    onChanged: (value) {
-                      _filterProductos(value);
+            Container(
+              constraints: const BoxConstraints(maxWidth: 350),
+              height: 50,
+              child: TextFormField(
+                decoration: InputDecoration(
+                  prefixIcon: IconButton(
+                    onPressed: () {
+                      setState(() {
+                        _searchTextEditingController.clear();
+                        _filterProductos(_searchTextEditingController.text);
+                      });
                     },
-                    controller: _searchTextEditingController,
+                    icon: _searchTextEditingController.text.isEmpty
+                        ? const Icon(Icons.search)
+                        : const Icon(Icons.cleaning_services_rounded, size: 20),
+                    tooltip: 'Buscar Producto',
                   ),
+                  filled: true,
+                  fillColor: const Color(0xFFF0F0F0),
+                  hintText: "Buscar producto",
+                  hintStyle: const TextStyle(
+                      color: Colors.black26, fontWeight: FontWeight.w500),
+                  enabled: true,
+                  border: _outlineButton(),
+                  focusedBorder: _outlineButton(),
+                  enabledBorder: _outlineButton(),
+                  errorBorder: _outlineButton(),
                 ),
+                onChanged: (value) {
+                  _filterProductos(value);
+                },
+                controller: _searchTextEditingController,
               ),
             ),
-            !showAppBar ? _selectedUbicacionName() : const SizedBox(),
-            // ListTempralTableState(inventario: filterListaCompraProductos)
+            
             Expanded(
               child: Inventario(
                 scrollController: _scrollController,
                 showAppBar: showAppBar,
-                title:title,
-                productoslist: filterListaCompraProductos, //_selectedList,
+                title: title,
+                productoslist: filterListaCompraProductos,
               ),
             )
           ],
@@ -326,38 +363,13 @@ class _InventarioProductosViewState extends State<InventarioProductosView> {
       ),
     );
   }
-
-  Column _selectedUbicacionName() {
-    return Column(
-      children: [
-        H2Text(
-          text: title,
-          fontSize: 12,
-          fontWeight: FontWeight.w700,
-          maxLines: 2,
-          textAlign: TextAlign.center,
-        ),
-        H2Text(
-          text: '${_selectedList.length} regs. encontrados.',
-          fontSize: 11,
-          fontWeight: FontWeight.w300,
-          maxLines: 2,
-          textAlign: TextAlign.center,
-        ),
-      ],
-    );
-  }
-
-
-
   OutlineInputBorder _outlineButton() {
     return OutlineInputBorder(
-      borderSide: const BorderSide(color: Colors.transparent),
+      borderSide: const BorderSide(color: Colors.black26),
       borderRadius: BorderRadius.circular(10.0),
     );
   }
 }
-
 
 //FILTRAR CATEGORIA
 class Inventario extends StatelessWidget {
@@ -398,6 +410,7 @@ class Inventario extends StatelessWidget {
         Expanded(
           child: ScrollWeb(
             child: ListView.builder(
+                padding: const EdgeInsets.only(top: 40),
                 shrinkWrap: true,
                 cacheExtent: 500, // Ajusta según tus necesidades
                 controller: _scrollController,
@@ -411,42 +424,51 @@ class Inventario extends StatelessWidget {
 
                   return Column(
                     children: [
-                      const Divider(),
                       Padding(
                         padding: const EdgeInsets.symmetric(
-                            vertical: 8.0, horizontal: 5),
+                            vertical: .0, horizontal: 5),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             H2Text(
-                                text: category,
-                                fontWeight: FontWeight.w700,
-                                fontSize: 15,),
+                              text: category,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 12,
+                              // color: const Color(0xFF430E21),
+                            ),
                             H2Text(
                                 text: '${productosPorCategoria.length} regs.',
                                 fontSize: 13,
+                                fontWeight: FontWeight.w400,
                                 color: Colors.blue)
                           ],
                         ),
                       ),
-                      
+                      const Divider(
+                        color: Colors.black12,
+                      ),
                       // ignore: unnecessary_null_comparison
-                      if (productosPorCategoria !=  null) // Verificamos si esa ctegoria es nula y si no es la generamos.
-                        LayoutBuilder(
-                          builder: (BuildContext context, BoxConstraints constraints) {
+                      if (productosPorCategoria !=
+                          null) // Verificamos si esa ctegoria es nula y si no es la generamos.
+                        LayoutBuilder(builder:
+                            (BuildContext context, BoxConstraints constraints) {
                           // Calcular el número de columnas en función del ancho disponible
-                          int crossAxisCount = (constraints.maxWidth / 200).floor();
+                          int crossAxisCount =
+                              (constraints.maxWidth / 200).floor();
                           // Puedes ajustar el valor 100 según tus necesidades
                           return GridView.builder(
                               shrinkWrap: true,
                               physics: const NeverScrollableScrollPhysics(),
                               itemCount: productosPorCategoria.length,
-                              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                              gridDelegate:
+                                  SliverGridDelegateWithFixedCrossAxisCount(
                                       crossAxisCount: crossAxisCount),
                               itemBuilder: (BuildContext context, int index) {
                                 final e = productosPorCategoria[index];
                                 print('GridView.builder $index');
-                                return CustomCardProducto(e: e);
+                                return DelayedDisplay(
+                                    delay: const Duration(milliseconds: 400),
+                                    child: CustomCardProducto(e: e));
                               });
                         })
                     ],

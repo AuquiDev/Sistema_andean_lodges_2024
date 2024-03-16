@@ -77,24 +77,29 @@ class _EmpleadosFormPageState extends State<EmpleadosFormPage> {
           ),
         ],
       ),
-      body: Column(
-        children: [
-          Expanded(
-            child: ListView.separated(
-              separatorBuilder: (BuildContext context, int index) =>
-                  const Divider(
-                height: 0,
-                color: Colors.black12,
-                thickness: 1,
+      body: Center(
+        child: Container(
+           constraints: const BoxConstraints(maxWidth: 400),
+          child: Column(
+            children: [
+              Expanded(
+                child: ListView.separated(
+                  separatorBuilder: (BuildContext context, int index) =>
+                      const Divider(
+                    height: 0,
+                    color: Colors.black12,
+                    thickness: 1,
+                  ),
+                  itemCount: listaEmpleados.length,
+                  itemBuilder: (BuildContext context, int index) {
+                    final e = listaEmpleados[index];
+                    return CardCustomEmpleados(e: e);
+                  },
+                ),
               ),
-              itemCount: listaEmpleados.length,
-              itemBuilder: (BuildContext context, int index) {
-                final e = listaEmpleados[index];
-                return CardCustomEmpleados(e: e);
-              },
-            ),
+            ],
           ),
-        ],
+        ),
       ),
     );
   }

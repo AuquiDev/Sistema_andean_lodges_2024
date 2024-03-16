@@ -169,18 +169,28 @@ class _ListTempralTableStateState extends State<ListTempralTableState> {
     return Scaffold(
       body: SafeArea(
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+           
             //PROVEEDOR FILTER
             SingleChildScrollView(
               scrollDirection: Axis.horizontal,
               child: Row(
+                mainAxisAlignment: MainAxisAlignment.start,
                 children: [
-                  IconButton(
-                    visualDensity: VisualDensity.compact,
-                    icon: const Icon(
-                      Icons.add_circle_sharp,
-                      size: 20,
-                      color: Colors.teal,
+                  TextButton(
+                    child: const Column(
+                      children: [
+                        Icon(
+                          Icons.add_circle_sharp,
+                          size: 20,
+                          color: Colors.blue,
+                        ),
+                        H2Text(
+                          text: 'Provedor',
+                          fontSize: 11,
+                        )
+                      ],
                     ),
                     onPressed: () {
                       Navigator.push(
@@ -192,18 +202,14 @@ class _ListTempralTableStateState extends State<ListTempralTableState> {
                   const SizedBox(
                     width: 6,
                   ),
-                  ElevatedButton.icon(
+                  ElevatedButton(
                       style: buttonStyle2(),
                       onPressed: () async {
                         _filterProductCompraProductos('');
                       },
-                      icon: const Icon(
-                        Icons.airport_shuttle,
-                        size: 20,
-                        color: Colors.black,
-                      ),
-                      label: const H2Text(
-                        text: 'Provedor',
+                     
+                      child: const H2Text(
+                        text: 'General',
                         fontSize: 12,
                       )),
                   const SizedBox(
@@ -254,6 +260,71 @@ class _ListTempralTableStateState extends State<ListTempralTableState> {
                 ],
               ),
             ),
+             //FECHAVENCIMIENTO FILTER
+            SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: Row(
+                children: [
+                   const TextButton(
+                    onPressed:null,
+                    child: Column(
+                      children: [
+                        Icon(
+                          Icons.calendar_month_sharp,
+                          size: 20,
+                          color: Colors.deepOrange,
+                        ),
+                        H2Text(
+                          text: 'Fecha.Venc.',
+                          fontSize: 10,
+                          maxLines: 2,
+                        )
+                      ],
+                    ),
+                  ),
+                  ElevatedButton(
+                      style: buttonStyle2(),
+                      onPressed: () async {
+                        _filterProductCompraProductos('');
+                      },
+                      child: const H2Text(
+                        text: 'General',
+                        fontSize: 11,
+                        maxLines: 2,
+                      )),
+                  ...List.generate(sortkeyDate.length, (index) {
+                    final fechaKey = sortkeyDate[index];
+                    //subLista
+                    final productoPorfechaV = fechaFilter[fechaKey];
+                    //ORDENAR LA SUBLISTA
+                    productoPorfechaV!.sort((a, b) =>
+                        a.fechaVencimiento.compareTo(b.fechaVencimiento));
+                    DateTime fechaDateTime = DateTime.parse('$fechaKey-01');
+                    return ElevatedButton(
+                        style: buttonStyle2(),
+                        onPressed: () async {
+                          _filterProductCompraProductos(fechaKey);
+                        },
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            H2Text(
+                              text: fechaFiltrada(fechaDateTime),
+                              fontWeight: FontWeight.w500,
+                              fontSize: 11,
+                              color: Colors.black87,
+                            ),
+                            H2Text(
+                              text: '${productoPorfechaV.length} regs.',
+                              fontSize: 10,
+                              color: Colors.black87,
+                            ),
+                          ],
+                        ));
+                  }),
+                ],
+              ),
+            ),
             Expanded(
               child: ScrollWeb(
                 child: Row(
@@ -283,9 +354,12 @@ class _ListTempralTableStateState extends State<ListTempralTableState> {
                                     : const SizedBox(),
                                 Container(
                                     height: 50,
-                                    width:MediaQuery.of(context).size.width < 500 ?  200 : 300,
-                                    constraints:
-                                        const BoxConstraints( minWidth: 200, maxWidth: 300),
+                                    width:
+                                        MediaQuery.of(context).size.width < 500
+                                            ? 200
+                                            : 300,
+                                    constraints: const BoxConstraints(
+                                        minWidth: 200, maxWidth: 300),
                                     child: Card(
                                       child: TextField(
                                         onChanged: (value) {
@@ -355,83 +429,6 @@ class _ListTempralTableStateState extends State<ListTempralTableState> {
                         ],
                       ),
                     ),
-                    Flexible(
-                      flex: 1,
-                      child: //FECHAVENCIMEINTO  FILTER
-                          Column(
-                        children: [
-                          TextButton.icon(
-                              style: buttonStyle3(),
-                              onPressed: () async {
-                                _filterProductCompraProductos('');
-                              },
-                              icon: const Icon(
-                                Icons.calendar_month,
-                                color: Colors.teal,
-                              ),
-                              label: const H2Text(
-                                text: 'Fecha Vencimiento',
-                                fontSize: 11,
-                              )),
-                          Expanded(
-                            child: LayoutBuilder(builder: (BuildContext context,
-                                BoxConstraints constraints) {
-                              // Calcular el número de columnas en función del ancho disponible
-                              int crossAxisCount =
-                                  (constraints.maxWidth / 60).floor();
-                              // Puedes ajustar el valor 100 según tus necesidades
-                              return GridView.builder(
-                                  shrinkWrap: true,
-                                  gridDelegate:
-                                      SliverGridDelegateWithFixedCrossAxisCount(
-                                          childAspectRatio: 1.6,
-                                          crossAxisCount: crossAxisCount),
-                                  itemCount: sortkeyDate.length,
-                                  itemBuilder:
-                                      (BuildContext context, int index) {
-                                    final fechaKey = sortkeyDate[index];
-                                    //subLista
-                                    final productoPorfechaV =
-                                        fechaFilter[fechaKey];
-                                    //ORDENAR LA SUBLISTA
-                                    productoPorfechaV!.sort((a, b) => a
-                                        .fechaVencimiento
-                                        .compareTo(b.fechaVencimiento));
-                                    DateTime fechaDateTime =
-                                        DateTime.parse('$fechaKey-01');
-                                    return Padding(
-                                      padding: const EdgeInsets.all(1),
-                                      child: TextButton(
-                                          style: buttonStyle3(),
-                                          onPressed: () async {
-                                            _filterProductCompraProductos(
-                                                fechaKey);
-                                          },
-                                          child: Column(
-                                            mainAxisSize: MainAxisSize.min,
-                                            children: [
-                                              H2Text(
-                                                text: fechaFiltrada(
-                                                    fechaDateTime),
-                                                fontWeight: FontWeight.w500,
-                                                fontSize: 11,
-                                                color: Colors.black87,
-                                              ),
-                                              H2Text(
-                                                text:
-                                                    '${productoPorfechaV.length} regs.',
-                                                fontSize: 10,
-                                                color: Colors.black87,
-                                              ),
-                                            ],
-                                          )),
-                                    );
-                                  });
-                            }),
-                          ),
-                        ],
-                      ),
-                    )
                   ],
                 ),
               ),

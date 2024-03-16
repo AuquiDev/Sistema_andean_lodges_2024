@@ -36,6 +36,7 @@ class _SplahScreenState extends State<SplahScreen>
       });
     });
   }
+  
 
   @override
   Widget build(BuildContext context) {
@@ -51,11 +52,11 @@ class _SplahScreenState extends State<SplahScreen>
                     center: Alignment.center,
                     radius: 1.7,
                     colors: [
+                      Color(0xFF301F15), // Tonos más oscuros
+                      Color(0xFF492E1D),
                       Color(0xFF603D29),
-                      Color(0xFF725635),
+                      Color(0xFF7D5740),
                       Color(0xFF876443),
-                      Color(0xFFA27953),
-                      Color(0xFFC7A16E),
                     ],
                   ),
                 ),
@@ -88,17 +89,16 @@ class _SplahScreenState extends State<SplahScreen>
                         alignment: Alignment.bottomCenter,
                         child:
                             //value < 0.5 ?
-                          RippleAnimation(
-                            duration: const Duration(milliseconds: 5000),
-                            minRadius: 120,
-                          delay:  const Duration(seconds: 3),
-                          color: const Color(0xFFA27953),
-                          child: Image.asset(
-                            'assets/img/andeanlodges.png',
-                            width: MediaQuery.of(context).size.width * .2,
-                            // color: const Color(0xFFC7A16E).withOpacity(.4),
-                          ),
-                        ));
+                            RippleAnimation(
+                                duration: const Duration(milliseconds: 5000),
+                                minRadius: 120,
+                                delay: const Duration(seconds: 3),
+                                color:  const Color(0xFF603D29),
+                                child: Image.asset(
+                                  'assets/img/andeanlodges.png',
+                                  width: MediaQuery.of(context).size.width * .2,
+                                  // color: const Color(0xFFC7A16E).withOpacity(.4),
+                                )));
                   }),
             ),
           ),

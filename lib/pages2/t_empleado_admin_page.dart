@@ -270,17 +270,24 @@ class ContentBodyAdmin extends StatelessWidget {
         child: Column(
           children: [
             Expanded(
-              child: GridView.builder(
-                physics: const AlwaysScrollableScrollPhysics(),
-                controller: _scrollController,
-                shrinkWrap: true,
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 2, childAspectRatio: 2.5),
-                itemCount: routes.length,
-                itemBuilder: (BuildContext context, int index) {
-                  final e = routes[index];
-                  return e.buildCard(context);
-                },
+              child:  LayoutBuilder(builder:
+                    (BuildContext context, BoxConstraints constraints) {
+                  // Calcular el número de columnas en función del ancho disponible
+                  int crossAxisCount = (constraints.maxWidth / 200).floor();
+                  // Puedes ajustar el valor 100 según tus necesidades
+                  return GridView.builder(
+                    physics: const AlwaysScrollableScrollPhysics(),
+                    controller: _scrollController,
+                    shrinkWrap: true,
+                    gridDelegate:  SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount:crossAxisCount, childAspectRatio: 2.5),
+                    itemCount: routes.length,
+                    itemBuilder: (BuildContext context, int index) {
+                      final e = routes[index];
+                      return e.buildCard(context);
+                    },
+                  );
+                }
               ),
             )
           ],

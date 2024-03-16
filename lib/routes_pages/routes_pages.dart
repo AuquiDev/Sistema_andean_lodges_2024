@@ -1,4 +1,3 @@
-
 import 'package:ausangate_op/pages/productos_pages.dart';
 import 'package:ausangate_op/pages/t_detalle.trabajo_page.dart';
 import 'package:ausangate_op/pages/t_asistencia_page.dart';
@@ -9,7 +8,6 @@ import 'package:ausangate_op/pages2/t_movimientos_salidas.dart';
 import 'package:ausangate_op/pages2/t_productos_page.dart';
 import 'package:ausangate_op/pages3/t_reporte_incidencias_list.dart';
 import 'package:ausangate_op/pages3/t_reporte_pasajero_list.dart';
-import 'package:ausangate_op/prueba_files/page_carga_imagenes.dart';
 import 'package:flutter/material.dart';
 
 class PageRoutes {
@@ -21,73 +19,70 @@ class PageRoutes {
 
 List<PageRoutes> routes = [
   PageRoutes(
-      icon: const Icon(Icons.local_grocery_store),
-      title: "Catalogo Inventario",
-      path:   const CatalogoProductos(), ),
-  
+    icon: const Icon(Icons.local_grocery_store),
+    title: "Catalogo Inventario",
+    path: const CatalogoProductos(),
+  ),
+
   PageRoutes(
-      icon: const Icon(Icons.miscellaneous_services_sharp),
-      title: "Gestión",
-      path:  const ProductosPage(),
-     ),
+    icon: const Icon(Icons.miscellaneous_services_sharp),
+    title: "Gestión de Inventario",
+    path: const ProductosPage(),
+  ),
 
   // PageRoutes(
   //     icon: const Icon(Icons.settings),
   //     title: "Almacén",
   //     path: const AlmacenGestionPage(),),
 
- PageRoutes(
-      icon: const Icon(Icons.groups_2),
-      title: "Files",
-      path:  const GrupoDetalleTrabajoPage(),
-     ),
-  // PageRoutes(
-  //     icon: const Icon(Icons.holiday_village),
-  //     title: "Grupos",
-  //     path:  const HomePage(),
-  //    ),
   PageRoutes(
-      icon: const Icon(Icons.image),
-      title: "Image",
-      path:  const ImageUploadPage(),
-     ),
-    PageRoutes(
-      icon: const Icon(Icons.assignment, color: Colors.cyan),
-      title: "Control Asistencia",
-      path:  const FormularioAsistenciapage(),
-     ),
+    icon: const Icon(Icons.groups_2),
+    title: "Files",
+    path: const GrupoDetalleTrabajoPage(),
+  ),
 
-      PageRoutes(
-      icon: const Icon(Icons.assignment, color: Colors.cyan),
-      title: "Reporte Incidencias",
-      path:  const ListaReporteIncidencias(),
-     ),
-       PageRoutes(
-      icon: const Icon(Icons.assignment, color: Colors.cyan),
-      title: "Encuesta Pasajeros",
-      path:  const ListaReporte(),
-     ),
+  //PENDIENTE
+  // PageRoutes(
+  //     icon: const Icon(Icons.image),
+  //     title: "Image",
+  //     path:  const ImageUploadPage(),
+  //    ),
 
-       PageRoutes(
-      icon: const Icon(Icons.assignment, color: Colors.cyan),
-      title: "Historial de entradas",
-      path:  const MovimientosPageEntrada(),
-     ),
-       PageRoutes(
-      icon: const Icon(Icons.assignment, color: Colors.cyan),
-      title: "Historial de Salidas",
-      path:   const MovimientosPageSalida(),
-     ),
-       PageRoutes(
-      icon: const Icon(Icons.assignment, color: Colors.cyan),
-      title: "Gastos por Grupo",
-      path:   const GastosGruposPage(),
-     ),
-        PageRoutes(
-      icon: const Icon(Icons.assignment, color: Colors.cyan),
-      title: "Administración",
-      path:   const AdministracionPage(),
-     ),
+  PageRoutes(
+    icon: const Icon(Icons.assignment, color: Colors.cyan),
+    title: "Control Asistencia",
+    path: const FormularioAsistenciapage(),
+  ),
 
+  PageRoutes(
+    icon: const Icon(Icons.assignment, color: Colors.cyan),
+    title: "Reporte Incidencias",
+    path: const ListaReporteIncidencias(),
+  ),
+  PageRoutes(
+    icon: const Icon(Icons.assignment, color: Colors.cyan),
+    title: "Encuesta Pasajeros",
+    path: const ListaReporte(),
+  ),
+
+  PageRoutes(
+    icon: const Icon(Icons.assignment, color: Colors.cyan),
+    title: "Historial de entradas",
+    path: const MovimientosPageEntrada(),
+  ),
+  PageRoutes(
+    icon: const Icon(Icons.assignment, color: Colors.cyan),
+    title: "Historial de Salidas",
+    path: const MovimientosPageSalida(),
+  ),
+  PageRoutes(
+    icon: const Icon(Icons.assignment, color: Colors.cyan),
+    title: "Gastos por Grupo",
+    path: const GastosGruposPage(),
+  ),
+  PageRoutes(
+    icon: const Icon(Icons.assignment, color: Colors.cyan),
+    title: "Administración",
+    path: const AdministracionPage(),
+  ),
 ];
-

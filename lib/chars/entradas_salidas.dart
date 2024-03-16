@@ -41,7 +41,7 @@ class SalidasChar extends StatelessWidget {
 
     return SfCartesianChart(
       backgroundColor: Colors.black12,
-      title: const ChartTitle(text: 'SALIDAS', alignment: ChartAlignment.near),
+      title: const ChartTitle(text: 'SALIDAS', alignment: ChartAlignment.center,textStyle: TextStyle(fontWeight: FontWeight.bold)),
       plotAreaBackgroundColor: Colors.black,
       primaryXAxis: const CategoryAxis(), // Cambiar a CategoryAxis para fechas
       series: <CartesianSeries<ChartSampleData, String>>[
@@ -99,7 +99,7 @@ class EntradasChasr extends StatelessWidget {
 
     return SfCartesianChart(
       backgroundColor: Colors.black12,
-      title: const ChartTitle(text: 'ENTRADAS', alignment: ChartAlignment.near),
+      title: const ChartTitle(text: 'ENTRADAS', alignment: ChartAlignment.center, textStyle: TextStyle(fontWeight: FontWeight.bold)),
       plotAreaBackgroundColor: Colors.black,
       primaryXAxis: const CategoryAxis(), // Cambiar a CategoryAxis para fechas
       series: <CartesianSeries<ChartSampleData, String>>[

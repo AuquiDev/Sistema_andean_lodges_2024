@@ -1,4 +1,3 @@
-
 // ignore_for_file: unnecessary_null_comparison
 
 import 'package:ausangate_op/chars/entradas_salidas.dart';
@@ -30,42 +29,48 @@ class ModuleRoute extends StatelessWidget {
               if (isDesktop)
                 const Row(
                   children: [
-                    Flexible(child: SalidasChar()),
                     Flexible(child: EntradasChasr()),
+                    Flexible(child: SalidasChar()),
                     Flexible(child: CharGruposPasajeros()),
                   ],
                 )
               else if (isTablet)
                 const Row(
                   children: [
-                    Flexible(child: SalidasChar()),
                     Flexible(child: EntradasChasr()),
+                    Flexible(child: SalidasChar()),
                   ],
                 )
               else if (isMobile)
                 const Column(
-                  children: [SalidasChar(), EntradasChasr()],
+                  children: [
+                    EntradasChasr(),
+                    SalidasChar(),
+                    CharGruposPasajeros(),
+                  ],
                 ),
-          
-                  if (isDesktop)
+              if (isDesktop)
                 const Row(
                   children: [
                     Flexible(child: InventarioMapaCalor()),
                     Flexible(child: InventarioMapaCalorUbicacion()),
-                     Flexible(child: InventarioMapaCalorUbicacion()),
+                    Flexible(child: InventarioMapaCalorUbicacion()),
                   ],
                 )
               else if (isTablet)
                 const Column(
-                  children: [ InventarioMapaCalor(),
-              InventarioMapaCalorUbicacion()],
+                  children: [
+                    InventarioMapaCalor(),
+                    InventarioMapaCalorUbicacion()
+                  ],
                 )
               else if (isMobile)
                 const Column(
-                  children: [ InventarioMapaCalor(),
-              InventarioMapaCalorUbicacion()],
+                  children: [
+                    InventarioMapaCalor(),
+                    InventarioMapaCalorUbicacion()
+                  ],
                 ),
-             
             ],
           ),
         ),
@@ -73,9 +78,6 @@ class ModuleRoute extends StatelessWidget {
     );
   }
 }
-
-
-
 
 class CharGruposPasajeros extends StatelessWidget {
   const CharGruposPasajeros({Key? key}) : super(key: key);
@@ -111,10 +113,14 @@ class CharGruposPasajeros extends StatelessWidget {
 
     return SfCartesianChart(
       backgroundColor: Colors.black12,
-      title: const ChartTitle(text: 'GRUPOS POR MES', alignment: ChartAlignment.near),
+      title: const ChartTitle(
+          text: 'GRUPOS',
+          alignment: ChartAlignment.center,
+          textStyle: TextStyle(fontWeight: FontWeight.bold)),
       plotAreaBackgroundColor: Colors.black,
       primaryXAxis: const CategoryAxis(),
-      primaryYAxis: const NumericAxis(title: AxisTitle(text: 'Cantidad de Grupos')),
+      primaryYAxis:
+          const NumericAxis(title: AxisTitle(text: 'Cantidad de Grupos')),
       series: <CartesianSeries<ChartSampleData, String>>[
         LineSeries<ChartSampleData, String>(
           dataSource: chartData..sort((a, b) => a.x.compareTo(b.x)),

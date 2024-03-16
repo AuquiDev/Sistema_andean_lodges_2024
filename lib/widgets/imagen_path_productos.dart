@@ -14,11 +14,7 @@ class ImageDetailsInventario extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-          color: const Color(0xffF6F3EB),
-          border: Border.all(
-              style: BorderStyle.solid, color: Colors.black12, width: .5)),
+    return SizedBox(
       height: 150,
       width: 150,
       child: Image.network(
