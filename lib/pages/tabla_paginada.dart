@@ -3,7 +3,6 @@
 import 'package:ausangate_op/models/model_t_productos_app.dart';
 import 'package:ausangate_op/pages/tabla_source.dart';
 import 'package:ausangate_op/pages2/t_ubicaciones_page.dart';
-import 'package:ausangate_op/provider/provider_t_productoapp.dart';
 import 'package:ausangate_op/provider/provider_t_proveedorapp.dart';
 import 'package:ausangate_op/utils/buton_style.dart';
 import 'package:ausangate_op/utils/custom_text.dart';
@@ -164,14 +163,13 @@ class _ListTempralTableStateState extends State<ListTempralTableState> {
     List<dynamic> sortedKeyProveedor = proveedorFilter.keys.toList()..sort();
 
     //CURRENT PRODUCTO
-    final dataprovider = Provider.of<TProductosAppProvider>(context);
-    TProductosAppModel? selectedProducto = dataprovider.selectedProducto;
+    // final dataprovider = Provider.of<TProductosAppProvider>(context);
+    // TProductosAppModel? selectedProducto = dataprovider.selectedProducto;
     return Scaffold(
       body: SafeArea(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-           
             //PROVEEDOR FILTER
             SingleChildScrollView(
               scrollDirection: Axis.horizontal,
@@ -207,7 +205,6 @@ class _ListTempralTableStateState extends State<ListTempralTableState> {
                       onPressed: () async {
                         _filterProductCompraProductos('');
                       },
-                     
                       child: const H2Text(
                         text: 'General',
                         fontSize: 12,
@@ -260,13 +257,13 @@ class _ListTempralTableStateState extends State<ListTempralTableState> {
                 ],
               ),
             ),
-             //FECHAVENCIMIENTO FILTER
+            //FECHAVENCIMIENTO FILTER
             SingleChildScrollView(
               scrollDirection: Axis.horizontal,
               child: Row(
                 children: [
-                   const TextButton(
-                    onPressed:null,
+                  const TextButton(
+                    onPressed: null,
                     child: Column(
                       children: [
                         Icon(
@@ -330,100 +327,91 @@ class _ListTempralTableStateState extends State<ListTempralTableState> {
                 child: Row(
                   children: [
                     Flexible(
-                      flex: 4,
                       child: ListView(
                         controller: widget._scrollController,
                         children: [
-                          Card(
-                            surfaceTintColor: Colors.transparent,
-                            color: Colors.transparent,
-                            elevation: 10,
-                            child: PaginatedDataTable(
-                              header:
-                                  //IMPRIMIR
-                                  const IconButton(
-                                onPressed: null,
-                                icon: Icon(Icons.print),
-                              ),
-                              actions: [
-                                size.width > 1000
-                                    ? CardTitleTablePaginate(
-                                        filterListacompraProductos:
-                                            filterListacompraProductos,
-                                        widget: widget)
-                                    : const SizedBox(),
-                                Container(
-                                    height: 50,
-                                    width:
-                                        MediaQuery.of(context).size.width < 500
-                                            ? 200
-                                            : 300,
-                                    constraints: const BoxConstraints(
-                                        minWidth: 200, maxWidth: 300),
-                                    child: Card(
-                                      child: TextField(
-                                        onChanged: (value) {
-                                          _filterProductCompraProductos(value);
-                                        },
-                                        controller: _searchControllerProductos,
-                                        decoration: decorationTextField(
-                                            hintText: 'Buscar',
-                                            labelText: 'Buscar Articulo',
-                                            prefixIcon:
-                                                _searchControllerProductos
-                                                        .text.isNotEmpty
-                                                    ? IconButton(
-                                                        onPressed: () {
-                                                          setState(() {
-                                                            _searchControllerProductos
-                                                                .text = '';
-                                                            _filterProductCompraProductos(
-                                                                _searchControllerProductos
-                                                                    .text);
-                                                          });
-                                                        },
-                                                        icon: const Icon(
-                                                            Icons.clear))
-                                                    : const Icon(
-                                                        Icons.search,
-                                                      )),
-                                      ),
-                                    )),
-                                rowStateColor(),
+                          PaginatedDataTable(
+                            header:
+                                //IMPRIMIR
+                                const IconButton(
+                              onPressed: null,
+                              icon: Icon(Icons.print),
+                            ),
+                            actions: [
+                              size.width > 1000
+                                  ? CardTitleTablePaginate(
+                                      filterListacompraProductos:
+                                          filterListacompraProductos,
+                                      widget: widget)
+                                  : const SizedBox(),
+                              Container(
+                                  height: 50,
+                                  width: MediaQuery.of(context).size.width < 500
+                                      ? 200
+                                      : 300,
+                                  constraints: const BoxConstraints(
+                                      minWidth: 200, maxWidth: 300),
+                                  child: Card(
+                                    child: TextField(
+                                      onChanged: (value) {
+                                        _filterProductCompraProductos(value);
+                                      },
+                                      controller: _searchControllerProductos,
+                                      decoration: decorationTextField(
+                                          hintText: 'Buscar',
+                                          labelText: 'Buscar Articulo',
+                                          prefixIcon: _searchControllerProductos
+                                                  .text.isNotEmpty
+                                              ? IconButton(
+                                                  onPressed: () {
+                                                    setState(() {
+                                                      _searchControllerProductos
+                                                          .text = '';
+                                                      _filterProductCompraProductos(
+                                                          _searchControllerProductos
+                                                              .text);
+                                                    });
+                                                  },
+                                                  icon: const Icon(Icons.clear))
+                                              : const Icon(
+                                                  Icons.search,
+                                                )),
+                                    ),
+                                  )),
+                              rowStateColor(),
 
-                                //FILTRADOPAGE : filtra datos por pagina
-                                numberRowPaginated(),
-                              ],
-                              // dataRowHeight: 40, // Altura de las filas de datos
-                              // Altura de la fila de encabezado
-                              headingRowHeight: 50,
-                              horizontalMargin: 10, // Margen horizontal
-                              columnSpacing: 5, // Espacio entre columnas
-                              // Mostrar columna de casilla de verificación
-                              showCheckboxColumn: true,
-                              // Mostrar botones de primera/última página
-                              showFirstLastButtons: true,
-                              // Índice de la primera fila visible inicialmente
-                              initialFirstRowIndex: 0,
-                              // Comportamiento del arrastre
-                              dragStartBehavior: DragStartBehavior.start,
-                              // Margen horizontal de la casilla de verificación
-                              checkboxHorizontalMargin: 10,
-                              // Orden ascendente o descendente
-                              sortAscending: false,
-                              // Marcar como primario si es el Widget superior en la jerarquía
-                              primary: true,
-                              // Número de filas por página
-                              rowsPerPage: selectedRowsPerPage,
-                              columns: listColumn,
-                              source: SourceDatatable(
-                                // listaCompraProvider: listaCompraProvider,
-                                context: context,
-                                indexcopy: indexcopy,
-                                // updateParentState: updateState,
-                                filterListacompra: filterListacompraProductos,
-                                // psetState: psetState
-                              ),
+                              //FILTRADOPAGE : filtra datos por pagina
+                              numberRowPaginated(),
+                            ],
+                            // dataRowHeight: 40, // Altura de las filas de datos
+                            // Altura de la fila de encabezado
+                            headingRowHeight: 50,
+                            horizontalMargin: 10, // Margen horizontal
+                            columnSpacing: 5, // Espacio entre columnas
+                            // Mostrar columna de casilla de verificación
+                            showCheckboxColumn: true,
+                            // Mostrar botones de primera/última página
+                            showFirstLastButtons: true,
+                            // Índice de la primera fila visible inicialmente
+                            initialFirstRowIndex: 0,
+                            // Comportamiento del arrastre
+                            dragStartBehavior: DragStartBehavior.start,
+                            // Margen horizontal de la casilla de verificación
+                            checkboxHorizontalMargin: 10,
+                            // Orden ascendente o descendente
+                            sortAscending: false,
+                            // Marcar como primario si es el Widget superior en la jerarquía
+                            primary: true,
+                            // Número de filas por página
+                            rowsPerPage: selectedRowsPerPage,
+                            columns: listColumn,
+                            source: SourceDatatable(
+                              // listaCompraProvider: listaCompraProvider,
+                              context: context,
+                              indexcopy: indexcopy,
+                              // updateParentState: updateState,
+                              filterListacompra: filterListacompraProductos,
+                              // psetState: psetState
                             ),
                           ),
                         ],
@@ -513,7 +501,7 @@ class CardTitleTablePaginate extends StatelessWidget {
             fontSize: 12,
           ),
           H1Text(
-            text: '[${filterListacompraProductos.length} regs.]',
+            text: '${filterListacompraProductos.length} regs.',
             fontSize: 10,
           ),
         ],

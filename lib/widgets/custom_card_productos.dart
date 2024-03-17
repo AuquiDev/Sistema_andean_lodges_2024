@@ -1,3 +1,5 @@
+// ignore_for_file: unnecessary_type_check, unnecessary_null_comparison
+
 import 'package:ausangate_op/models/model_v_inventario_general_producto.dart';
 import 'package:ausangate_op/pages/productos_details.dart';
 import 'package:ausangate_op/utils/format_fecha.dart';
@@ -17,9 +19,9 @@ class CustomCardProducto extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
-        // Navigator.push(context,
-        //     MaterialPageRoute(builder: (context) => DetailsProductos(e: e)));
-        showWebDialog(context);
+        Navigator.push(context,
+            MaterialPageRoute(builder: (context) => DetailsProductos(e: e)));
+        // showWebDialog(context);
       },
       child: LayoutBuilder(
           builder: (BuildContext context, BoxConstraints constraints) {
@@ -53,12 +55,10 @@ class CustomCardProducto extends StatelessWidget {
                       ],
                     ),
                   ),
-                  width: constraints.maxWidth * .98,
+                  width: constraints.maxWidth * .99,
                   height: constraints.maxHeight * 0.55,
                   child: Image.network(
-                    // ignore: unnecessary_null_comparison, unnecessary_type_check
-                    (e.imagen != null && e.imagen is String &&
-                            e.imagen.isNotEmpty)
+                    (e.imagen != null && e.imagen is String && e.imagen.isNotEmpty)
                         ? 'https://planet-broken.pockethost.io/api/files/${e.collectionId}/${e.id}/${e.imagen}'
                         : 'https://via.placeholder.com/300',
                     loadingBuilder: (BuildContext context, Widget child,
@@ -83,7 +83,8 @@ class CustomCardProducto extends StatelessWidget {
                         height: 150,
                       ); // Widget a mostrar si hay un error al cargar la imagen
                     },
-                    fit: BoxFit.fitHeight,
+                    fit: (e.imagen != null && e.imagen is String && e.imagen.isNotEmpty) 
+                    ? BoxFit.fitHeight : BoxFit.fitWidth,
                   ),
                 ),
                 Positioned(
@@ -166,29 +167,6 @@ class CustomCardProducto extends StatelessWidget {
     );
   }
 
-  void showWebDialog(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          content: Row(
-            children: [DetailsProductos(e: e)],
-          ),
-          actions: [
-            TextButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-                child: const H2Text(
-                  text: 'Cerrar',
-                  fontSize: 14,
-                  color: Colors.blue,
-                ))
-          ],
-        );
-      },
-    );
-  }
 }
 
 Color getColorBasedOnStockAndExpiration(ViewInventarioGeneralProductosModel e) {

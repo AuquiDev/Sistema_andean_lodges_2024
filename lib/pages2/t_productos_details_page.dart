@@ -7,7 +7,6 @@ import 'package:ausangate_op/provider/provider_t_categoria_almacen.dart';
 import 'package:ausangate_op/provider/provider_t_proveedorapp.dart';
 import 'package:ausangate_op/provider/provider_t_ubicacion_almacen.dart';
 import 'package:ausangate_op/provider/provider_v_inventario_general_productos.dart';
-import 'package:ausangate_op/widgets/custom_app_bar_entra_salid.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:provider/provider.dart';
@@ -28,24 +27,25 @@ class DetailsPageProducto extends StatefulWidget {
 class _DetailsPageProductoState extends State<DetailsPageProducto> {
   final ScrollController _scrollController = ScrollController();
   bool showAppBar = true;
-  
- void _onScroll() {
-  try {
-    setState(() {
-      if (_scrollController.position.userScrollDirection == ScrollDirection.forward) {
-        // Scroll Abajo
-        showAppBar = true;
-      } else if (_scrollController.position.userScrollDirection == ScrollDirection.reverse) {
-        // Scroll Arriba
-        showAppBar = false;
-      }
-    });
-  } catch (e, stackTrace) {
-    // Maneja la excepción de forma adecuada, por ejemplo, imprimiendo información de depuración.
-    print("Error en _onScroll: $e\n$stackTrace");
+
+  void _onScroll() {
+    try {
+      setState(() {
+        if (_scrollController.position.userScrollDirection ==
+            ScrollDirection.forward) {
+          // Scroll Abajo
+          showAppBar = true;
+        } else if (_scrollController.position.userScrollDirection ==
+            ScrollDirection.reverse) {
+          // Scroll Arriba
+          showAppBar = false;
+        }
+      });
+    } catch (e, stackTrace) {
+      // Maneja la excepción de forma adecuada, por ejemplo, imprimiendo información de depuración.
+      print("Error en _onScroll: $e\n$stackTrace");
+    }
   }
-}
- 
 
   @override
   void initState() {
@@ -94,9 +94,10 @@ class _DetailsPageProductoState extends State<DetailsPageProducto> {
       }
       return 'sin proveedor';
     }
+
     //Se puso este paso adicional. para obtener nuevvamente el stock actualizado.
-    //ADICONAL ACTULIZACION REFRESH NESESARIO. 
-     List<dynamic> obtenerStock(String idProducto) {
+    //ADICONAL ACTULIZACION REFRESH NESESARIO.
+    List<dynamic> obtenerStock(String idProducto) {
       final inventarioGeneral =
           Provider.of<ViewInventarioGeneralProductosProvider>(context)
               .listInventario;
@@ -112,53 +113,47 @@ class _DetailsPageProductoState extends State<DetailsPageProducto> {
       length: 2,
       child: Scaffold(
         appBar: AppBar(
-            leadingWidth: 30,
-            title:const TabBar(tabs: [
-                Tab(text: 'Entradas'),
-                Tab(text: 'Salidas'),
-              ])
+            leading: IconButton.filled(
+              style: const ButtonStyle(
+                  backgroundColor: MaterialStatePropertyAll(Colors.black26)),
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              icon: const Icon(Icons.close),
+              color: Colors.white,
             ),
+            title: const TabBar(tabs: [
+              Tab(text: 'Entradas'),
+              Tab(text: 'Salidas'),
+            ])),
         body: GestureDetector(
           onDoubleTap: () {
             setState(() {
-               showAppBar = true;
+              showAppBar = true;
             });
           },
-          child: Column(
+          child: TabBarView(
             children: [
-              showAppBar? CustomAppBarPRoductos(
-                    e: widget.e,
-                  ):const SizedBox(),
-              Expanded(
-                child: TabBarView(
-                  children: [
-                    
-                     ProductosEntradas(
-                      producto: widget.e,
-                      categoria: obtenerCategiria(widget.e.idCategoria),
-                      ubicacion: obtenerUbicacion(widget.e.idUbicacion),
-                      proveedor: obtenerProveedor(widget.e.idProveedor),
-                      stockList:  obtenerStock(widget.e.id),//widget.stockList,
-                      scrollController: _scrollController,showAppBar: showAppBar,
-                    ),
-                    ProductosSalidas(
-                      producto: widget.e,
-                      categoria: obtenerCategiria(widget.e.idCategoria),
-                      ubicacion: obtenerUbicacion(widget.e.idUbicacion),
-                      proveedor: obtenerProveedor(widget.e.idProveedor),
-                      stockList:  obtenerStock(widget.e.id),//widget.stockList,
-                      scrollController: _scrollController,showAppBar: showAppBar,
-                    ),
-                  ],
-                ),
+              ProductosEntradas(
+                producto: widget.e,
+                categoria: obtenerCategiria(widget.e.idCategoria),
+                ubicacion: obtenerUbicacion(widget.e.idUbicacion),
+                proveedor: obtenerProveedor(widget.e.idProveedor),
+                stockList: obtenerStock(widget.e.id), //widget.stockList,
+                scrollController: _scrollController, showAppBar: showAppBar,
+              ),
+              ProductosSalidas(
+                producto: widget.e,
+                categoria: obtenerCategiria(widget.e.idCategoria),
+                ubicacion: obtenerUbicacion(widget.e.idUbicacion),
+                proveedor: obtenerProveedor(widget.e.idProveedor),
+                stockList: obtenerStock(widget.e.id), //widget.stockList,
+                scrollController: _scrollController, showAppBar: showAppBar,
               ),
             ],
           ),
         ),
       ),
     );
-    
   }
-
- 
 }

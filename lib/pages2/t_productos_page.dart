@@ -159,29 +159,22 @@ class _ProductosPageDataState extends State<ProductosPageData> {
                         '$title | $currentCategory [${filterTProductos.length} regs.]',
                   ),
                   actions: [
-                    Container(
-                      margin: const EdgeInsets.only(right: 10),
-                      child: OutlinedButton.icon(
-                        style: buttonStyle(),
-                        onPressed: () {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) =>
-                                      const EditPageProductosApp()));
-                        },
-                        icon: const Icon(
-                          Icons.add_home_sharp,
-                          size: 20,
-                          color: Colors.black,
-                        ),
-                        label: const H2Text(
-                          text: 'Nuevo',
-                          color: Colors.black,
-                          fontSize: 12,
-                        ),
+                    ElevatedButton(
+                      style: buttonStyle(),
+                      onPressed: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) =>
+                                    const EditPageProductosApp()));
+                      },
+                      child: const H2Text(
+                        text: 'Nuevo Producto',
+                        color: Colors.black,
+                        fontSize: 12,
                       ),
                     ),
+                    
                     IconButton(
                         onPressed: () async {
                           final dataProvider =

@@ -4,16 +4,18 @@ import 'dart:async';
 
 import 'package:ausangate_op/models/model_t_productos_app.dart';
 import 'package:ausangate_op/models/model_t_ubicacion_almacen.dart';
+import 'package:ausangate_op/pages2/t_productos_details_page.dart';
+import 'package:ausangate_op/pages2/t_productos_entradas_editing.dart';
 import 'package:ausangate_op/provider/provider_t_categoria_almacen.dart';
 import 'package:ausangate_op/provider/provider_t_productoapp.dart';
 import 'package:ausangate_op/provider/provider_t_proveedorapp.dart';
 import 'package:ausangate_op/provider/provider_t_ubicacion_almacen.dart';
+import 'package:ausangate_op/utils/buton_style.dart';
 import 'package:ausangate_op/utils/divider_custom.dart';
 import 'package:ausangate_op/utils/format_fecha.dart';
 import 'package:ausangate_op/utils/parse_bool.dart';
 import 'package:ausangate_op/utils/parse_string_a_double.dart';
 import 'package:ausangate_op/utils/scroll_web.dart';
-import 'package:ausangate_op/widgets/card_custom_formfield_shadow.dart';
 import 'package:calendar_date_picker2/calendar_date_picker2.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -118,44 +120,92 @@ class _EditPageProductosAppState extends State<EditPageProductosApp> {
       },
       child: Scaffold(
         appBar: AppBar(
+          leading: IconButton.filled(
+            style: const ButtonStyle(
+                backgroundColor: MaterialStatePropertyAll(Colors.black26)),
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            icon: const Icon(Icons.close),
+            color: Colors.white,
+          ),
           surfaceTintColor: Colors.transparent,
           elevation: 0,
           backgroundColor: Colors.white,
           title: H2Text(
             text: title,
             fontWeight: FontWeight.bold,
+            fontSize: 15,
+            color: Colors.black54,
           ),
-          centerTitle: true,
+          centerTitle: false,
+          actions: [
+            (widget.e == null)
+                      ? const SizedBox()
+                      : 
+            ElevatedButton(
+              style: buttonStyle(),
+              onPressed: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => DetailsPageProducto(
+                              e: widget.e!,
+                            )));
+              },
+              child: const H2Text(
+                text: 'FLujo de Stock',
+                color: Colors.black,
+                fontSize: 12,
+              ),
+            ),
+          ],
         ),
-        body: Center(
-          child: Container(
-            constraints: const BoxConstraints(maxWidth: 400),
-            child: ScrollWeb(
-              child: SingleChildScrollView(
-                physics: const AlwaysScrollableScrollPhysics(),
-                child: Form(
-                  key: _formKey,
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 15.0, vertical: 8),
-                    child: Column(
-                      children: [
-                        TextFieldIdUbiacion(
+        body: ScrollWeb(
+          child: SingleChildScrollView(
+            physics: const AlwaysScrollableScrollPhysics(),
+            child: Form(
+              key: _formKey,
+              child: Column(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(top: 10.0, bottom: 0),
+                    child: H2Text(
+                        text: 'Datos de Producto'.toUpperCase(),
+                        fontSize: 12,
+                        fontWeight: FontWeight.w500),
+                  ),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: TextFieldIdUbiacion(
                           idUbicacionController: _idUbicacionController,
                         ),
-                        TextFiledIdCategoria(
+                      ),
+                      Expanded(
+                        child: TextFiledIdCategoria(
                             idCategoriaController: _idCategoriaController),
-                        TextFieldIdProveedor(
+                      ),
+                      Expanded(
+                        child: TextFieldIdProveedor(
                             idProveedorController: _idProveedorController),
-                        CardCustomFom(
-                          label: 'Nombre del producto.',
+                      ),
+                      Expanded(
+                          child: TextFieldTipoProducto(
+                              tipoController: _tipoController)),
+                    ],
+                  ),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
                           child: TextFormField(
                             controller: _nombreProductoController,
                             decoration: decorationTextField(
-                                hintText: 'campo obligatorio',
-                                labelText: 'Producto',
-                                prefixIcon: const Icon(Icons.panorama_fisheye,
-                                    color: Colors.black45)),
+                              hintText: 'campo obligatorio',
+                              labelText: 'Nombre del Producto',
+                            ),
                             validator: (value) {
                               if (value!.isEmpty) {
                                 return 'Campo obligatorio';
@@ -165,177 +215,29 @@ class _EditPageProductosAppState extends State<EditPageProductosApp> {
                             },
                           ),
                         ),
-                        CardCustomFom(
-                          label: 'Marca del producto.',
+                      ),
+                      Expanded(
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
                           child: TextFormField(
                             controller: _marcaController,
                             decoration: decorationTextField(
-                                hintText: 'campo obligatorio',
-                                labelText: 'Marca',
-                                prefixIcon: const Icon(Icons.panorama_fisheye,
-                                    color: Colors.black45)),
+                              hintText: 'campo obligatorio',
+                              labelText: 'Marca',
+                            ),
                             validator: (value) {
-                              return null;
-
-                              // if (value!.isEmpty) {
-                              //   return 'Campo obligatorio';
-                              // } else {
-                              //   return null;
-                              // }
+                              if (value!.isEmpty) {
+                                return 'Campo obligatorio';
+                              } else {
+                                return null;
+                              }
                             },
                           ),
                         ),
-                        TextFieldTipoProducto(tipoController: _tipoController),
-                        const Padding(
-                          padding: EdgeInsets.symmetric(vertical: 14.0),
-                          child: H2Text(
-                              text:
-                                  'Cuando un producto ingresa al inventario, se registra con un precio de compra y una unidad de medida específica. Al salir del inventario, el producto se distribuye con un precio de distribución distinto y en unidades más pequeñas, ajustándose a las necesidades operativas. Por favor, proporcione esa información en los campos correspondientes.',
-                              fontSize: 10,
-                              maxLines: 4,
-                              textAlign: TextAlign.justify,
-                              fontWeight: FontWeight.w300),
-                        ),
-                        Column(
-                          children: [
-                            Padding(
-                              padding:
-                                  const EdgeInsets.only(top: 10.0, bottom: 8),
-                              child: H2Text(
-                                  text: 'Detalles de Entrada'.toUpperCase(),
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.w500),
-                            ),
-                            Row(
-                              children: [
-                                Flexible(
-                                  flex: 1,
-                                  child: CardCustomFom(
-                                    label: 'Unidad medida de Entrada.',
-                                    child: TextFormField(
-                                      controller: _unDeMedController,
-                                      decoration: decorationTextField(
-                                          hintText: 'campo obligatorio',
-                                          labelText: 'Unidad medida',
-                                          prefixIcon: const Icon(
-                                              Icons.panorama_fisheye,
-                                              color: Colors.black45)),
-                                      validator: (value) {
-                                        if (value!.isEmpty) {
-                                          return 'Campo obligatorio';
-                                        } else {
-                                          return null;
-                                        }
-                                      },
-                                    ),
-                                  ),
-                                ),
-                                const VerticalDivider(),
-                                Flexible(
-                                  flex: 1,
-                                  child: CardCustomFom(
-                                    label: 'Precio Entrada (compra)',
-                                    child: TextFormField(
-                                      keyboardType:
-                                          const TextInputType.numberWithOptions(
-                                              decimal: true),
-                                      inputFormatters: [
-                                        FilteringTextInputFormatter.allow(
-                                            RegExp(r'^\d+\.?\d{0,2}')),
-                                      ],
-                                      controller: _precioController,
-                                      decoration: decorationTextField(
-                                          hintText: 'campo obligatorio',
-                                          labelText: 'S/. Precio',
-                                          prefixIcon: const Icon(Icons.numbers,
-                                              color: Colors.black45)),
-                                      validator: (value) {
-                                        if (value!.isEmpty) {
-                                          return 'Campo obligatorio';
-                                        } else {
-                                          return null;
-                                        }
-                                      },
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
-                        Column(
-                          children: [
-                            Padding(
-                              padding:
-                                  const EdgeInsets.only(top: 10.0, bottom: 0),
-                              child: H2Text(
-                                  text: 'Detalles de Salida'.toUpperCase(),
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.w500),
-                            ),
-                            Row(
-                              children: [
-                                Flexible(
-                                  flex: 1,
-                                  child: CardCustomFom(
-                                    label: 'Unidad medida de Salida.',
-                                    child: TextFormField(
-                                      controller: _undMedidaSalidaController,
-                                      decoration: decorationTextField(
-                                          hintText: 'campo obligatorio',
-                                          labelText: 'Unidad medida',
-                                          prefixIcon: const Icon(
-                                              Icons.panorama_fisheye,
-                                              color: Colors.black45)),
-                                      validator: (value) {
-                                        return null;
-
-                                        // if (value!.isEmpty) {
-                                        //   return 'Campo obligatorio';
-                                        // } else {
-                                        //   return null;
-                                        // }
-                                      },
-                                    ),
-                                  ),
-                                ),
-                                const VerticalDivider(),
-                                Flexible(
-                                  flex: 1,
-                                  child: CardCustomFom(
-                                    label: 'Precio Salida',
-                                    child: TextFormField(
-                                      keyboardType:
-                                          const TextInputType.numberWithOptions(
-                                              decimal: true),
-                                      inputFormatters: [
-                                        FilteringTextInputFormatter.allow(
-                                            RegExp(r'^\d+\.?\d{0,2}')),
-                                      ],
-                                      controller: _precioUndSalidaController,
-                                      decoration: decorationTextField(
-                                          hintText: 'campo obligatorio',
-                                          labelText: 'S/. Precio',
-                                          prefixIcon: const Icon(Icons.numbers,
-                                              color: Colors.black45)),
-                                      validator: (value) {
-                                        return null;
-
-                                        // if (value!.isEmpty) {
-                                        //   return 'Campo obligatorio';
-                                        // } else {
-                                        //   return null;
-                                        // }
-                                      },
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
-                        CardCustomFom(
-                          label: 'Fecha de vencimiento.',
+                      ),
+                      Expanded(
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
                           child: TextFormField(
                             // enabled: false,
                             readOnly:
@@ -344,11 +246,9 @@ class _EditPageProductosAppState extends State<EditPageProductosApp> {
                                 true, // Muestra el cursor al tocar el campo
                             controller: _fechaVencimientoController,
                             decoration: decorationTextField(
-                                hintText: 'campo obligatorio',
-                                labelText: 'Fecha Vencimiento',
-                                prefixIcon: const Icon(
-                                    Icons.calendar_month_outlined,
-                                    color: Colors.black45)),
+                              hintText: 'campo obligatorio',
+                              labelText: 'Fecha Vencimiento',
+                            ),
                             onTap: () {
                               _pickDate(context);
                               print(_fechaVencimientoController.text);
@@ -366,25 +266,9 @@ class _EditPageProductosAppState extends State<EditPageProductosApp> {
                             },
                           ),
                         ),
-                        CardCustomFom(
-                          label:
-                              '(uso, preparación, observaciones,recomendaciones, otros...).',
-                          child: TextFormField(
-                            textAlignVertical: TextAlignVertical.top,
-                            maxLength: 250,
-                            maxLines: 4,
-                            controller: _descripcionController,
-                            decoration: decorationTextField(
-                                hintText: 'campo obligatorio',
-                                labelText: 'Descripción',
-                                prefixIcon: const Icon(Icons.panorama_fisheye,
-                                    color: Colors.black45)),
-                            validator: (value) {
-                              return null;
-                            },
-                          ),
-                        ),
-                        Padding(
+                      ),
+                      Expanded(
+                        child: Padding(
                           padding: const EdgeInsets.all(8.0),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.end,
@@ -405,49 +289,225 @@ class _EditPageProductosAppState extends State<EditPageProductosApp> {
                             ],
                           ),
                         ),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 50.0),
-                          child: ElevatedButton(
-                            style: const ButtonStyle(
-                                backgroundColor: MaterialStatePropertyAll(
-                                    Color(0xFF697BE1))),
-                            onPressed: isavingProvider
-                                ? null
-                                : () async {
-                                    print('push buton');
-                                    if (_formKey.currentState!.validate()) {
-                                      if (widget.e != null) {
-                                        editarDatos();
-                                        refreshListData();
-                                        _formKey.currentState!.save();
-                                      } else {
-                                        enviarDatos();
-                                        refreshListData();
-                                        _formKey.currentState!.save();
-                                      }
-                                    } else {
-                                      // Mostrar un SnackBar indicando el primer campo con error
-                                      completeForm();
-                                    }
-                                    //Actualizar al Tabla 
-                                     
-                                  },
-                            child: SizedBox(
-                                height: 60,
-                                child: Center(
-                                    child: isavingProvider
-                                        ? const CircularProgressIndicator()
-                                        : const H2Text(
-                                            text: 'Guardar',
-                                            fontWeight: FontWeight.w600,
-                                            color: Colors.white,
-                                          ))),
+                      ),
+                    ],
+                  ),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: Column(
+                          children: [
+                            Padding(
+                              padding:
+                                  const EdgeInsets.only(top: 10.0, bottom: 0),
+                              child: H2Text(
+                                  text: 'Detalles de Entrada'.toUpperCase(),
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.w500),
+                            ),
+                            Row(
+                              children: [
+                                Flexible(
+                                  flex: 1,
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: TextFormField(
+                                      controller: _unDeMedController,
+                                      decoration: decorationTextField(
+                                        hintText: 'campo obligatorio',
+                                        labelText: 'Unidad medida',
+                                      ),
+                                      validator: (value) {
+                                        if (value!.isEmpty) {
+                                          return 'Campo obligatorio';
+                                        } else {
+                                          return null;
+                                        }
+                                      },
+                                    ),
+                                  ),
+                                ),
+                                Flexible(
+                                  flex: 1,
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: TextFormField(
+                                      keyboardType:
+                                          const TextInputType.numberWithOptions(
+                                              decimal: true),
+                                      inputFormatters: [
+                                        FilteringTextInputFormatter.allow(
+                                            RegExp(r'^\d+\.?\d{0,2}')),
+                                      ],
+                                      controller: _precioController,
+                                      decoration: decorationTextField(
+                                        hintText: 'campo obligatorio',
+                                        labelText: 'Precio compra',
+                                      ),
+                                      validator: (value) {
+                                        if (value!.isEmpty) {
+                                          return 'Campo obligatorio';
+                                        } else {
+                                          return null;
+                                        }
+                                      },
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                      Expanded(
+                        child: Column(
+                          children: [
+                            Padding(
+                              padding:
+                                  const EdgeInsets.only(top: 10.0, bottom: 0),
+                              child: H2Text(
+                                  text: 'Detalles de Salida'.toUpperCase(),
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.w500),
+                            ),
+                            Row(
+                              children: [
+                                Flexible(
+                                  flex: 1,
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: TextFormField(
+                                      controller: _undMedidaSalidaController,
+                                      decoration: decorationTextField(
+                                        hintText: 'campo obligatorio',
+                                        labelText: 'Unidad medida de Salida.',
+                                      ),
+                                      validator: (value) {
+                                        return null;
+                                        // if (value!.isEmpty) {
+                                        //   return 'Campo obligatorio';
+                                        // } else {
+                                        //   return null;
+                                        // }
+                                      },
+                                    ),
+                                  ),
+                                ),
+                                Flexible(
+                                  flex: 1,
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: TextFormField(
+                                      keyboardType:
+                                          const TextInputType.numberWithOptions(
+                                              decimal: true),
+                                      inputFormatters: [
+                                        FilteringTextInputFormatter.allow(
+                                            RegExp(r'^\d+\.?\d{0,2}')),
+                                      ],
+                                      controller: _precioUndSalidaController,
+                                      decoration: decorationTextField(
+                                        hintText: 'campo obligatorio',
+                                        labelText: 'Precio distribución',
+                                      ),
+                                      validator: (value) {
+                                        return null;
+
+                                        // if (value!.isEmpty) {
+                                        //   return 'Campo obligatorio';
+                                        // } else {
+                                        //   return null;
+                                        // }
+                                      },
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      Expanded(
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: TextFormField(
+                            textAlignVertical: TextAlignVertical.top,
+                            maxLength: 2000,
+                            maxLines: 4,
+                            controller: _descripcionController,
+                            decoration: decorationTextField(
+                              hintText: 'campo obligatorio',
+                              labelText:
+                                  '(uso, preparación, observaciones,recomendaciones, otros...).',
+                            ),
+                            validator: (value) {
+                              return null;
+                            },
                           ),
                         ),
-                      ],
-                    ),
+                      ),
+                      Container(
+                        constraints: const BoxConstraints(maxWidth: 150),
+                        child: TextButton(
+                          onPressed: isavingProvider
+                              ? null
+                              : () async {
+                                  print('push buton');
+                                  if (_formKey.currentState!.validate()) {
+                                    if (widget.e != null) {
+                                      editarDatos();
+                                      refreshListData();
+                                      _formKey.currentState!.save();
+                                    } else {
+                                      enviarDatos();
+                                      refreshListData();
+                                      _formKey.currentState!.save();
+                                    }
+                                  } else {
+                                    // Mostrar un SnackBar indicando el primer campo con error
+                                    completeForm();
+                                  }
+                                },
+                          child: Container(
+                              decoration: BoxDecoration(
+                                color: Colors.red,
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              height: 40,
+                              child: Center(
+                                  child: isavingProvider
+                                      ? const CircularProgressIndicator()
+                                      : const H2Text(
+                                          text: 'Guardar',
+                                          fontWeight: FontWeight.w600,
+                                          fontSize: 15,
+                                          color: Colors.white,
+                                        ))),
+                        ),
+                      ),
+                    ],
                   ),
-                ),
+                  (widget.e == null)
+                      ? const SizedBox()
+                      : Column(
+                        children: [
+                          EntradasForm(
+                              producto: widget.e!,
+                            ),
+                          // SalidasForm(
+                          //     producto: widget.e!, 
+                          //     listDetallTrabajo: [], 
+                          //     listaEmpleados: [], 
+                          //     stockList: [],
+                          //   ),
+                        ],
+                      )
+                ],
               ),
             ),
           ),
@@ -596,8 +656,8 @@ class TextFieldTipoProducto extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     List<String> tipo = ['perecible', 'no perecible'];
-    return CardCustomFom(
-      label: 'Tipo de producto.',
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
       child: TextFormField(
         readOnly: true, // Deshabilita la edición directa del texto
         showCursor: true, // Muestra el cursor al tocar el campo
@@ -605,8 +665,7 @@ class TextFieldTipoProducto extends StatelessWidget {
         decoration: decorationTextField(
             hintText: 'campo obligatorio',
             labelText: 'Tipo',
-            prefixIcon:
-                const Icon(Icons.panorama_fisheye, color: Colors.black45)),
+            prefixIcon: const Icon(Icons.type_specimen, color: Colors.black45)),
         validator: (value) {
           return null;
         },
@@ -685,8 +744,8 @@ class TextFieldIdProveedor extends StatelessWidget {
         .listaProveedor
       ..sort((a, b) =>
           a.nombreEmpresaProveedor.compareTo(b.nombreEmpresaProveedor));
-    return CardCustomFom(
-      label: 'ID de Proveedor del producto.',
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
       child: TextFormField(
         readOnly: true, // Deshabilita la edición directa del texto
         showCursor: true, // Muestra el cursor al tocar el campo
@@ -775,8 +834,8 @@ class TextFiledIdCategoria extends StatelessWidget {
   Widget build(BuildContext context) {
     final listaCategoria = Provider.of<TCategoriaProvider>(context).listcategory
       ..sort((a, b) => a.categoria.compareTo(b.categoria));
-    return CardCustomFom(
-      label: 'ID de categoría del producto.',
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
       child: TextFormField(
         readOnly: true, // Deshabilita la edición directa del texto
         showCursor: true, // Muestra el cursor al tocar el campo
@@ -862,8 +921,8 @@ class TextFieldIdUbiacion extends StatelessWidget {
     final listaUbicacion = Provider.of<TUbicacionAlmacenProvider>(context)
         .listUbicacion
       ..sort((a, b) => a.nombreUbicacion.compareTo(b.nombreUbicacion));
-    return CardCustomFom(
-      label: 'ID de ubicación de almacenamiento del producto.',
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
       child: TextFormField(
         readOnly: true, // Deshabilita la edición directa del texto
         showCursor: true, // Muestra el cursor al tocar el campo

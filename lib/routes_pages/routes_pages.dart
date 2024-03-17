@@ -49,39 +49,43 @@ List<PageRoutes> routes = [
   //    ),
 
   PageRoutes(
-    icon: const Icon(Icons.assignment, color: Colors.cyan),
+    icon: const Icon(Icons.edit_document),
     title: "Control Asistencia",
     path: const FormularioAsistenciapage(),
   ),
 
   PageRoutes(
-    icon: const Icon(Icons.assignment, color: Colors.cyan),
+    icon: const Icon(Icons.report_problem_rounded),
     title: "Reporte Incidencias",
     path: const ListaReporteIncidencias(),
   ),
   PageRoutes(
-    icon: const Icon(Icons.assignment, color: Colors.cyan),
+    icon: const Icon(Icons.travel_explore_rounded),
     title: "Encuesta Pasajeros",
     path: const ListaReporte(),
   ),
 
   PageRoutes(
-    icon: const Icon(Icons.assignment, color: Colors.cyan),
+    icon: const Icon(
+      Icons.history,
+    ),
     title: "Historial de entradas",
     path: const MovimientosPageEntrada(),
   ),
   PageRoutes(
-    icon: const Icon(Icons.assignment, color: Colors.cyan),
+    icon: const Icon(Icons.history),
     title: "Historial de Salidas",
     path: const MovimientosPageSalida(),
   ),
   PageRoutes(
-    icon: const Icon(Icons.assignment, color: Colors.cyan),
+    icon: const Icon(
+      Icons.monetization_on,
+    ),
     title: "Gastos por Grupo",
     path: const GastosGruposPage(),
   ),
   PageRoutes(
-    icon: const Icon(Icons.assignment, color: Colors.cyan),
+    icon: const Icon(Icons.admin_panel_settings),
     title: "Administración",
     path: const AdministracionPage(),
   ),

@@ -2,6 +2,7 @@
 
 import 'package:ausangate_op/models/model_t_ubicacion_almacen.dart';
 import 'package:ausangate_op/models/model_v_inventario_general_producto.dart';
+import 'package:ausangate_op/pages/pdf_export_catalogo.producto.dart';
 import 'package:ausangate_op/provider/provider_t_ubicacion_almacen.dart';
 import 'package:ausangate_op/provider/provider_v_inventario_general_productos.dart';
 import 'package:ausangate_op/utils/buton_style.dart';
@@ -404,9 +405,9 @@ class Inventario extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // PdfExportCatalogoProductos(
-        //   sortedKey: sortedKey, categoriasFilter: categoriasFilter,title: title,
-        // ),
+        PdfExportCatalogoProductos(
+          sortedKey: sortedKey, categoriasFilter: categoriasFilter,title: title,
+        ),
         Expanded(
           child: ScrollWeb(
             child: ListView.builder(
@@ -440,13 +441,11 @@ class Inventario extends StatelessWidget {
                                 text: '${productosPorCategoria.length} regs.',
                                 fontSize: 13,
                                 fontWeight: FontWeight.w400,
-                                color: Colors.blue)
+                                color: Colors.indigo)
                           ],
                         ),
                       ),
-                      const Divider(
-                        color: Colors.black12,
-                      ),
+                      const Divider(),
                       // ignore: unnecessary_null_comparison
                       if (productosPorCategoria !=
                           null) // Verificamos si esa ctegoria es nula y si no es la generamos.

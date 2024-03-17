@@ -15,8 +15,9 @@ InputDecoration decorationTextField(
     labelStyle: const TextStyle(
         color: Colors.blue, fontSize: 13, fontWeight: FontWeight.w300),
     hintStyle: const TextStyle(color: Colors.black45, fontSize: 13),
+    
     border: OutlineInputBorder(
-      borderSide: const BorderSide(color: Colors.transparent),
+      borderSide: const BorderSide(color: Colors.black26),
       borderRadius: BorderRadius.circular(10.0),
     ),
     focusedBorder: OutlineInputBorder(
@@ -24,7 +25,7 @@ InputDecoration decorationTextField(
       borderRadius: BorderRadius.circular(10.0),
     ),
     enabledBorder: OutlineInputBorder(
-      borderSide: const BorderSide(color: Colors.transparent),
+      borderSide: const BorderSide(color: Colors.black38),
       borderRadius: BorderRadius.circular(10.0),
     ),
     errorBorder: OutlineInputBorder(

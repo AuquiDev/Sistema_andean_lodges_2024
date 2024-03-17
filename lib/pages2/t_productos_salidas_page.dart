@@ -51,7 +51,6 @@ class _ProductosSalidasState extends State<ProductosSalidas> {
 
   @override
   Widget build(BuildContext context) {
-    
     List<TSalidasAppModel> obtenerSalidas(String idProducto) {
       final listaSalidas =
           Provider.of<TSalidasAppProvider>(context).listSalidas;
@@ -60,7 +59,8 @@ class _ProductosSalidasState extends State<ProductosSalidas> {
           .where((e) => e.idProducto == widget.producto.id)
           .toList();
 
-      return salidasFiltradas..sort((a,b)=>a.created!.compareTo(b.created!));
+      return salidasFiltradas;
+      // ..sort((a, b) => a.created!.compareTo(b.created!));
     }
 
     final listDetallTrabajo = Provider.of<TDetalleTrabajoProvider>(context)
@@ -71,67 +71,72 @@ class _ProductosSalidasState extends State<ProductosSalidas> {
       ..sort((a, b) => a.nombre.compareTo(b.nombre));
 
     return Scaffold(
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.end,
-        children: [
-          obtenerSalidas(widget.producto.id).isEmpty
-              ? const Expanded(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Center(
-                        child: H2Text(
-                          text: 'No se encontraron salidas para este producto.',
-                          fontSize: 12,
-                          fontWeight: FontWeight.w300,
-                        ),
+      body: Center(
+        child: Container(
+          constraints: const BoxConstraints(maxWidth: 600),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              OutlinedButton(
+                  style: const ButtonStyle(
+                    backgroundColor: MaterialStatePropertyAll(Colors.indigo),
+                  ),
+                  onPressed: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => SalidasForm(
+                                  producto: widget.producto,
+                                  listDetallTrabajo: listDetallTrabajo,
+                                  listaEmpleados: listaEmpleados,
+                                  stockList: widget.stockList,
+                                )));
+                  },
+                  child: const H2Text(
+                    text: 'Añadir nuevo',
+                    fontWeight: FontWeight.w600,
+                    fontSize: 14,
+                    color: Colors.white,
+                  )),
+              obtenerSalidas(widget.producto.id).isEmpty
+                  ? const Expanded(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Center(
+                            child: H2Text(
+                              text:
+                                  'No se encontraron salidas para este producto.',
+                              fontSize: 12,
+                              fontWeight: FontWeight.w300,
+                            ),
+                          ),
+                        ],
                       ),
-                    ],
-                  ),
-                )
-              : Expanded(
-                  child: ListView.builder(
-                    controller: widget._scrollController,
-                    physics: const AlwaysScrollableScrollPhysics(),
-                    itemCount: obtenerSalidas(widget.producto.id).length,
-                    itemBuilder: (context, index) {
-                      final e = obtenerSalidas(widget.producto.id)
-                          .reversed
-                          .toList()[index];
-                      return CardCustomProductoApp(
-                        e: e,
-                        listDetallTrabajo: listDetallTrabajo,
-                        listaEmpleados: listaEmpleados,
-                        producto: widget.producto,
-                        stockList: widget.stockList,
-                      );
-                    },
-                  ),
-                ),
-        ],
-      ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-      floatingActionButton: OutlinedButton(
-          style: const ButtonStyle(
-            backgroundColor: MaterialStatePropertyAll(Colors.indigo),
+                    )
+                  : Expanded(
+                      child: ListView.builder(
+                        controller: widget._scrollController,
+                        physics: const AlwaysScrollableScrollPhysics(),
+                        itemCount: obtenerSalidas(widget.producto.id).length,
+                        itemBuilder: (context, index) {
+                          final e = obtenerSalidas(widget.producto.id)
+                              .reversed
+                              .toList()[index];
+                          return CardCustomProductoApp(
+                            e: e,
+                            listDetallTrabajo: listDetallTrabajo,
+                            listaEmpleados: listaEmpleados,
+                            producto: widget.producto,
+                            stockList: widget.stockList,
+                          );
+                        },
+                      ),
+                    ),
+            ],
           ),
-          onPressed: () {
-            Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => SalidasForm(
-                          producto: widget.producto,
-                          listDetallTrabajo: listDetallTrabajo,
-                          listaEmpleados: listaEmpleados,
-                          stockList: widget.stockList,
-                        )));
-          },
-          child: const H2Text(
-            text: 'Añadir nuevo',
-            fontWeight: FontWeight.w600,
-            fontSize: 14,
-            color: Colors.white,
-          )),
+        ),
+      ),
     );
   }
 }
@@ -165,7 +170,7 @@ class CardCustomProductoApp extends StatelessWidget {
     String obtenertrabajo(String idTrabajo) {
       for (var data in listDetallTrabajo) {
         if (data.id == e.idTrabajo) {
-          return 'GRUPO : ${data.codigoGrupo}\nITINERARIO boorado detalle trabajo';// : ${data.itinerarioDiasNoches}\nPROGRAMA: ${data.programacion}';
+          return 'GRUPO : ${data.codigoGrupo}'; // : ${data.itinerarioDiasNoches}\nPROGRAMA: ${data.programacion}';
         }
       }
       return 'null';
@@ -175,13 +180,8 @@ class CardCustomProductoApp extends StatelessWidget {
       margin: const EdgeInsets.symmetric(vertical: 2),
       color: const Color(0x117C7B7B),
       child: ListTile(
-        // dense: true,
         visualDensity: VisualDensity.compact,
         contentPadding: const EdgeInsets.all(0),
-        // onTap: () {
-        //   Navigator.push(
-        //       context, MaterialPageRoute(builder: (context) => Container()));
-        // },
         leading: SizedBox(
           width: 100,
           child: Row(
@@ -239,19 +239,17 @@ class CardCustomProductoApp extends StatelessWidget {
                     fontSize: 10,
                     fontWeight: FontWeight.w600,
                   ),
-                  Column(
+                  const Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      H2Text(
-                        text: 'Created : ${formatFechaHora(e.created!)}',
-                        fontSize: 8,
-                        fontWeight: FontWeight.w200,
-                      ),
-                      H2Text(
-                        text: 'updated : ${formatFechaHora(e.updated!)}',
-                        fontSize: 8,
-                        fontWeight: FontWeight.w200,
-                      ),
+                      // H2Text(
+                      //   text: 'Created : ${formatFechaHora(e.created!)}',
+                      //   fontSize: 9,
+                      // ),
+                      // H2Text(
+                      //   text: 'updated : ${formatFechaHora(e.updated!)}',
+                      //   fontSize: 9,
+                      // ),
                     ],
                   ),
                   const SizedBox(
@@ -260,8 +258,6 @@ class CardCustomProductoApp extends StatelessWidget {
                   H2Text(
                     text: 'Entregado a:  ${obtenerEmpleado(e.idEmpleado)}',
                     fontSize: 10,
-                    fontWeight: FontWeight.w300,
-                    color: const Color(0xFF251267),
                   ),
                 ],
               ),
@@ -288,7 +284,6 @@ class CardCustomProductoApp extends StatelessWidget {
                           const H2Text(
                             text: '# Salidas',
                             fontSize: 9,
-                            fontWeight: FontWeight.w200,
                           ),
                           H2Text(
                             text: '${e.cantidadSalida}',

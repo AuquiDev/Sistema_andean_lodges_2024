@@ -104,7 +104,6 @@ class _GruposEditingPageState extends State<GruposEditingPage> {
                 const H2Text(
                   text: 'Grupos confirmados',
                   fontSize: 10,
-                  fontWeight: FontWeight.w200,
                   maxLines: 4,
                 ),
               ],
@@ -113,6 +112,7 @@ class _GruposEditingPageState extends State<GruposEditingPage> {
           body: SingleChildScrollView(
             physics: const AlwaysScrollableScrollPhysics(),
             child: Container(
+              constraints: BoxConstraints(maxWidth:600),
               margin: const EdgeInsets.all(15),
               child: Column(
                 children: [

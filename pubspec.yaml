@@ -58,6 +58,7 @@ dependencies:
   # vibration: ^1.8.4 #vibrar al snacear un codgio qr
   # audioplayers: ^5.2.1 #reproducir tonpo al scanear QR
   widget_circular_animator: ^1.0.0
+  flutter_carousel_widget: ^2.2.0
   
   
 

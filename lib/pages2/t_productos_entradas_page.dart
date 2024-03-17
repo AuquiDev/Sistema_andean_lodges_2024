@@ -47,8 +47,8 @@ class _ProductosEntradasState extends State<ProductosEntradas> {
       List<TEntradasModel> entradasFiltradas = listaEntradas
           .where((e) => e.idProducto == widget.producto.id)
           .toList();
-      return entradasFiltradas
-        ..sort((a, b) => a.created!.compareTo(b.created!));
+      return entradasFiltradas;
+      // ..sort((a, b) => a.created!.compareTo(b.created!));
     }
 
     final listaEmpleados = Provider.of<TEmpleadoProvider>(context)
@@ -60,69 +60,73 @@ class _ProductosEntradasState extends State<ProductosEntradas> {
           a.nombreEmpresaProveedor.compareTo(b.nombreEmpresaProveedor));
 
     return Scaffold(
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.end,
-        children: [
-          obtenerEntradas(widget.producto.id).isEmpty
-              ? const Expanded(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Center(
-                        child: H2Text(
-                          text: 'No se encontraron salidas para este producto.',
-                          fontSize: 12,
-                          fontWeight: FontWeight.w300,
+        body: Center(
+      child: Container(
+        constraints: const BoxConstraints(maxWidth: 600),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.end,
+          children: [
+            // ElevatedButton(
+            //     style: const ButtonStyle(
+            //       backgroundColor: MaterialStatePropertyAll(Colors.green),
+            //     ),
+            //     onPressed: () {
+            //       Navigator.push(
+            //           context,
+            //           MaterialPageRoute(
+            //               builder: (context) => EntradasForm(
+            //                     producto: widget.producto,
+            //                     // listaEmpleados: listaEmpleados,
+            //                     // stockList: widget.stockList,
+            //                     // listaProveedor: listaProveedor,
+            //                   )));
+            //     },
+            //     child: const H2Text(
+            //       text: 'Añadir nuevo',
+            //       fontWeight: FontWeight.w600,
+            //       fontSize: 14,
+            //       color: Colors.white,
+            //     )),
+            obtenerEntradas(widget.producto.id).isEmpty
+                ? const Expanded(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Center(
+                          child: H2Text(
+                            text:
+                                'No se encontraron salidas para este producto.',
+                            fontSize: 12,
+                            fontWeight: FontWeight.w300,
+                          ),
                         ),
-                      ),
-                    ],
-                  ),
-                )
-              : Expanded(
-                  child: ListView.builder(
-                    controller: widget._scrollController,
-                    physics: const AlwaysScrollableScrollPhysics(),
-                    itemCount: obtenerEntradas(widget.producto.id).length,
-                    itemBuilder: (context, index) {
-                      final e = obtenerEntradas(widget.producto
-                              .id) //Lista ENtradas Filtradas ppor producto
-                          .reversed
-                          .toList()[index];
-                      return CardCustomEntradasApp(
-                        e: e,
-                        listaProveedor: listaProveedor,
-                        listaEmpleados: listaEmpleados,
-                        producto: widget.producto,
-                        stockList: widget.stockList,
-                      );
-                    },
-                  ),
-                ),
-        ],
-      ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-      floatingActionButton: ElevatedButton(
-          style: const ButtonStyle(
-            backgroundColor: MaterialStatePropertyAll(Colors.deepOrange),
-          ),
-          onPressed: () {
-            Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => EntradasForm(
+                      ],
+                    ),
+                  )
+                : Expanded(
+                    child: ListView.builder(
+                      controller: widget._scrollController,
+                      physics: const AlwaysScrollableScrollPhysics(),
+                      itemCount: obtenerEntradas(widget.producto.id).length,
+                      itemBuilder: (context, index) {
+                        final e = obtenerEntradas(widget.producto
+                                .id) //Lista ENtradas Filtradas ppor producto
+                            .reversed
+                            .toList()[index];
+                        return CardCustomEntradasApp(
+                          e: e,
+                          listaProveedor: listaProveedor,
+                          listaEmpleados: listaEmpleados,
                           producto: widget.producto,
-                          // listaEmpleados: listaEmpleados,
-                          // stockList: widget.stockList,
-                          // listaProveedor: listaProveedor,
-                        )));
-          },
-          child: const H2Text(
-            text: 'Añadir nuevo',
-            fontWeight: FontWeight.w600,
-            fontSize: 14,
-            color: Colors.white,
-          )),
-    );
+                          stockList: widget.stockList,
+                        );
+                      },
+                    ),
+                  ),
+          ],
+        ),
+      ),
+    ));
   }
 }
 
@@ -157,7 +161,7 @@ class CardCustomEntradasApp extends StatelessWidget {
           Provider.of<TProveedorProvider>(context).listaProveedor;
       for (var data in listaProveedor) {
         if (data.id == e.idProveedor) {
-          return 'EMPRESA : ${data.nombreEmpresaProveedor}\nCIUDAD : ${data.ciudadProveedor}\nCORREO: ${data.correoProveedor}';
+          return data.nombreEmpresaProveedor;
         }
       }
       return 'null';
@@ -177,7 +181,8 @@ class CardCustomEntradasApp extends StatelessWidget {
               GestureDetector(
                   onTap: () {
                     // var idusuario = context.read<UsuarioProvider>().idUsuario;
-                     var idusuario = context.read<UsuarioProvider>().usuarioEncontrado!.id;
+                    var idusuario =
+                        context.read<UsuarioProvider>().usuarioEncontrado!.id;
 
                     if (idusuario == e.idEmpleado) {
                       //SOLO EL USUARIO QUE CREO PUEDO EDITAR
@@ -185,8 +190,8 @@ class CardCustomEntradasApp extends StatelessWidget {
                           context,
                           MaterialPageRoute(
                               builder: (context) => EntradasForm(
-                                  e: e,
-                                  producto: producto,
+                                    e: e,
+                                    producto: producto,
                                   )));
                     } else {
                       showSialogButon(context,
@@ -202,7 +207,8 @@ class CardCustomEntradasApp extends StatelessWidget {
               GestureDetector(
                   onTap: () {
                     // var idusuario = context.read<UsuarioProvider>().idUsuario;
-                     var idusuario = context.read<UsuarioProvider>().usuarioEncontrado!.id;
+                    var idusuario =
+                        context.read<UsuarioProvider>().usuarioEncontrado!.id;
                     if (idusuario == e.idEmpleado) {
                       //ELIMINAR SI Y SILO SI la fecha esta en un plaso de dos dias despues de al creacion
                       final diferenceDias =
@@ -239,19 +245,17 @@ class CardCustomEntradasApp extends StatelessWidget {
                     fontWeight: FontWeight.w600,
                     maxLines: 2,
                   ),
-                  Column(
+                  const Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      H2Text(
-                        text: 'Created : ${formatFechaHora(e.created!)}',
-                        fontSize: 8,
-                        fontWeight: FontWeight.w200,
-                      ),
-                      H2Text(
-                        text: 'updated : ${formatFechaHora(e.updated!)}',
-                        fontSize: 8,
-                        fontWeight: FontWeight.w200,
-                      ),
+                      // H2Text(
+                      //   text: 'Created : ${formatFechaHora(e.created!)}',
+                      //   fontSize: 8,
+                      // ),
+                      // H2Text(
+                      //   text: 'updated : ${formatFechaHora(e.updated!)}',
+                      //   fontSize: 8,
+                      // ),
                     ],
                   ),
                   const SizedBox(
@@ -260,12 +264,10 @@ class CardCustomEntradasApp extends StatelessWidget {
                   H2Text(
                     text: 'Creador por:  ${obtenerEmpleado(e.idEmpleado)}',
                     fontSize: 9,
-                    fontWeight: FontWeight.w200,
                   ),
                   H2Text(
                     text: 'Editado por:  ${obtenerEmpleado(e.idEmpleado)}',
                     fontSize: 9,
-                    fontWeight: FontWeight.w200,
                   ),
                 ],
               ),
@@ -292,7 +294,6 @@ class CardCustomEntradasApp extends StatelessWidget {
                           const H2Text(
                             text: '# Entradas',
                             fontSize: 9,
-                            fontWeight: FontWeight.w200,
                           ),
                           H2Text(
                             text: '${e.cantidadEntrada}',
@@ -306,7 +307,6 @@ class CardCustomEntradasApp extends StatelessWidget {
                     const H2Text(
                       text: 'Proveedor',
                       fontSize: 9,
-                      fontWeight: FontWeight.w200,
                     ),
                     H2Text(
                       text: obtenerProveedor(e.idProveedor),

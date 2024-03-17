@@ -153,7 +153,7 @@ class _AdministracionPageState extends State<AdministracionPage> {
               )
             : null,
         body: ContentBodyAdmin(scrollController: _scrollController),
-        endDrawer: const DrawerAdminApp(),
+        // endDrawer: const DrawerAdminApp(),
       ),
     );
   }

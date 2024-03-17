@@ -9,6 +9,7 @@ class TEntradasModel {
     // String? collectionName;
     DateTime? created;
     DateTime? updated;
+    
     String idProducto;
     String idProveedor;
     String idEmpleado;

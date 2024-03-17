@@ -82,31 +82,37 @@ class _EntradasFormState extends State<EntradasForm> {
               children: [
                 //IDPRODUCTO
                 //IDEMPLEADO
-
+                const Divider(),
+                Padding(
+                  padding: const EdgeInsets.only(top: 10.0, bottom: 0),
+                  child: H2Text(
+                      text: 'Nueva Entrada'.toUpperCase(),
+                      fontSize: 12,
+                      fontWeight: FontWeight.w500),
+                ),
                 Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Flexible(
                       flex: 1,
-                      child: Card(
-                        child: TextFormField(
-                          controller: _cantidadEntradasController,
-                          keyboardType: const TextInputType.numberWithOptions(
-                              decimal: true),
-                          inputFormatters: [
-                            FilteringTextInputFormatter.allow(
-                                RegExp(r'^\d+\.?\d{0,2}')),
-                          ],
-                          decoration: decorationTextField(
-                              hintText: 'Cantidad entrada',
-                              labelText: 'Cantidad entrada'),
-                          validator: (value) {
-                            if (value!.isEmpty) {
-                              return 'Campo obligatorio';
-                            } else {
-                              return null;
-                            }
-                          },
-                        ),
+                      child: TextFormField(
+                        controller: _cantidadEntradasController,
+                        keyboardType: const TextInputType.numberWithOptions(
+                            decimal: true),
+                        inputFormatters: [
+                          FilteringTextInputFormatter.allow(
+                              RegExp(r'^\d+\.?\d{0,2}')),
+                        ],
+                        decoration: decorationTextField(
+                            hintText: 'Cantidad entrada',
+                            labelText: 'Cantidad entrada'),
+                        validator: (value) {
+                          if (value!.isEmpty) {
+                            return 'Campo obligatorio';
+                          } else {
+                            return null;
+                          }
+                        },
                       ),
                     ),
                     const SizedBox(
@@ -114,94 +120,106 @@ class _EntradasFormState extends State<EntradasForm> {
                     ),
                     Flexible(
                       flex: 1,
-                      child: Card(
-                        child: TextFormField(
-                          controller: _precioController,
-                          keyboardType: const TextInputType.numberWithOptions(
-                              decimal: true),
-                          inputFormatters: [
-                            FilteringTextInputFormatter.allow(
-                                RegExp(r'^\d+\.?\d{0,2}')),
-                          ],
-                          decoration: decorationTextField(
-                            hintText: 'Precio',
-                            labelText: 'Precio',
-                          ),
-                          validator: (value) {
-                            if (value!.isEmpty) {
-                              return 'Campo obligatorio';
-                            } else {
-                              return null;
-                            }
-                          },
+                      child: TextFormField(
+                        controller: _precioController,
+                        keyboardType: const TextInputType.numberWithOptions(
+                            decimal: true),
+                        inputFormatters: [
+                          FilteringTextInputFormatter.allow(
+                              RegExp(r'^\d+\.?\d{0,2}')),
+                        ],
+                        decoration: decorationTextField(
+                          hintText: 'Precio',
+                          labelText: 'Precio',
+                        ),
+                        validator: (value) {
+                          if (value!.isEmpty) {
+                            return 'Campo obligatorio';
+                          } else {
+                            return null;
+                          }
+                        },
+                      ),
+                    ),
+                    const SizedBox(
+                      width: 10,
+                    ),
+                    Flexible(
+                      child: TextFormField(
+                        // enabled: false,
+                        readOnly:
+                            true, // Deshabilita la edición directa del texto
+                        showCursor: true, // Muestra el cursor al tocar el campo
+                        controller: _fechaVencimientoController,
+                        decoration: decorationTextField(
+                            hintText: 'Fecha Vencimiento',
+                            labelText: 'Fecha Vencimiento',
+                            prefixIcon: const Icon(
+                                Icons.calendar_month_outlined,
+                                color: Colors.black45)),
+                        onTap: () {
+                          _pickDate(context);
+                        },
+                        validator: (value) {
+                          if (value!.isEmpty) {
+                            return 'Campo obligatorio';
+                          } else {
+                            return null;
+                          }
+                        },
+                      ),
+                    ),
+                    const SizedBox(
+                      width: 10,
+                    ),
+                    Flexible(
+                      flex: 2,
+                      child: TextFormField(
+                        controller: _descripcionController,
+                        maxLength: 250,
+                        maxLines: 1,
+                        decoration: decorationTextField(
+                          hintText: 'opcional',
+                          labelText: 'Descripción de entrada',
                         ),
                       ),
                     ),
+                    TextButton(
+                      onPressed: salidasLoading
+                          ? null
+                          : () async {
+                              if (_formKey.currentState!.validate()) {
+                                if (widget.e != null) {
+                                  editarEntrada();
+                                  _formKey.currentState!.save();
+                                } else {
+                                  guardarEntrada();
+                                  _formKey.currentState!.save();
+                                }
+                              } else {
+                                // Mostrar un SnackBar indicando el primer campo con error
+                                completeForm();
+                              }
+                            },
+                      child: Container(
+                          decoration: BoxDecoration(
+                            color: Colors.blue,
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          height: 40,
+                          width: 80,
+                          child: Center(
+                              child: salidasLoading
+                                  ? const CircularProgressIndicator(
+                                      color: Colors.black,
+                                    )
+                                  : const H2Text(
+                                      text: 'Guardar',
+                                      color: Colors.white,
+                                      fontSize: 15,
+                                    ))),
+                    ),
                   ],
-                ),
-
-                Card(
-                  child: TextFormField(
-                    // enabled: false,
-                    readOnly: true, // Deshabilita la edición directa del texto
-                    showCursor: true, // Muestra el cursor al tocar el campo
-                    controller: _fechaVencimientoController,
-                    decoration: decorationTextField(
-                        hintText: 'Fecha Vencimiento',
-                        labelText: 'Fecha Vencimiento',
-                        prefixIcon: const Icon(Icons.calendar_month_outlined,
-                            color: Colors.black45)),
-                    onTap: () {
-                      _pickDate(context);
-                    },
-                    validator: (value) {
-                      if (value!.isEmpty) {
-                        return 'Campo obligatorio';
-                      } else {
-                        return null;
-                      }
-                    },
-                  ),
-                ),
-
-                // Card(
-                //   child: TextFormField(
-                //     controller: _descripcionController,
-                //     maxLength: 250,
-                //     maxLines: 4,
-                //     decoration: decorationTextField(
-                //       hintText: 'opcional',
-                //       labelText: 'Descripción de entrada',
-                //     ),
-                //   ),
-                // ),
-                TextButton(
-                  onPressed: salidasLoading
-                      ? null
-                      : () async {
-                          if (_formKey.currentState!.validate()) {
-                            if (widget.e != null) {
-                              editarEntrada();
-                              _formKey.currentState!.save();
-                            } else {
-                              guardarEntrada();
-                              _formKey.currentState!.save();
-                            }
-                          } else {
-                            // Mostrar un SnackBar indicando el primer campo con error
-                            completeForm();
-                          }
-                        },
-                  child: SizedBox(
-                      height: 60,
-                      child: Center(
-                          child: salidasLoading
-                              ? const CircularProgressIndicator(
-                                  color: Colors.white,
-                                )
-                              : const Text(
-                                  'Guardar',
-                                ))),
                 ),
               ],
             ),

@@ -13,6 +13,7 @@ import 'package:ausangate_op/provider/provider_t_salidas.dart';
 import 'package:ausangate_op/provider/provider_t_ubicacion_almacen.dart';
 import 'package:ausangate_op/utils/custom_colores.dart';
 import 'package:ausangate_op/utils/formatear_numero.dart';
+import 'package:ausangate_op/utils/scroll_web.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
@@ -148,53 +149,55 @@ class _MovimientosPageDataState extends State<MovimientosPageData> {
                               buttonPadding: const EdgeInsets.all(0),
                               children: [
                                 // LISTA DE USUARIOS
-                                SingleChildScrollView(
-                                  scrollDirection: Axis.horizontal,
-                                  child: Row(
-                                    children: [
-                                      Padding(
-                                        padding: const EdgeInsets.symmetric(
-                                            horizontal: 5.0),
-                                        child: ElevatedButton(
-                                            style: buttonStyle(),
-                                            onPressed: () {
-                                              _filterTEmpleados('');
-                                              _filterTEntradas('');
-                                              tituloEmpleado = 'Lista General';
-                                            },
-                                            child: const H2Text(
-                                              text: 'Lista\nGeneral',
-                                              fontSize: 10,
-                                              maxLines: 2,
-                                            )),
-                                      ),
-                                      ...List.generate(listaempleados.length,
-                                          (index) {
-                                        final e = listaempleados.reversed
-                                            .toList()[index];
-                                        return Container(
-                                          margin:
-                                              const EdgeInsets.only(right: 5),
-                                          width: 90,
+                                ScrollWeb(
+                                  child: SingleChildScrollView(
+                                    scrollDirection: Axis.horizontal,
+                                    child: Row(
+                                      children: [
+                                        Padding(
+                                          padding: const EdgeInsets.symmetric(
+                                              horizontal: 5.0),
                                           child: ElevatedButton(
-                                              style: _buttonstyle1(),
+                                              style: buttonStyle(),
                                               onPressed: () {
-                                                _filterTEmpleados(
-                                                    e.id.toString());
+                                                _filterTEmpleados('');
                                                 _filterTEntradas('');
-                                                tituloEmpleado = e.codigoGrupo;
+                                                tituloEmpleado = 'Lista General';
                                               },
-                                              child: FittedBox(
-                                                child: H2Text(
-                                                  text: e.codigoGrupo,
-                                                  fontSize: 15,
-                                                  maxLines: 2,
-                                                  color: Colors.white,
-                                                ),
+                                              child: const H2Text(
+                                                text: 'Lista\nGeneral',
+                                                fontSize: 10,
+                                                maxLines: 2,
                                               )),
-                                        );
-                                      }),
-                                    ],
+                                        ),
+                                        ...List.generate(listaempleados.length,
+                                            (index) {
+                                          final e = listaempleados.reversed
+                                              .toList()[index];
+                                          return Container(
+                                            margin:
+                                                const EdgeInsets.only(right: 5),
+                                            width: 90,
+                                            child: ElevatedButton(
+                                                style: _buttonstyle1(),
+                                                onPressed: () {
+                                                  _filterTEmpleados(
+                                                      e.id.toString());
+                                                  _filterTEntradas('');
+                                                  tituloEmpleado = e.codigoGrupo;
+                                                },
+                                                child: FittedBox(
+                                                  child: H2Text(
+                                                    text: e.codigoGrupo,
+                                                    fontSize: 15,
+                                                    maxLines: 2,
+                                                    color: Colors.white,
+                                                  ),
+                                                )),
+                                          );
+                                        }),
+                                      ],
+                                    ),
                                   ),
                                 ),
                               ],
@@ -323,58 +326,60 @@ class ListMovimientosAPP extends StatelessWidget {
         (a, b) => a.compareTo(b),
       );
     return Expanded(
-      child: ListView.builder(
-        padding: const EdgeInsets.only(top: 20, bottom: 180),
-        controller: _scrollController,
-        itemCount: sortedKeys.length,
-        itemBuilder: (context, index) {
-          final fechaKey = sortedKeys.reversed.toList()[index];
-          final entradaFcreacion = fechaFilter[fechaKey];
-          //ORDENAR LA SUBLISTA
-          entradaFcreacion!.sort((a, b) => a.created!.compareTo(b.created!));
-
-          DateTime fechaDateTime = DateTime.parse('$fechaKey-01');
-          return Column(
-            children: [
-              Padding(
-                padding:
-                    const EdgeInsets.symmetric(vertical: 8.0, horizontal: 5),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    H2Text(
-                      text: fechaFiltrada(fechaDateTime),
-                      fontWeight: FontWeight.w600,
-                      fontSize: 12,
-                      color: const Color(0xFF069D54),
-                    ),
-                    Text(
-                      '${entradaFcreacion.length} regs.',
-                      style: const TextStyle(
-                          fontSize: 12,
-                          fontWeight: FontWeight.w600,
-                          color: Color(0xFF069D54),),
-                    ),
-                  ],
+      child: ScrollWeb(
+        child: ListView.builder(
+          padding: const EdgeInsets.only(top: 20, bottom: 180),
+          controller: _scrollController,
+          itemCount: sortedKeys.length,
+          itemBuilder: (context, index) {
+            final fechaKey = sortedKeys.reversed.toList()[index];
+            final entradaFcreacion = fechaFilter[fechaKey];
+            //ORDENAR LA SUBLISTA
+            entradaFcreacion!.sort((a, b) => a.created!.compareTo(b.created!));
+        
+            DateTime fechaDateTime = DateTime.parse('$fechaKey-01');
+            return Column(
+              children: [
+                Padding(
+                  padding:
+                      const EdgeInsets.symmetric(vertical: 8.0, horizontal: 5),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      H2Text(
+                        text: fechaFiltrada(fechaDateTime),
+                        fontWeight: FontWeight.w600,
+                        fontSize: 12,
+                        color: const Color(0xFF069D54),
+                      ),
+                      Text(
+                        '${entradaFcreacion.length} regs.',
+                        style: const TextStyle(
+                            fontSize: 12,
+                            fontWeight: FontWeight.w600,
+                            color: Color(0xFF069D54),),
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-              const Divider(
-                color: Color(0xFF069D54),
-              ),
-              if (entradaFcreacion.isNotEmpty)
-                ListView.builder(
-                  padding: const EdgeInsets.only(left: 30),
-                  shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
-                  itemCount: entradaFcreacion.length,
-                  itemBuilder: (BuildContext context, int index) {
-                    final e = entradaFcreacion.reversed.toList()[index];
-                    return CardCustomMovimientoApp(e: e);
-                  },
+                const Divider(
+                  color: Color(0xFF069D54),
                 ),
-            ],
-          );
-        },
+                if (entradaFcreacion.isNotEmpty)
+                  ListView.builder(
+                    padding: const EdgeInsets.only(left: 30),
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    itemCount: entradaFcreacion.length,
+                    itemBuilder: (BuildContext context, int index) {
+                      final e = entradaFcreacion.reversed.toList()[index];
+                      return CardCustomMovimientoApp(e: e);
+                    },
+                  ),
+              ],
+            );
+          },
+        ),
       ),
     );
   }

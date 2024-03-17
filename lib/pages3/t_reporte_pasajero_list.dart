@@ -5,28 +5,42 @@ import 'package:ausangate_op/models/model_t_empleado.dart';
 import 'package:ausangate_op/models/model_t_report_pasajero.dart';
 import 'package:ausangate_op/pages3/t_pdf_export_reporte.pax.dart';
 import 'package:ausangate_op/pages3/t_reportepax_page.dart';
+import 'package:ausangate_op/provider/provider_datacahe.dart';
 import 'package:ausangate_op/provider/provider_t_detalle_trabajo.dart';
 import 'package:ausangate_op/provider/provider_t_empleado.dart';
 import 'package:ausangate_op/provider/provider_t_report_pasajero.dart';
-import 'package:ausangate_op/utils/custom_text.dart';
+import 'package:ausangate_op/utils/buton_style.dart';
 import 'package:ausangate_op/utils/decoration_form.dart';
 import 'package:ausangate_op/utils/format_fecha.dart';
 import 'package:ausangate_op/utils/scroll_web.dart';
+import 'package:ausangate_op/utils/text_custom.dart';
+import 'package:delayed_display/delayed_display.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+
 import 'package:provider/provider.dart';
+import 'package:simple_ripple_animation/simple_ripple_animation.dart';
+import 'package:widget_circular_animator/widget_circular_animator.dart';
 
 class ListaReporte extends StatelessWidget {
   const ListaReporte({super.key});
 
   @override
   Widget build(BuildContext context) {
-     //Lista de Reporte PAx
-     final listaReportePaxAPI =Provider.of<TReportPasajeroProvider>(context).listReporttPasajero;
-  
+    //Lista de Reporte PAx
+    final listaReportePaxAPI =
+        Provider.of<TReportPasajeroProvider>(context).listReporttPasajero;
+    
 
-    List<TReportPasajeroModel> listareporte =  listaReportePaxAPI;
-    return ListReportePax(listAsitencia: listareporte,);
+    List<TReportPasajeroModel> listareporte = listaReportePaxAPI;
+    //REcargar Pagina AL crear o guardar
+    final dataServer = Provider.of<TReportPasajeroProvider>(context);
+   
+       bool isSaving = dataServer.isSyncing;
+
+    return !isSaving ?  ListReportePax(
+      listAsitencia: listareporte,
+    ): const Center(child: CircularProgressIndicator(),);
   }
 }
 
@@ -103,7 +117,7 @@ class _ListReportePaxState extends State<ListReportePax> {
   }
 
   //TEXTO nombre de ubicacion segun el boton se asigna el valor al titulo de ubicacion
-  String tituloEmpleado = 'Lista General';
+  String titulo = 'Lista General';
 
   @override
   Widget build(BuildContext context) {
@@ -112,213 +126,203 @@ class _ListReportePaxState extends State<ListReportePax> {
         Provider.of<TDetalleTrabajoProvider>(context).listaDetallTrabajo;
    
 
-    List<TDetalleTrabajoModel> listaDetallTrabajo = listatrabajoApi;
+    List<TDetalleTrabajoModel> listaDetallTrabajo =
+        listatrabajoApi;
 
     listaDetallTrabajo.sort((a, b) => a.fechaInicio.compareTo(b.fechaInicio));
 
-   
     return Scaffold(
-        appBar: AppBar(
-          leadingWidth: 130,
-          toolbarHeight: 70,
-          leading:  ElevatedButton(
-                            style: _botonStyle(),
-                            onPressed: () async {
-                            Navigator.push(context, MaterialPageRoute(builder: (_)=> const EditReportPagePasajeros()));
-                            },child:  _labelText(label: 'Nueva\nEncuesta')),
-          title: showAppBar
-              ? Column(
-                  children: [
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      children: [
-                        const Padding(
-                          padding: EdgeInsets.symmetric(horizontal: 8.0),
-                          child: H2Text(
-                            text: 'Filtrar por Codígo de Grupo',
-                            color: Color(0x67342E2E),
-                            fontSize: 10,
-                          ),
-                        ),
-                        ButtonBar(
-                          buttonPadding: const EdgeInsets.all(0),
+      body: GestureDetector(
+        onTap: () {
+          // Cierra el teclado cuando tocas en cualquier lugar de la pantalla
+          FocusScope.of(context).unfocus();
+        },
+        child: Column(
+          children: [
+            showAppBar
+                ? DelayedDisplay(
+                    slidingBeginOffset: const Offset(0.0, -0.35),
+                    delay: const Duration(milliseconds: 400),
+                    child: Container(
+                      // constraints: const BoxConstraints(maxWidth: 600),
+                      child: SafeArea(
+                        top: false,
+                        child: Column(
                           children: [
-                            
-                            // LISTA DE USUARIOS
-                            SingleChildScrollView(
-                              scrollDirection: Axis.horizontal,
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
                               child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                crossAxisAlignment: CrossAxisAlignment.center,
                                 children: [
-                                  Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 5.0),
-                                    child: ElevatedButton(
-                                        style: buttonStyle(),
-                                        onPressed: () {
-                                          _filterTEmpleados('');
-                                          _filterTEntradas('');
-                                          tituloEmpleado = 'Lista General';
-                                        },
-                                        child: const H2Text(
-                                          text: 'Lista\nGeneral',
-                                          fontSize: 10,
-                                          maxLines: 2,
-                                        )),
-                                  ),
-                                  ...List.generate(listaDetallTrabajo.length,
-                                      (index) {
-                                    final e = listaDetallTrabajo.reversed
-                                        .toList()[index];
-                                    return Container(
-                                      margin: const EdgeInsets.only(right: 5),
-                                      width: 90,
-                                      child: ElevatedButton(
-                                          style: _buttonstyle1(),
-                                          onPressed: () {
-                                            _filterTEmpleados(e.id.toString());
-                                            _filterTEntradas('');
-                                            tituloEmpleado = e.codigoGrupo;
-                                          },
-                                          child: FittedBox(
-                                            child: H2Text(
-                                              text: e.codigoGrupo,
-                                              fontSize: 15,
-                                              maxLines: 2,
-                                              color: Colors.white,
+                                  Flexible(
+                                    child: Column(
+                                      children: [
+                                        const Padding(
+                                          padding: EdgeInsets.all(8.0),
+                                          child: H1Text(
+                                              text:
+                                                  'Encuesta de Satisfacción para Pasajeros',
+                                              fontWeight: FontWeight.bold,
+                                              textAlign: TextAlign.center,
+                                              color: Color(0xFF033C05)),
+                                        ),
+                                        H2Text(
+                                          text: titulo,
+                                          fontSize: 18,
+                                          fontWeight: FontWeight.w700,
+                                        ),
+                                        Row(
+                                          mainAxisAlignment: MainAxisAlignment.center,
+                                          children: [
+                                            H2Text(
+                                              text:
+                                                  '${filterTProductos.length}',
+                                              fontSize: 13,
+                                              fontWeight: FontWeight.bold,
+                                              // color: Colors.cyan,
                                             ),
-                                          )),
-                                    );
-                                  }),
+                                            const H2Text(
+                                              text: ' [ registros ]',
+                                              fontSize: 10,
+                                              // color: Colors.cyan,
+                                            ),
+                                          ],
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  RippleAnimation(
+                                      color: const Color(0x22DDC1EC),
+                                      delay: const Duration(milliseconds: 900),
+                                      repeat: true,
+                                      ripplesCount: 3,
+                                      minRadius: 20,
+                                      child: WidgetCircularAnimator(
+                                        size: 65,
+                                        innerColor: const Color(0x7CE91E62),
+                                        outerColor: const Color(0x79FF4080),
+                                        outerAnimation: Curves.elasticInOut,
+                                        child: GestureDetector(
+                                            onTap: () async {
+                                              Navigator.push(
+                                                  context,
+                                                  MaterialPageRoute(
+                                                      builder: (_) =>
+                                                          const EditReportPagePasajeros()));
+                                            },
+                                            child: const Center(
+                                              child: H2Text(
+                                                text: 'Nuevo',
+                                                color: Color(0xFFC73063),
+                                                fontWeight: FontWeight.bold,
+                                                fontSize: 13,
+                                                maxLines: 2,
+                                                textAlign: TextAlign.center,
+                                              ),
+                                            )),
+                                      )),
                                 ],
                               ),
                             ),
+                            SizedBox(
+                              height: 30,
+                              child: ScrollWeb(
+                                child: ListView.builder(
+                                  scrollDirection: Axis.horizontal,
+                                  itemCount: listaDetallTrabajo.length,
+                                  itemBuilder: (BuildContext context, int index) {
+                                    final e = listaDetallTrabajo.reversed
+                                        .toList()[index];
+                                    return OutlinedButton(
+                                        style: buttonStyle2(),
+                                        onPressed: () {
+                                          _filterTEmpleados(e.id.toString());
+                                          _filterTEntradas('');
+                                          titulo = e.codigoGrupo;
+                                        },
+                                        child: FittedBox(
+                                          child: H2Text(
+                                            text: e.codigoGrupo,
+                                            fontSize: 13,
+                                            maxLines: 2,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ));
+                                  },
+                                ),
+                              ),
+                            )
                           ],
+                        ),
+                      ),
+                    ),
+                  )
+                : const SizedBox(),
+            Flexible(
+              child: Column(
+                children: [
+                  Container(
+                    constraints: const BoxConstraints(maxWidth: 600),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: [
+                        OutlinedButton(
+                            style: buttonStyle2(),
+                            onPressed: () {
+                              _filterTEmpleados('');
+                              _filterTEntradas('');
+                              titulo = 'Lista General';
+                            },
+                            child: const H2Text(
+                              text: 'General',
+                              color: Colors.black,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 13,
+                              maxLines: 2,
+                              textAlign: TextAlign.center,
+                            )),
+                        PdfExportReportePAx(
+                            listaTproductos: filterTProductos,
+                            tituloEmpleado: titulo),
+                        Expanded(
+                          child: Card(
+                            child: TextField(
+                                controller: _searchTextEditingController,
+                                onChanged: (value) {
+                                  _filterTEntradas(value);
+                                },
+                                decoration: decorationTextField(
+                                  hintText: 'Escribe el nombre',
+                                  labelText: 'Nombre de Pasajero',
+                                  prefixIcon: IconButton(
+                                      onPressed: () {
+                                        _searchTextEditingController.clear();
+                                        _filterTEntradas('');
+                                      },
+                                      icon: _searchTextEditingController
+                                              .text.isEmpty
+                                          ? const Icon(Icons.search)
+                                          : const Icon(Icons.close)),
+                                )),
+                          ),
                         ),
                       ],
                     ),
-                  ],
-                )
-              : const SizedBox(),
-        ),
-        body: GestureDetector(
-          onTap: () {
-            // Cierra el teclado cuando tocas en cualquier lugar de la pantalla
-            FocusScope.of(context).unfocus();
-          },
-          child: Center(
-            child: Column(
-              children: [
-                
-                Container(
-                  constraints: const BoxConstraints(maxWidth: 600),
-                  child: Column(
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        children: [
-                          Expanded(
-                            child: Container(
-                              height: 50,
-                              margin: const EdgeInsets.only(
-                                  top: 5, left: 10, right: 10, bottom: 5),
-                              decoration: BoxDecoration(boxShadow: const [
-                                BoxShadow(
-                                  offset: Offset(0, .3),
-                                  blurRadius: 2,
-                                  color: Color(0xFFB0B0B0),
-                                ),
-                              ], borderRadius: BorderRadius.circular(10)),
-                              child: TextField(
-                                  controller: _searchTextEditingController,
-                                  onChanged: (value) {
-                                    _filterTEntradas(value);
-                                  },
-                                  decoration: decorationTextField(
-                                    hintText: 'Escribe algo...',
-                                    labelText: 'Filtrar por nombre o rol',
-                                    prefixIcon: IconButton(
-                                        onPressed: () {
-                                          _searchTextEditingController.clear();
-                                          _filterTEntradas('');
-                                        },
-                                        icon: _searchTextEditingController
-                                                .text.isEmpty
-                                            ? const Icon(Icons.search)
-                                            : const Icon(Icons.close)),
-                                  )),
-                            ),
-                          ),
-                          const SizedBox(
-                            width: 5,
-                          ),
-                          // PdfExportReportePAx(
-                          //     listaTproductos: filterTProductos,
-                          //     tituloEmpleado: tituloEmpleado),
-                        ],
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          H2Text(
-                              text: tituloEmpleado,
-                              fontSize: 11,
-                              fontWeight: FontWeight.w900,
-                              color: const Color(0xFF5B5353)),
-                          H2Text(
-                              text: ' ( ${filterTProductos.length} regs.)',
-                              fontSize: 10,
-                              fontWeight: FontWeight.w400,
-                              color: const Color(0xFF5B5353)),
-                        ],
-                      ),
-                    ],
                   ),
-                ),
-                ListTAsistencias(
-                  listaTproductos: filterTProductos,
-                  scrollController: _scrollController,
-                  showAppBar: showAppBar,
-                )
-              ],
+                  ListTAsistencias(
+                    listaTproductos: filterTProductos,
+                    scrollController: _scrollController,
+                    showAppBar: showAppBar,
+                  ),
+                ],
+              ),
             ),
-          ),
-        ));
-  }
-  H2Text _labelText({String? label}) {
-    return H2Text(
-      text: label!,
-      color: Colors.white,
-      fontSize: 14,
-      fontWeight: FontWeight.w600,
-      maxLines: 2,
-    );
-  }
-      ButtonStyle _botonStyle() {
-    return const ButtonStyle(
-        elevation: MaterialStatePropertyAll(2),
-        padding: MaterialStatePropertyAll(EdgeInsets.symmetric(horizontal: 6)),
-        backgroundColor: MaterialStatePropertyAll(Colors.deepOrange),
-        iconColor: MaterialStatePropertyAll(Colors.white),
-        iconSize: MaterialStatePropertyAll(20));
-  }
-
-  ButtonStyle buttonStyle() {
-    return const ButtonStyle(
-      elevation: MaterialStatePropertyAll(3),
-      visualDensity: VisualDensity.compact,
-      overlayColor: MaterialStatePropertyAll(Colors.yellow),
-    );
-  }
-
-  ButtonStyle _buttonstyle1() {
-    return const ButtonStyle(
-        elevation: MaterialStatePropertyAll(2),
-        backgroundColor: MaterialStatePropertyAll(
-          Color(0xFF069D54),
+          ],
         ),
-        overlayColor: MaterialStatePropertyAll(Colors.white),
-        visualDensity: VisualDensity.compact,
-        padding: MaterialStatePropertyAll(EdgeInsets.all(5)));
+      ),
+    );
   }
 }
 
@@ -356,236 +360,269 @@ class ListTAsistencias extends StatelessWidget {
         Provider.of<TDetalleTrabajoProvider>(context).listaDetallTrabajo;
     
 
-    List<TDetalleTrabajoModel> listaGrupos = listaGrupoAPi;
+    List<TDetalleTrabajoModel> listaGrupos =
+       listaGrupoAPi;
 
     final listaUsuarioAPI =
         Provider.of<TEmpleadoProvider>(context).listaEmpleados;
-    
+   
 
     List<TEmpleadoModel> listaUsuarios = listaUsuarioAPI;
 
     return Expanded(
       child: ScrollWeb(
-        child: ListView.builder(
-            controller: _scrollController,
-            padding: const EdgeInsets.only(top: 20, bottom: 180),
-            itemCount: sortedKeys.length,
-            itemBuilder: (context, index) {
-              final fechaKey = sortedKeys.reversed.toList()[index];
-              final entradaFcreacion = fechaFilter[fechaKey];
-              //ORDENAR LA SUBLISTA
-              entradaFcreacion!.sort((a, b) => a.created!.compareTo(b.created!));
+        child: ListView.separated(
+          controller: _scrollController,
+          padding: EdgeInsets.symmetric(
+              vertical: MediaQuery.of(context).size.height * .1, horizontal: 5),
+          itemCount: sortedKeys.length,
+          separatorBuilder: (BuildContext context, int index) {
+            return Image.asset(
+              'assets/img/andeanlodges.png',
+              height: 40,
+              color: const Color(0xFF6F1551),
+            );
+          },
+          itemBuilder: (context, index) {
+            final fechaKey = sortedKeys.reversed.toList()[index];
+            final entradaFcreacion = fechaFilter[fechaKey];
+            //ORDENAR LA SUBLISTA
+            entradaFcreacion!.sort((a, b) => a.created!.compareTo(b.created!));
         
-              DateTime fechaDateTime = DateTime.parse('$fechaKey-01');
-              return Column(
-                children: [
-                  Padding(
-                    padding:
-                        const EdgeInsets.symmetric(vertical: 8.0, horizontal: 5),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        H2Text(
-                          text: fechaFiltrada(fechaDateTime),
-                          fontWeight: FontWeight.w600,
-                          fontSize: 12,
-                          color: const Color(0xFF069D54),
-                        ),
-                        Text(
-                          '${entradaFcreacion.length} regs.',
-                          style: const TextStyle(
-                            fontSize: 12,
-                            fontWeight: FontWeight.w600,
-                            color: Color(0xFF069D54),
-                          ),
-                        ),
-                      ],
-                    ),
+            DateTime fechaDateTime = DateTime.parse('$fechaKey-01');
+            return Column(
+              children: [
+                Padding(
+                  padding:
+                      const EdgeInsets.symmetric(vertical: 8.0, horizontal: 5),
+                  child: Column(
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          H2Text(
+                              text: fechaFiltrada(fechaDateTime),
+                              fontWeight: FontWeight.bold,
+                              fontSize: 14,
+                              color: const Color(0xFF6F1551)),
+                          H2Text(
+                              text: '${entradaFcreacion.length} regs.',
+                              fontSize: 14,
+                              fontWeight: FontWeight.bold,
+                              color: const Color(0xFF6F1551)),
+                        ],
+                      ),
+                      const Divider(),
+                    ],
                   ),
-                  const Divider(
-                    color: Color(0xFF069D54),
-                  ),
-                  if (entradaFcreacion.isNotEmpty)
-                    LayoutBuilder(builder:
-                        (BuildContext context, BoxConstraints constraints) {
-                      // Calcular el número de columnas en función del ancho disponible
-                      int crossAxisCount = (constraints.maxWidth / 200).floor();
-                      // Puedes ajustar el valor 100 según tus necesidades
-                      return GridView.builder(
-                        padding:
-                            const EdgeInsets.only(bottom: 100, left: 5, right: 5),
-                        shrinkWrap: true,
-                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                            crossAxisCount: crossAxisCount,
-                            mainAxisSpacing: 1,
-                            crossAxisSpacing: 1,
-                            childAspectRatio: 1),
-                        physics: const NeverScrollableScrollPhysics(),
-                        itemCount: entradaFcreacion.length,
-                        itemBuilder: (BuildContext context, int index) {
-                          final e = entradaFcreacion.reversed.toList()[index];
-                      
-                          TDetalleTrabajoModel obtenerDetalleTrabajo(
-                              String idTrabajo) {
-                            for (var data in listaGrupos) {
-                              if (data.id == e.idTrabajo) {
-                                return data;
+                ),
+                if (entradaFcreacion.isNotEmpty)
+                  LayoutBuilder(builder:
+                      (BuildContext context, BoxConstraints constraints) {
+                    // Calcular el número de columnas en función del ancho disponible
+                    int crossAxisCount = (constraints.maxWidth / 170).floor();
+                    // Puedes ajustar el valor 100 según tus necesidades
+                    return GridView.builder(
+                      padding: const EdgeInsets.only(
+                        bottom: 80,
+                      ),
+                      shrinkWrap: true,
+                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: crossAxisCount,
+                          mainAxisSpacing: 0,
+                          crossAxisSpacing: 0.5,
+                          childAspectRatio: 1),
+                      physics: const NeverScrollableScrollPhysics(),
+                      itemCount: entradaFcreacion.length,
+                      itemBuilder: (BuildContext context, int index) {
+                        final e = entradaFcreacion.reversed.toList()[index];
+            
+                        String obtenerDetalleTrabajo(String idTrabajo) {
+                          for (var data in listaGrupos) {
+                            if (data.id == e.idTrabajo) {
+                              return data.codigoGrupo;
+                            }
+                          }
+                          return '';
+                        }
+            
+                        final codigo = obtenerDetalleTrabajo(e.idTrabajo);
+            
+                        //METODO OBTENER EL CODIGOP DE GRUP{O}
+                        String obtenerGuia(String idEmpleados) {
+                          for (var data in listaUsuarios) {
+                            if (data.id == idEmpleados) {
+                              return '${data.nombre} ${data.apellidoPaterno} ${data.apellidoMaterno}';
+                            }
+                          }
+                          return '';
+                        }
+            
+                        final guia = obtenerGuia(e.idEmpleados);
+        
+                         String validarRespuestas() {
+                             final List<String?> preguntas = [
+                              e.pregunta1,
+                              e.pregunta2,
+                              e.pregunta3,
+                              e.pregunta4,
+                              e.pregunta5,
+                              e.pregunta6,
+                              e.pregunta7,
+                              e.pregunta8,
+                              e.pregunta9,
+                              e.pregunta10,
+                              e.pregunta11,
+                              e.pregunta12,
+                              e.pregunta13,
+                            ];
+        
+                            int preguntasLlenas = 0;
+        
+                            // Contar la cantidad de preguntas no vacías
+                            for (String? pregunta in preguntas) {
+                              if (pregunta != null && pregunta.isNotEmpty) {
+                                preguntasLlenas++;
                               }
                             }
-                            return TDetalleTrabajoModel(
-                                codigoGrupo: '',
-                                idRestriccionAlimentos: '',
-                                idCantidadPaxguia: '',
-                                idItinerariodiasnoches: '',
-                                idTipogasto: '',
-                                fechaInicio: DateTime.now(),
-                                fechaFin: DateTime.now(),
-                                descripcion: '',
-                                costoAsociados: 0);
-                          }
-                      
-                          final v = obtenerDetalleTrabajo(e.idTrabajo);
-                      
-                          //METODO OBTENER EL CODIGOP DE GRUP{O}
-                          String obtenerGuia(String idEmpleados) {
-                            for (var data in listaUsuarios) {
-                              if (data.id == idEmpleados) {
-                                return '${data.nombre} ${data.apellidoPaterno} ${data.apellidoMaterno}';
-                              }
+        
+                            if (preguntasLlenas == 13) {
+                              return ('[ 13 -13 ] resp.');
+                            } else {
+                              return ('[ $preguntasLlenas - 13 ] resp.');
                             }
-                            return '';
                           }
-                      
-                          final guia = obtenerGuia(e.idEmpleados);
-                      
-                          return Card(
-                            surfaceTintColor:
-                                const Color.fromARGB(255, 250, 246, 246),
-                            elevation: 10,
-                            child: Column(
-                              children: [
-                                Container(
-                                  width: double.infinity,
-                                  height: 10,
-                                  decoration: const BoxDecoration(
-                                      color: Color(0xFF5F3113),
-                                      borderRadius: BorderRadius.vertical(
-                                          top: Radius.circular(10))),
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: Column(
-                                    mainAxisAlignment:MainAxisAlignment.spaceEvenly,
-                                    children: [
-                                      Row(
-                                        mainAxisAlignment:MainAxisAlignment.spaceEvenly,
-                                        children: [
-                                          const Icon(
-                                            Icons.people_alt,
-                                            size: 30,
-                                          ),
-                                          Flexible(
-                                            flex: 1,
-                                            child: FittedBox(
-                                              child: H2Text(
-                                                text: v.codigoGrupo,
-                                                fontSize: 30,
-                                                fontWeight: FontWeight.bold,
-                                                color: (e.id!.isNotEmpty &&
-                                                        e.id! != null)
-                                                    ? const Color(0xFF89310B)
-                                                    : Colors.black54,
-                                              ),
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                      
-                                      Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        children: [
-                                          const H2Text(
-                                            text: 'pax  : ',
-                                            fontSize: 12,
+        
+                          String respuestas = validarRespuestas();
+        
+                        return DelayedDisplay(
+                    delay: const Duration(milliseconds: 400),
+                          child: Stack(
+                            children: [
+                              Column(
+                                children: [
+                                  Container(
+                                    decoration: BoxDecoration(
+                                        color: const Color(0xFF3E524F)
+                                            .withOpacity(.5),
+                                        borderRadius: const BorderRadius.vertical(
+                                            top: Radius.circular(1))),
+                                    child: Row(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: [
+                                        H2Text(
+                                            text: codigo,
+                                            fontSize: 35,
                                             fontWeight: FontWeight.bold,
-                                          ),
-                                          Expanded(
-                                            flex: 2,
-                                            child: H2Text(
-                                              text: e.nombrePasajero,
-                                              fontSize: 12,
-                                              maxLines: 2,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                      const SizedBox(height: 10,),
-                                      Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        children: [
-                                          const H2Text(
-                                            text: 'Guia: ',
-                                            fontSize: 12,
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                          Expanded(
-                                            flex: 2,
-                                            child: H2Text(
-                                              text: guia,
-                                              fontSize: 12,
-                                              maxLines: 2,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                      
-                                      //Solo se puede editar si el registro es reciente dentro de 10 min.
-                                      if (DateTime.now().difference(e.created!) <
-                                          const Duration(minutes: 2))
+                                            color: (e.id!.isNotEmpty &&
+                                                    e.id! != null)
+                                                ? Colors.black
+                                                : Colors.red),
+                                      ],
+                                    ),
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 8.0),
+                                    child: Column(
+                                      children: [
                                         Row(
                                           children: [
-                                            IconButton.outlined(
-                                              onPressed: () {
-                                                Navigator.push(
-                                                  context,
-                                                  MaterialPageRoute(
-                                                    builder: (context) =>
-                                                        EditReportPagePasajeros(
-                                                            e: e),
-                                                  ),
-                                                );
-                                              },
-                                              icon: const Icon(Icons.edit),
-                                            ),
-                                            const Expanded(
-                                              child: Padding(
-                                                padding: EdgeInsets.symmetric(
-                                                    horizontal: 8.0),
-                                                child: H2Text(
-                                                  text:
-                                                      'Tiempo de edición durante 20 min. desde su creación',
-                                                  fontSize: 9,
-                                                  maxLines: 4,
-                                                  textAlign: TextAlign.center,
-                                                ),
+                                            const H2Text(
+                                                text: 'PAX : ',
+                                                fontSize: 12,
+                                                fontWeight: FontWeight.bold,
+                                                color: Color(0xFF3E524F)),
+                                            Flexible(
+                                              child: H2Text(
+                                                text: e.nombrePasajero,
+                                                fontSize: 13,
+                                                maxLines: 2,
+                                                color: const Color(0xFF343525),
                                               ),
                                             ),
                                           ],
                                         ),
-                                    ],
+                                        Divider(
+                                          color: const Color(0xFF3E524F)
+                                              .withOpacity(.2),
+                                        ),
+                                        Row(
+                                          children: [
+                                            const H2Text(
+                                                text: 'GUÍA : ',
+                                                fontSize: 12,
+                                                fontWeight: FontWeight.bold,
+                                                color: Color(0xFF3E524F)),
+                                            Flexible(
+                                              child: H2Text(
+                                                text: guia,
+                                                fontSize: 13,
+                                                // maxLines: 2,
+                                                color: const Color(0xFF343525),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                        Divider(
+                                          color: const Color(0xFF3E524F)
+                                              .withOpacity(.2),
+                                        ),
+                                        Row(
+                                            children: [
+                                              const Icon(
+                                                  Icons.check_circle_outline_rounded,
+                                                  color: Color(0xFF3E524F)),
+                                              Flexible(
+                                                child: H2Text(
+                                                  text: respuestas,
+                                                  fontSize: 13,
+                                                  maxLines: 2,
+                                                  color: const Color(0xFF343525),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                         
+                                      ],
+                                    ),
                                   ),
+                                ],
+                              ),
+                          
+                              //Solo se puede editar si el registro es reciente dentro de 10 min.
+                              if (DateTime.now().difference(e.created!) <
+                                  const Duration(minutes: 2))
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.end,
+                                  children: [
+                                    IconButton.outlined(
+                                      onPressed: () {
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) =>
+                                                EditReportPagePasajeros(e: e),
+                                          ),
+                                        );
+                                      },
+                                      icon: const Icon(
+                                        Icons.edit,
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                  ],
                                 ),
-                              ],
-                            ),
-                          );
-                        },
-                      );
-                    }),
-                ],
-              );
-            }),
+                            ],
+                          ),
+                        );
+                      },
+                    );
+                  }),
+              ],
+            );
+          },
+        ),
       ),
     );
   }

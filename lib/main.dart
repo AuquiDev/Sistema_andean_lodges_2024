@@ -1,4 +1,3 @@
-
 import 'package:ausangate_op/provider/current_page.dart';
 import 'package:ausangate_op/provider/provider_datacahe.dart';
 import 'package:ausangate_op/provider/provider_empleados.rol_sueldo.dart';
@@ -26,10 +25,8 @@ import 'package:ausangate_op/utils/shared_global.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-
-
 void main() async {
-   WidgetsFlutterBinding.ensureInitialized();
+  WidgetsFlutterBinding.ensureInitialized();
   SharedPrefencesGlobal prefs = SharedPrefencesGlobal();
   await prefs.initSharedPreferecnes();
   runApp(const AppState());
@@ -42,58 +39,129 @@ class AppState extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (context) => LayoutModel(),),
-         //USUARIO CACHE 
-        ChangeNotifierProvider(create: (context)=>UsuarioProvider(), lazy: false,),
-        //INVENTARIO GENERAL 
-        ChangeNotifierProvider(create: (context)=>ViewInventarioGeneralProductosProvider(),lazy: false,),
-         //INVENTARIO ALERTA DE EXISTENCIAS 
-        ChangeNotifierProvider(create: (context)=> ViewInventarioALERTAEXISTENCIASproductosProvider(), lazy: false,),
-         //INVENTARIO ORDEN COMPRA
-        ChangeNotifierProvider(create: (context)=> ViewInventarioORDENCOMPRAFVSTOCKproductosProvider(), lazy: false,),
-         //GRUPOS GASTOS
-        ChangeNotifierProvider(create: (context)=> ViewGastosGrupoSalidasProvider(), lazy: false,),
-         //HISTORIAL SALIDAS GRUPOS
-        ChangeNotifierProvider(create: (context)=> ViewHistorialSalidasProductosProvider(), lazy: false,),
-        //TABLA PRODUCTOS 
-        ChangeNotifierProvider(create: (context)=> TProductosAppProvider(), lazy: false,),
-        //TABLA PRODUCTOS 
-        ChangeNotifierProvider(create: (context)=> TUbicacionAlmacenProvider(), lazy: false,),
-        //TABLA CATEGORIA 
-        ChangeNotifierProvider(create: (context)=> TCategoriaProvider(), lazy:  false,),
+        ChangeNotifierProvider(
+          create: (context) => LayoutModel(),
+        ),
+        //USUARIO CACHE
+        ChangeNotifierProvider(
+          create: (context) => UsuarioProvider(),
+          lazy: false,
+        ),
+        //INVENTARIO GENERAL
+        ChangeNotifierProvider(
+          create: (context) => ViewInventarioGeneralProductosProvider(),
+          lazy: false,
+        ),
+        //INVENTARIO ALERTA DE EXISTENCIAS
+        ChangeNotifierProvider(
+          create: (context) =>
+              ViewInventarioALERTAEXISTENCIASproductosProvider(),
+          lazy: false,
+        ),
+        //INVENTARIO ORDEN COMPRA
+        ChangeNotifierProvider(
+          create: (context) =>
+              ViewInventarioORDENCOMPRAFVSTOCKproductosProvider(),
+          lazy: false,
+        ),
+        //GRUPOS GASTOS
+        ChangeNotifierProvider(
+          create: (context) => ViewGastosGrupoSalidasProvider(),
+          lazy: false,
+        ),
+        //HISTORIAL SALIDAS GRUPOS
+        ChangeNotifierProvider(
+          create: (context) => ViewHistorialSalidasProductosProvider(),
+          lazy: false,
+        ),
+        //TABLA PRODUCTOS
+        ChangeNotifierProvider(
+          create: (context) => TProductosAppProvider(),
+          lazy: false,
+        ),
+        //TABLA PRODUCTOS
+        ChangeNotifierProvider(
+          create: (context) => TUbicacionAlmacenProvider(),
+          lazy: false,
+        ),
+        //TABLA CATEGORIA
+        ChangeNotifierProvider(
+          create: (context) => TCategoriaProvider(),
+          lazy: false,
+        ),
         // TABLA PROVEEDOR
-        ChangeNotifierProvider(create: (context)=> TProveedorProvider(), lazy: false,),
+        ChangeNotifierProvider(
+          create: (context) => TProveedorProvider(),
+          lazy: false,
+        ),
         // TABLA SALIDAS
-        ChangeNotifierProvider(create: (context)=> TSalidasAppProvider(), lazy: false,),
+        ChangeNotifierProvider(
+          create: (context) => TSalidasAppProvider(),
+          lazy: false,
+        ),
         // TABLA ENTRADAS
-        ChangeNotifierProvider(create: (context)=> TEntradasAppProvider(), lazy: false,),
-        
-         // TABLA EMPLEADO
-        ChangeNotifierProvider(create: (context)=> TEmpleadoProvider(), lazy: false,),
-               
+        ChangeNotifierProvider(
+          create: (context) => TEntradasAppProvider(),
+          lazy: false,
+        ),
+
+        // TABLA EMPLEADO
+        ChangeNotifierProvider(
+          create: (context) => TEmpleadoProvider(),
+          lazy: false,
+        ),
 
         //ROLESUELDO empleado
-        ChangeNotifierProvider(create: (context)=> TRolesSueldoProvider(), lazy: false,),
+        ChangeNotifierProvider(
+          create: (context) => TRolesSueldoProvider(),
+          lazy: false,
+        ),
 
-         // TABLA DETALLE DE TRABAJO
-        ChangeNotifierProvider(create: (context)=> TDetalleTrabajoProvider(), lazy: false,),
-         // TABLA Cantidad de pax guia DE TRABAJO
-        ChangeNotifierProvider(create: (context)=> TCantidadPaxGuiaProvider(), lazy: false,),
+        // TABLA DETALLE DE TRABAJO
+        ChangeNotifierProvider(
+          create: (context) => TDetalleTrabajoProvider(),
+          lazy: false,
+        ),
+        // TABLA Cantidad de pax guia DE TRABAJO
+        ChangeNotifierProvider(
+          create: (context) => TCantidadPaxGuiaProvider(),
+          lazy: false,
+        ),
         // TABLA ITINERARIO GRUPO  DE TRABAJO
-        ChangeNotifierProvider(create: (context)=> TItinerarioProvider(), lazy: false,),
+        ChangeNotifierProvider(
+          create: (context) => TItinerarioProvider(),
+          lazy: false,
+        ),
         // TABLA TipoGASTO GRUPO  DE TRABAJO
-        ChangeNotifierProvider(create: (context)=> TTipoGastoProvider(), lazy: false,),
+        ChangeNotifierProvider(
+          create: (context) => TTipoGastoProvider(),
+          lazy: false,
+        ),
         // TABLA RESTRICCIONES GRUPO  DE TRABAJO
-        ChangeNotifierProvider(create: (context)=> TRestriccionesProvider(), lazy: false,),
-          // TABLA ASISTENCIA
-        ChangeNotifierProvider(create: (context)=> TAsistenciaProvider(), lazy: false,),
-         //TABLA reporte PAX 
-        ChangeNotifierProvider(create: (context)=>TReportPasajeroProvider(), lazy: false,),
-         //REPORTE INCIDENCIAS 
-        ChangeNotifierProvider(create: (context)=>TReporteIncidenciasProvider(), lazy: false,),
-        //PRUEBA FILES 
-        ChangeNotifierProvider(create: (context)=>TPruebaFileProvider(), lazy: false,),
-        
+        ChangeNotifierProvider(
+          create: (context) => TRestriccionesProvider(),
+          lazy: false,
+        ),
+        // TABLA ASISTENCIA
+        ChangeNotifierProvider(
+          create: (context) => TAsistenciaProvider(),
+          lazy: false,
+        ),
+        //TABLA reporte PAX
+        ChangeNotifierProvider(
+          create: (context) => TReportPasajeroProvider(),
+          lazy: false,
+        ),
+        //REPORTE INCIDENCIAS
+        ChangeNotifierProvider(
+          create: (context) => TReporteIncidenciasProvider(),
+          lazy: false,
+        ),
+        //PRUEBA FILES
+        ChangeNotifierProvider(
+          create: (context) => TPruebaFileProvider(),
+          lazy: false,
+        ),
       ],
       child: const MyApp(),
     );
@@ -109,15 +177,13 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'Andean Lodges',
       theme: ThemeData(
-        appBarTheme:   const AppBarTheme(
+        appBarTheme: const AppBarTheme(
           centerTitle: false,
           // backgroundColor:secundaryblackCrema,
-          iconTheme:  IconThemeData(
-            color:Colors.black
-          ),
+          iconTheme: IconThemeData(color: Colors.black),
         ),
       ),
-      home:  const Scaffold(body: SplahScreen() ),//  SplahScreen()
+      home: const Scaffold(body: SplahScreen()), //  SplahScreen()
     );
   }
 }

@@ -3,6 +3,7 @@
 import 'package:ausangate_op/pages2/gastos_page_details.dart';
 import 'package:ausangate_op/utils/custom_colores.dart';
 import 'package:ausangate_op/utils/formatear_numero.dart';
+import 'package:ausangate_op/utils/scroll_web.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:provider/provider.dart';
@@ -339,62 +340,69 @@ class GastosGrupoLista extends StatelessWidget {
     return Expanded(
       child: OrientationBuilder(
           builder: (BuildContext context, Orientation orientation) {
-        return ListView.builder(
-          controller: _scrollController,
-          itemCount: sortedKey.length, //fechaFilter.length,
-          itemBuilder: (context, index) {
-            // final fechaKey =
-            //     fechaFilter.keys.elementAt(index); //Obtenemos el indice del mapa
-            // final gastosPorFecha =
-            //     fechaFilter[fechaKey]; //Lista de Gastos por mes
-            final fechaKey = sortedKey.reversed.toList()[index]; //index
-            final gastosPorFecha = fechaFilter[fechaKey]; //subLista
-            DateTime fechaDateTime = DateTime.parse(fechaKey + '-01');
-
-            gastosPorFecha!
-                .sort((a, b) => a.fechaInicio.compareTo(b.fechaInicio));
-
-            return Column(
-              children: [
-                Padding(
-                  padding:
-                      const EdgeInsets.symmetric(vertical: 8.0, horizontal: 5),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      H2Text(
-                        text: fechaFiltrada(fechaDateTime),
-                        fontWeight: FontWeight.w900,
-                        fontSize: 11,
-                        color: Colors.blue,
-                      ),
-                      Text(
-                        '${gastosPorFecha.length} regs.',
-                        style:
-                            const TextStyle(fontSize: 13, color: Colors.blue),
-                      ),
-                    ],
+        return ScrollWeb(
+          child: ListView.builder(
+            controller: _scrollController,
+            itemCount: sortedKey.length, //fechaFilter.length,
+            itemBuilder: (context, index) {
+              // final fechaKey =
+              //     fechaFilter.keys.elementAt(index); //Obtenemos el indice del mapa
+              // final gastosPorFecha =
+              //     fechaFilter[fechaKey]; //Lista de Gastos por mes
+              final fechaKey = sortedKey.reversed.toList()[index]; //index
+              final gastosPorFecha = fechaFilter[fechaKey]; //subLista
+              DateTime fechaDateTime = DateTime.parse(fechaKey + '-01');
+          
+              gastosPorFecha!
+                  .sort((a, b) => a.fechaInicio.compareTo(b.fechaInicio));
+          
+              return Column(
+                children: [
+                  Padding(
+                    padding:
+                        const EdgeInsets.symmetric(vertical: 8.0, horizontal: 5),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        H2Text(
+                          text: fechaFiltrada(fechaDateTime),
+                          fontWeight: FontWeight.w900,
+                          fontSize: 11,
+                          color: Colors.blue,
+                        ),
+                        Text(
+                          '${gastosPorFecha.length} regs.',
+                          style:
+                              const TextStyle(fontSize: 13, color: Colors.blue),
+                        ),
+                      ],
+                    ),
                   ),
-                ),
-                if (gastosPorFecha.isNotEmpty)
-                  GridView.builder(
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisSpacing: 1, //espacio ancho
-                        mainAxisSpacing: 1, //espacio alto
-                        childAspectRatio: 1.0, //Ver mas reducido al alto
-                        crossAxisCount:
-                            (orientation == Orientation.portrait) ? 2 : 4),
-                    itemCount: gastosPorFecha.length,
-                    itemBuilder: (BuildContext context, index) {
-                      final e = gastosPorFecha[index];
-                      return CardGastosSalidasCustom(e: e);
-                    },
-                  )
-              ],
-            );
-          },
+                  if (gastosPorFecha.isNotEmpty)
+                    LayoutBuilder(builder:
+                            (BuildContext context, BoxConstraints constraints) {
+                          // Calcular el número de columnas en función del ancho disponible
+                          int crossAxisCount =
+                              (constraints.maxWidth / 200).floor();
+                          // Puedes ajustar el valor 100 según tus necesidades
+                        return GridView.builder(
+                          shrinkWrap: true, 
+                          physics: const NeverScrollableScrollPhysics(),
+                          gridDelegate:
+                                  SliverGridDelegateWithFixedCrossAxisCount(
+                                      crossAxisCount: crossAxisCount),
+                          itemCount: gastosPorFecha.length,
+                          itemBuilder: (BuildContext context, index) {
+                            final e = gastosPorFecha[index];
+                            return CardGastosSalidasCustom(e: e);
+                          },
+                        );
+                      }
+                    )
+                ],
+              );
+            },
+          ),
         );
       }),
     );

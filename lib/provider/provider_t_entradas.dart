@@ -2,7 +2,6 @@
 
 import 'package:ausangate_op/models/model_t_entradas.dart';
 import 'package:ausangate_op/poketbase/t_entradas_productos.dart';
-import 'package:ausangate_op/utils/path_key_api.dart';
 import 'package:flutter/material.dart';
 import 'package:pocketbase/pocketbase.dart';
 
@@ -12,7 +11,7 @@ class TEntradasAppProvider with ChangeNotifier {
   TEntradasAppProvider() {
     print('Tabla Entradas inicilizado.');
     getEntradasAPP();
-    realtime();
+    // realtime();
   }
   //SET y GETTER
   List<TEntradasModel> get e => listaEntradas;
@@ -50,9 +49,16 @@ class TEntradasAppProvider with ChangeNotifier {
 
   //METODOS POST
   bool isSyncing = false;
-  postEntradasProvider( {String? id, String? idProducto,String? idEmpleado, 
-  String? idProveedor,double? cantidadEntrada,double? precioEntrada,double? costoTotal,
-  String? descripcionEntrada,DateTime? fechaVencimientoENtrada}) async {
+  postEntradasProvider(
+      {String? id,
+      String? idProducto,
+      String? idEmpleado,
+      String? idProveedor,
+      double? cantidadEntrada,
+      double? precioEntrada,
+      double? costoTotal,
+      String? descripcionEntrada,
+      DateTime? fechaVencimientoENtrada}) async {
     isSyncing = true;
     notifyListeners();
     TEntradasModel data = TEntradasModel(
@@ -64,20 +70,25 @@ class TEntradasAppProvider with ChangeNotifier {
         precioEntrada: precioEntrada!,
         costoTotal: costoTotal!,
         descripcionEntrada: descripcionEntrada!,
-        fechaVencimientoEntrada: fechaVencimientoENtrada!
-        );
-   
-    await TEntradas.postEntradasApp(data);
+        fechaVencimientoEntrada: fechaVencimientoENtrada!);
 
     await Future.delayed(const Duration(seconds: 2));
     isSyncing = false;
     notifyListeners();
-    
+    await TEntradas.postEntradasApp(data);
+    addTEntradas(data);
   }
 
-  updateEntradasProvider( {String? id, String? idProducto,String? idEmpleado, 
-  String? idProveedor,double? cantidadEntrada,double? precioEntrada,double? costoTotal,
-  String? descripcionEntrada,DateTime? fechaVencimientoENtrada}) async {
+  updateEntradasProvider(
+      {String? id,
+      String? idProducto,
+      String? idEmpleado,
+      String? idProveedor,
+      double? cantidadEntrada,
+      double? precioEntrada,
+      double? costoTotal,
+      String? descripcionEntrada,
+      DateTime? fechaVencimientoENtrada}) async {
     isSyncing = true;
     notifyListeners();
     TEntradasModel data = TEntradasModel(
@@ -89,51 +100,55 @@ class TEntradasAppProvider with ChangeNotifier {
         precioEntrada: precioEntrada!,
         costoTotal: costoTotal!,
         descripcionEntrada: descripcionEntrada!,
-        fechaVencimientoEntrada: fechaVencimientoENtrada!
-        );
-    await TEntradas.putEntradasApp(id: id, data: data);
+        fechaVencimientoEntrada: fechaVencimientoENtrada!);
 
     await Future.delayed(const Duration(seconds: 2));
     isSyncing = false;
+    notifyListeners();
+    await TEntradas.putEntradasApp(id: id, data: data);
+    addTEntradas(data);
+
     notifyListeners();
   }
 
   deleteTEntradasApp(String id) async {
     await TEntradas.deleteEntradasApp(id);
+    listaEntradas.removeWhere((detalle) => detalle.id == id);
+    print('eliminado');
     notifyListeners();
   }
 
-  Future<void> realtime() async {
-    await pb.collection('productos_entradas').subscribe('*', (e) {
-      print('REALTIME Enradas ${e.action}');
+  // Future<void> realtime() async {
+  //   await pb.collection('productos_entradas').subscribe('*', (e) {
+  //     print('REALTIME Enradas ${e.action}');
 
-      switch (e.action) {
-        case 'create':
-          e.record!.data['id'] = e.record!.id;
-          e.record!.data['created'] = DateTime.parse(e.record!.created);
-          e.record!.data['updated'] = DateTime.parse(e.record!.updated);
-           e.record!.data["collectionId"] = e.record!.collectionId;
-        e.record!.data["collectionName"] = e.record!.collectionName;
-          addTEntradas(TEntradasModel.fromJson(e.record!.data));
-          break;
-        case 'update':
-          e.record!.data['id'] = e.record!.id;
-          e.record!.data['created'] = DateTime.parse(e.record!.created);
-          e.record!.data['updated'] = DateTime.parse(e.record!.updated);
-           e.record!.data["collectionId"] = e.record!.collectionId;
-        e.record!.data["collectionName"] = e.record!.collectionName;
-          updateTEntradas(TEntradasModel.fromJson(e.record!.data));
-          break;
-        case 'delete':
-          e.record!.data['id'] = e.record!.id;
-          e.record!.data['created'] = DateTime.parse(e.record!.created);
-          e.record!.data['updated'] = DateTime.parse(e.record!.updated);
-           e.record!.data["collectionId"] = e.record!.collectionId;
-        e.record!.data["collectionName"] = e.record!.collectionName;
-          deleteTEntradas(TEntradasModel.fromJson(e.record!.data));
-          break;
-        default:
-      }
-    });
-  }
+  //     switch (e.action) {
+  //       case 'create':
+  //         e.record!.data['id'] = e.record!.id;
+  //         e.record!.data['created'] = DateTime.parse(e.record!.created);
+  //         e.record!.data['updated'] = DateTime.parse(e.record!.updated);
+  //          e.record!.data["collectionId"] = e.record!.collectionId;
+  //       e.record!.data["collectionName"] = e.record!.collectionName;
+  //         addTEntradas(TEntradasModel.fromJson(e.record!.data));
+  //         break;
+  //       case 'update':
+  //         e.record!.data['id'] = e.record!.id;
+  //         e.record!.data['created'] = DateTime.parse(e.record!.created);
+  //         e.record!.data['updated'] = DateTime.parse(e.record!.updated);
+  //          e.record!.data["collectionId"] = e.record!.collectionId;
+  //       e.record!.data["collectionName"] = e.record!.collectionName;
+  //         updateTEntradas(TEntradasModel.fromJson(e.record!.data));
+  //         break;
+  //       case 'delete':
+  //         e.record!.data['id'] = e.record!.id;
+  //         e.record!.data['created'] = DateTime.parse(e.record!.created);
+  //         e.record!.data['updated'] = DateTime.parse(e.record!.updated);
+  //          e.record!.data["collectionId"] = e.record!.collectionId;
+  //       e.record!.data["collectionName"] = e.record!.collectionName;
+  //         deleteTEntradas(TEntradasModel.fromJson(e.record!.data));
+  //         break;
+  //       default:
+  //     }
+  //   });
+  // }
 }

@@ -72,12 +72,12 @@ class RoutesFactory {
     return [
       Routes(titulo: 'Empleados', page:  const EmpleadosFormPage(), widget: const Icon(Icons.groups_2_outlined)),
       Routes(titulo: 'Crear Almacén', page: const TPageUbicaciones(), widget: const Icon(Icons.inventory_rounded)),
-      Routes(titulo: 'Proveedores', page: Container(), widget:const Icon(Icons.local_shipping)),
-      Routes(titulo: 'Categorías', page: Container(), widget: const Icon(Icons.category)),
-      Routes(titulo: 'Restriciones alimenticias', page: Container(), widget: const Icon(Icons.local_shipping)),
+      Routes(titulo: 'Proveedores', page: TPageUbicaciones(), widget:const Icon(Icons.local_shipping)),
+      Routes(titulo: 'Categorías', page: TPageUbicaciones(), widget: const Icon(Icons.category)),
+      Routes(titulo: 'Restriciones alimenticias', page: TPageUbicaciones(), widget: const Icon(Icons.local_shipping)),
       // Routes(titulo: 'Grupos Pasajeros', page: Container(), widget: const Icon(Icons.work_history_sharp)),//Esta va en al botonNavigationbar
-      Routes(titulo: 'Tipo de gasto', page:  Container(), widget: const Icon(Icons.local_shipping)),
-      Routes(titulo: 'Estadísticas', page: Container(), widget: const Icon(Icons.pie_chart)),
+      Routes(titulo: 'Tipo de gasto', page:  TPageUbicaciones(), widget: const Icon(Icons.local_shipping)),
+      Routes(titulo: 'Estadísticas', page: TPageUbicaciones(), widget: const Icon(Icons.pie_chart)),
 
     ];
   }
